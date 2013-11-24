@@ -33,22 +33,22 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer{
         switch(type)
         {
             case ENTITY:{
-                renderAtomicCatalyst(0F, 0.5F, 0F, 1.9F, false, false);
+                renderAtomicCatalyst(0F, 0.5F, 0F, 1.9F, false, false, false);
                 return;
             }
              
             case EQUIPPED:{
-                renderAtomicCatalyst(0.5F, 0.5F, 0F, 2F, false, false);
+                renderAtomicCatalyst(0.5F, 0.5F, 0F, 2F, false, false, true);
                 return;
             }
                  
             case EQUIPPED_FIRST_PERSON: {
-                renderAtomicCatalyst(0F, 1.0F, 0.4F, 1.9F, true, false);
+                renderAtomicCatalyst(0F, 1.0F, 0.4F, 1.9F, true, false, false);
                 break;
             }
             
             case INVENTORY:{
-                renderAtomicCatalyst(0F, 0.1F, -0.1F, 2.5F, false, true);
+                renderAtomicCatalyst(0F, 0.1F, 0.0F, 2.5F, false, true, false);
                 return;
             }
              
@@ -56,7 +56,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer{
         }
     }
     //Bohr Model, because bite me.
-    private void renderAtomicCatalyst(float x, float y, float z, float scale, boolean fp, boolean inv){
+    private void renderAtomicCatalyst(float x, float y, float z, float scale, boolean fp, boolean inv, boolean eq){
         
         TextureManager texture = Minecraft.getMinecraft().renderEngine;
         
@@ -72,9 +72,11 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer{
         
         //First Person translations because it's weird for some reason..
         if(fp)GL11.glTranslatef(0F, -0.20F, -0.17F);
-        //Inventory translations, becuase it's also a bit weird. 
-        if(inv)GL11.glTranslatef(0F, 0.1F, 0.1F);
-                
+        //Inventory translations, because it's also a bit weird. 
+        if(inv)GL11.glTranslatef(-0.01F, 0.12F, 0.0F);
+        //Equipped translations, because it's even more retarded..
+        if(eq)GL11.glTranslatef(-0.22F, 0F, 0F);
+        
         //Math for the rotation periods.
         double local = (24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL);
         
@@ -110,7 +112,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer{
             case "Electron2":
                 GL11.glPushMatrix();
                 GL11.glScalef(0.4F, 0.4F, 0.4F);
-                GL11.glTranslatef(x - cosDis, y - sinDis - 0.5F, z);
+                GL11.glTranslatef(x - sinDis, y - cosDis - 0.5F, z);
                 texture.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_ELECTRON_2);
                 modelAtomicCatalyst.renderPart(part);
                 GL11.glPopMatrix();

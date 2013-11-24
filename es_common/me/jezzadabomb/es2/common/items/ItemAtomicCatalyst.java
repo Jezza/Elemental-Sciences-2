@@ -2,7 +2,7 @@ package me.jezzadabomb.es2.common.items;
 
 import java.util.List;
 
-import me.jezzadabomb.es2.common.ticker.WorldTicker;
+import me.jezzadabomb.es2.common.tickers.WorldTicker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -14,13 +14,13 @@ public class ItemAtomicCatalyst extends ItemES{
 
     public ItemAtomicCatalyst(int id, String name) {
         super(id, name);
-        setMaxDamage(127);
+        setMaxDamage(511);
     }
     
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
         if(FMLCommonHandler.instance().getEffectiveSide().isServer()){
-            WorldTicker.addSwapper(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x,y,z), world.getBlockId(x, y, z), world.getBlockMetadata(x,y,z), 3, player);
+            WorldTicker.addSwapper(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x,y,z), world.getBlockId(x, y, z), world.getBlockMetadata(x,y,z), 2, player);
             itemStack.damageItem(1, player);
         }
         return true;

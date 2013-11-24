@@ -7,4 +7,8 @@ public class Strings {
     
     //Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
+    public static final String GLASSES = "glasses";
+
+    //Timing Constants
+    public static final String TICK_TIMING = "glassesTickTimingConstant";
 }

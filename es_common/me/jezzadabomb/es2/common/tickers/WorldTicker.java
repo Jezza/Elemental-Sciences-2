@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.ticker;
+package me.jezzadabomb.es2.common.tickers;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -19,6 +19,8 @@ public class WorldTicker implements ITickHandler {
 
     public static Map<Integer, LinkedBlockingQueue<VirtualBreaker>> breakList = new HashMap<Integer, LinkedBlockingQueue<VirtualBreaker>>();
 
+    private boolean ticked = false;
+    
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
 
@@ -26,8 +28,13 @@ public class WorldTicker implements ITickHandler {
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        WorldServer world = (WorldServer) tickData[0];
-        breakTicks(world);
+        if(ticked){            
+            WorldServer world = (WorldServer) tickData[0];
+            breakTicks(world);
+            ticked = false;
+        }else{
+            ticked = true;
+        }
     }
 
     @Override

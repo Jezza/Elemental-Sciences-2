@@ -19,8 +19,10 @@ public class ConfigHandler {
         try {
             config.load();
             BlockIds.BLOCK_TEST = config.getBlock(Strings.BLOCK_TEST, BlockIds.BLOCK_TEST_DEFAULT).getInt();
-            
+
             ItemIds.ATOMIC_CATALYST = config.getItem(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT).getInt();
+            ItemIds.GLASSES = config.getItem(Strings.GLASSES, ItemIds.GLASSES_DEFAULT).getInt();
+
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " has had a problem loading its block configuration");
         } finally {

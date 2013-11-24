@@ -2,13 +2,13 @@ package me.jezzadabomb.es2;
 
 import java.io.File;
 
-import me.jezzadabomb.es2.client.creativetab.ES2Tab;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.handlers.ConfigHandler;
-import me.jezzadabomb.es2.common.lib.handlers.PacketHandler;
+import me.jezzadabomb.es2.common.packets.PacketHandler;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -29,7 +29,12 @@ public class ElementalSciences2 {
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static CommonProxy proxy;
     
-    public static CreativeTabs creativeTab = new ES2Tab(CreativeTabs.getNextID(), Reference.MOD_ID);
+    public static CreativeTabs creativeTab = new CreativeTabs(Reference.MOD_ID) {
+        public ItemStack getIconItemStack() {
+            return new ItemStack(ModItems.atomicCatalyst, 1, 0);
+        }
+    };
+    
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -47,7 +52,6 @@ public class ElementalSciences2 {
 
     @EventHandler
     public void postLoaded(FMLPostInitializationEvent event) {
-        
     }
     
     @EventHandler
