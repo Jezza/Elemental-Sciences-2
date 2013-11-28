@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.hud;
 
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import net.minecraft.tileentity.TileEntity;
 
@@ -8,9 +9,9 @@ public class StoredQueues {
 
     private static final StoredQueues instance = new StoredQueues();
 
-    private ArrayList<InventoryInstance> inventories = new ArrayList<InventoryInstance>();
-    private ArrayList<InventoryInstance> tempInv = new ArrayList<InventoryInstance>();
-    private ArrayList<InventoryInstance> requestedList = new ArrayList<InventoryInstance>();
+    private LinkedBlockingQueue<InventoryInstance> inventories = new LinkedBlockingQueue<InventoryInstance>();
+    private ArrayList<InventoryInstance> tempInv = new ArrayList<InventoryInstance>(0);
+    private ArrayList<InventoryInstance> requestedList = new ArrayList<InventoryInstance>(0);
 
     public StoredQueues() {
     }
@@ -19,18 +20,18 @@ public class StoredQueues {
         return instance;
     }
 
-    public ArrayList<InventoryInstance> getPlayer() {
+    public LinkedBlockingQueue<InventoryInstance> getPlayer() {
         return inventories;
     }
-    
+
     public void putInventory(String name, TileEntity inventory, int x, int y, int z) {
         inventories.add(new InventoryInstance(name, inventory, x, y, z));
     }
 
-    public void retainInventories(ArrayList<InventoryInstance> map){
+    public void retainInventories(ArrayList<InventoryInstance> map) {
         inventories.retainAll(map);
     }
-    
+
     public void putInventory(InventoryInstance inventory) {
         inventories.add(inventory);
     }
@@ -40,36 +41,43 @@ public class StoredQueues {
     }
 
     public boolean isXYZInventory(int x, int y, int z) {
-        for(InventoryInstance i : inventories){
-            if(i.getX() == x && i.getY() == y && i.getZ() == z){
+        for (InventoryInstance i : inventories) {
+            if (i.getX() == x && i.getY() == y && i.getZ() == z) {
                 return true;
             }
         }
         return false;
     }
-    
-    public boolean isAtXYZ(int x, int y, int z){
-        for(InventoryInstance i : inventories){
-            if(i.getX() == x && i.getY() == y && i.getZ() == z){
+
+    public boolean isAtXYZ(int x, int y, int z) {
+        for (InventoryInstance i : inventories) {
+            if (i.getX() == x && i.getY() == y && i.getZ() == z) {
                 return true;
             }
         }
         return false;
     }
-    
-    public InventoryInstance getAtXYZ(int x, int y, int z){
-        for(InventoryInstance i : inventories){
-            if(i.getX() == x && i.getY() == y && i.getZ() == z){
+
+    public InventoryInstance getAtXYZ(int x, int y, int z) {
+        for (InventoryInstance i : inventories) {
+            if (i.getX() == x && i.getY() == y && i.getZ() == z) {
                 return i;
             }
         }
         return null;
     }
-    
-    public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory){
-        if(isXYZInventory(x, y, z)){
-            for(InventoryInstance i : inventories){
-                if(i.getX() == x && i.getY() == y && i.getZ() == z){
+
+    public boolean getStrXYZ(String name, int x, int y, int z){
+        for(InventoryInstance i : inventories){
+            return (i.isName(name) && i.getX() == x && i.getY() == y && i.getZ() == z);
+        }
+        return false;
+    }
+
+    public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
+        if (isXYZInventory(x, y, z)) {
+            for (InventoryInstance i : inventories) {
+                if (i.getX() == x && i.getY() == y && i.getZ() == z) {
                     inventories.remove(i);
                     inventories.add(i);
                 }
@@ -78,42 +86,43 @@ public class StoredQueues {
     }
 
     public void removeXYZInventory(String player, int x, int y, int z) {
-        for(InventoryInstance i : inventories){
-            if(i.getX() == x && i.getY() == y && i.getZ() == z){
+        for (InventoryInstance i : inventories) {
+            if (i.getX() == x && i.getY() == y && i.getZ() == z) {
                 inventories.remove(i);
             }
         }
     }
-    
-    public void clearTempInv(){
+
+    public void clearTempInv() {
         tempInv.clear();
     }
-    
-    public ArrayList<InventoryInstance> getTempInv(){
+
+    public ArrayList<InventoryInstance> getTempInv() {
         return tempInv;
     }
-    
-    public void putTempInventory(InventoryInstance inventory){
+
+    public void putTempInventory(InventoryInstance inventory) {
         tempInv.add(inventory);
     }
-    
-    public void clearPacketInv(){
+
+    public void clearPacketInv() {
         requestedList.clear();
     }
-    
-    public ArrayList<InventoryInstance> getRequestList(){
+
+    public ArrayList<InventoryInstance> getRequestList() {
         return requestedList;
     }
-    
-    public void putRequestedInv(InventoryInstance inventory){
+
+    public void putRequestedInv(InventoryInstance inventory) {
         requestedList.add(inventory);
     }
-    
-    public void setLists(){
-        requestedList = tempInv;
+
+    public void setLists() {
+        requestedList.clear();
+        requestedList.addAll(tempInv);
     }
-    
-    public void removeTemp(){
+
+    public void removeTemp() {
         tempInv.removeAll(requestedList);
     }
 }

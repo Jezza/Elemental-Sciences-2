@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.tickers;
+package me.jezzadabomb.es2.client.tickers;
 
 import java.util.EnumSet;
 
@@ -17,9 +17,9 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class PlayerTicker implements ITickHandler {
-    
-    private int ticked = 0;
-    private int dis = 8;
+
+    // private int ticked = 0;
+    private int dis = 6;
     private int oldX, oldY, oldZ, notMoveTick;
 
     @Override
@@ -29,15 +29,14 @@ public class PlayerTicker implements ITickHandler {
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
         EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        //long timing = System.nanoTime();
-        
+
         int playerX = (int) Math.round(player.posX);
         int playerY = (int) Math.round(player.posY);
         int playerZ = (int) Math.round(player.posZ);
         World world = player.worldObj;
-        
+
         if (player.getCurrentItemOrArmor(4) != null && player.getCurrentItemOrArmor(4).getItem() == ModItems.glasses) {
-            if(playerMoved(playerX, playerY, playerZ) || notMoveTick == 10){
+            if (playerMoved(playerX, playerY, playerZ) || notMoveTick == 10) {
                 notMoveTick = 0;
                 for (int x = -dis; x < dis; x++) {
                     for (int y = -dis; y < dis; y++) {
@@ -64,67 +63,28 @@ public class PlayerTicker implements ITickHandler {
                 this.oldX = playerX;
                 this.oldY = playerY;
                 this.oldZ = playerZ;
-                
-                //Removes all old inventories that it couldn't detect.
+
                 StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
-                for(InventoryInstance i : StoredQueues.instance().getPlayer()){
-                    System.out.println("Player: " + i);
-                }
-                for(InventoryInstance i : StoredQueues.instance().getRequestList()){
-                    System.out.println("Requested: " + i);
-                }
-                for(InventoryInstance i : StoredQueues.instance().getTempInv()){
-                    System.out.println("Temp: " + i);
-                }
-                
                 StoredQueues.instance().removeTemp();
-                
-                for(InventoryInstance i : StoredQueues.instance().getRequestList()){
-                    System.out.println("2Requested: " + i);
-                }
-                for(InventoryInstance i : StoredQueues.instance().getTempInv()){
-                    System.out.println("2Temp: " + i);
-                }
-                //Stores temp list in request list.
                 StoredQueues.instance().setLists();
-                for(InventoryInstance i : StoredQueues.instance().getRequestList()){
-                    System.out.println("3Requested: " + i);
-                }
-                for(InventoryInstance i : StoredQueues.instance().getTempInv()){
-                    System.out.println("3Temp: " + i);
-                }
-                //Requests requestsList of packets.
-//                requestPackets(player);
-                //Clears the temp list.
+                requestPackets(player);
                 StoredQueues.instance().clearTempInv();
-                System.out.println("Cleared Temp Inv");
-                
-                if(ticked > 2){
-                    Minecraft.getMinecraft().shutdown();
-                }else{
-                    ticked++;
-                }
-            }else{
+            } else {
                 notMoveTick++;
             }
-            
-        }else{
+
+        } else {
             StoredQueues.instance().getPlayer().clear();
         }
-//        for(InventoryInstance i : StoredQueues.instance().getPlayer()){
-//            System.out.println(i);
-//        }
-        //System.out.println(StoredQueues.instance().getPlayer().size());
-        //System.out.println(System.nanoTime() - timing);
     }
 
-    public void requestPackets(EntityPlayer player){
-        for(InventoryInstance i : StoredQueues.instance().getRequestList()){
-            System.out.println("2Requested: " + i);
-            //PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
+    public void requestPackets(EntityPlayer player) {
+        for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
+            //System.out.println("Requested Packet: " + i);
+            PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
         }
     }
-    
+
     public boolean playerMoved(int x, int y, int z) {
         return (oldX != x || oldY != y || oldZ != z);
     }

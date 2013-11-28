@@ -37,12 +37,17 @@ public class InventoryInstance {
     public TileEntity getIInventory() {
         return tileEntity;
     }
+    
+    public boolean isName(String name){
+        return this.name.compareTo(name) == 0;
+    }
+    
     @Override
     public boolean equals(Object other){
         if(other == null)return false;
         if(!(other instanceof InventoryInstance))return false;
         InventoryInstance inventory = (InventoryInstance)other;
-        return(inventory.x == x && inventory.y == y && inventory.z == z && inventory.name == name && inventory.tileEntity == tileEntity);
+        return(inventory.x == x && inventory.y == y && inventory.z == z && isName(inventory.name) && inventory.tileEntity == tileEntity);
     }
     
     @Override

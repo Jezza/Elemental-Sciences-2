@@ -36,7 +36,7 @@ public class WorldTicker implements ITickHandler {
             ticked = true;
         }
     }
-
+    
     @Override
     public EnumSet<TickType> ticks() {
         return EnumSet.of(TickType.WORLD);
