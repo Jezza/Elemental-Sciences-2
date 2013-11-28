@@ -84,13 +84,10 @@ public class HUDHandler implements ITickHandler {
         FontRenderer fontrenderer = mc.fontRenderer;
         RenderManager renderManager = RenderManager.instance;
         String par2Str = p.inventoryTitle;
-        float x = p.x;
-        float y = p.y;
-        float z = p.z;
-        float f = 1.6F;
-        float f1 = 0.016666668F * f;
+        
+        float f1 = 0.016666668F * 1.6F;
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)x, (float)y + 1F, (float)z);
+        GL11.glTranslatef((float)p.x, (float)p.y + 2.5F, (float)p.z);
         GL11.glNormal3f(0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
