@@ -4,11 +4,15 @@ import java.io.File;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.handlers.ConfigHandler;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.lib.handlers.ConfigHandler;
 import me.jezzadabomb.es2.common.packets.PacketHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+
+import org.apache.commons.io.FileUtils;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -35,13 +39,14 @@ public class ElementalSciences2 {
         }
     };
     
-    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        ESLogger.init();
         ConfigHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.CHANNEL_NAME.toLowerCase() + File.separator);
         ModBlocks.init();
         ModItems.init();
         proxy.runClientSide();
+        proxy.initSoundHandler();
     }
 
     

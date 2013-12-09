@@ -14,7 +14,11 @@ public class ItemES extends Item{
         super(id);
         setUnlocalizedName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
-        GameRegistry.registerItem(this, name);
+        register(name);
+    }
+    
+    public void register(String name){
+        GameRegistry.registerItem(this, name);        
     }
     
     @Override

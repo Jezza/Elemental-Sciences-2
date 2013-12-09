@@ -18,25 +18,21 @@ import cpw.mods.fml.common.TickType;
 public class WorldTicker implements ITickHandler {
 
     public static Map<Integer, LinkedBlockingQueue<VirtualBreaker>> breakList = new HashMap<Integer, LinkedBlockingQueue<VirtualBreaker>>();
-
-    private boolean ticked = false;
-    
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
 
     }
+    
+    private boolean ticked = false;
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        if(ticked){            
-            WorldServer world = (WorldServer) tickData[0];
-            breakTicks(world);
-            ticked = false;
-        }else{
-            ticked = true;
+        if(!ticked){            
+            breakTicks((WorldServer) tickData[0]);
         }
+        ticked = !ticked;
     }
-    
+
     @Override
     public EnumSet<TickType> ticks() {
         return EnumSet.of(TickType.WORLD);
@@ -61,13 +57,13 @@ public class WorldTicker implements ITickHandler {
                     int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
                     if ((vb.id == bi) && (vb.meta == md)) {
                         didSomething = true;
-                        ArrayList<ItemStack> ret = Block.blocksList[bi].getBlockDropped(world, vb.x, vb.y, vb.z, md, 0);
+                        ArrayList<ItemStack> ret = Block.blocksList[bi].getBlockDropped(world, vb.x, vb.y, vb.z, md, vb.fortune);
                         if (ret.size() > 0) {
                             for (ItemStack is : ret) {
-                                if(!vb.player.capabilities.isCreativeMode){
+                                if (!vb.player.capabilities.isCreativeMode) {
                                     if (!vb.player.inventory.addItemStackToInventory(is)) {
                                         world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
-                                    }                                    
+                                    }
                                 }
                             }
                         }
@@ -79,7 +75,7 @@ public class WorldTicker implements ITickHandler {
                                         if (((xx == 0) && (yy == 0) && (zz == 0)) || (world.getBlockId(vb.x + xx, vb.y + yy, vb.z + zz) != vb.idTarget) || (world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.metaTarget)) {
                                             continue;
                                         }
-                                        queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.id, vb.meta, vb.idTarget, vb.metaTarget, vb.lifespan - 1, vb.player));
+                                        queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.id, vb.meta, vb.idTarget, vb.metaTarget, vb.lifespan - 1, vb.player, vb.fortune));
                                     }
                                 }
                             }
@@ -94,7 +90,7 @@ public class WorldTicker implements ITickHandler {
 
     }
 
-    public static void addSwapper(World world, int x, int y, int z, int id, int meta, int idT, int metaT, int life, EntityPlayer player) {
+    public static void addBreaker(World world, int x, int y, int z, int id, int meta, int idT, int metaT, int life, EntityPlayer player, int fortune) {
         int dim = world.provider.dimensionId;
         if ((Block.blocksList[id] == null) || (Block.blocksList[id].getBlockHardness(world, x, y, z) < 0.0F)) {
             return;
@@ -104,7 +100,7 @@ public class WorldTicker implements ITickHandler {
             breakList.put(Integer.valueOf(dim), new LinkedBlockingQueue<VirtualBreaker>());
             queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
         }
-        queue.offer(new VirtualBreaker(x, y, z, id, meta, idT, metaT, life, player));
+        queue.offer(new VirtualBreaker(x, y, z, id, meta, idT, metaT, life, player, fortune));
         breakList.put(Integer.valueOf(dim), queue);
     }
 
@@ -117,9 +113,10 @@ public class WorldTicker implements ITickHandler {
         int idTarget = 0;
         int metaTarget = 0;
         int lifespan = 0;
+        int fortune = 0;
         EntityPlayer player = null;
 
-        VirtualBreaker(int x, int y, int z, int id, int meta, int idT, int metaT, int life, EntityPlayer p) {
+        VirtualBreaker(int x, int y, int z, int id, int meta, int idT, int metaT, int life, EntityPlayer p, int fortune) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -128,6 +125,7 @@ public class WorldTicker implements ITickHandler {
             this.idTarget = idT;
             this.metaTarget = metaT;
             this.lifespan = life;
+            this.fortune = fortune;
             this.player = p;
         }
     }

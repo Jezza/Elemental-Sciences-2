@@ -8,6 +8,8 @@ import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 public class BlockES extends Block{
 
@@ -15,9 +17,13 @@ public class BlockES extends Block{
         super(par1, par2Material);
         setUnlocalizedName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
-        GameRegistry.registerBlock(this, name);
+        register(name);
     }
 
+    public void register(String name){
+        GameRegistry.registerBlock(this, name);        
+    }
+    
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {

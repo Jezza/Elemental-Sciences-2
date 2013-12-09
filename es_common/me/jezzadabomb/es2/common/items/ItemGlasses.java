@@ -9,16 +9,14 @@ import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemStack;
 
 public class ItemGlasses extends ItemArmourES{
-
-    private static final int ARMOR_HELMET = 0;
-    
+	
     public ItemGlasses(int id, EnumArmorMaterial armorMaterial, int par3, int armourIndex, String name) {
         super(id, armorMaterial, par3, armourIndex, name);
     }
     
     @Override
     public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
-        return armorType == ARMOR_HELMET;
+        return armorType == 0;
     }
     
     @Override

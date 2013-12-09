@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -19,7 +20,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class PlayerTicker implements ITickHandler {
 
     // private int ticked = 0;
-    private int dis = 6;
+    private int dis = 5;
     private int oldX, oldY, oldZ, notMoveTick;
 
     @Override
@@ -36,7 +37,7 @@ public class PlayerTicker implements ITickHandler {
         World world = player.worldObj;
 
         if (player.getCurrentItemOrArmor(4) != null && player.getCurrentItemOrArmor(4).getItem() == ModItems.glasses) {
-            if (playerMoved(playerX, playerY, playerZ) || notMoveTick == 10) {
+            if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
                 notMoveTick = 0;
                 for (int x = -dis; x < dis; x++) {
                     for (int y = -dis; y < dis; y++) {
@@ -48,7 +49,6 @@ public class PlayerTicker implements ITickHandler {
                                         StoredQueues.instance().putTempInventory(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z));
                                         if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z))) {
                                             if (StoredQueues.instance().isAtXYZ(playerX + x, playerY + y, playerZ + z)) {
-                                                System.out.println(StoredQueues.instance().getPlayer().size());
                                                 StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z));
                                             } else {
                                                 StoredQueues.instance().putInventory(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z);
@@ -80,7 +80,6 @@ public class PlayerTicker implements ITickHandler {
 
     public void requestPackets(EntityPlayer player) {
         for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
-            //System.out.println("Requested Packet: " + i);
             PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
         }
     }

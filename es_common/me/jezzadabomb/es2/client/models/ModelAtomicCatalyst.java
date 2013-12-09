@@ -14,9 +14,9 @@ public class ModelAtomicCatalyst extends ModelBase{
     
     public ModelAtomicCatalyst() {
         parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_MAIN));
-        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON));
-        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON));
-        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON));
+        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON1));
+        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON2));
+        parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON3));
     }
 
     public void renderAll() {

@@ -69,7 +69,9 @@ public class StoredQueues {
 
     public boolean getStrXYZ(String name, int x, int y, int z){
         for(InventoryInstance i : inventories){
-            return (i.isName(name) && i.getX() == x && i.getY() == y && i.getZ() == z);
+            if(i.isName(name) && i.getX() == x && i.getY() == y && i.getZ() == z){                
+                return true;
+            }
         }
         return false;
     }

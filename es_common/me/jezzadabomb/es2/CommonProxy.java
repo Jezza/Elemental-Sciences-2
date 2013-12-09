@@ -7,9 +7,9 @@ import cpw.mods.fml.relauncher.Side;
 public class CommonProxy {
 
     public WorldTicker worldTicker = new WorldTicker();
-    
-    public void runClientSide() {
-    }
+
+    public void runClientSide() {}
+    public void initSoundHandler(){}
 
     public void registerTickHandlers() {
         TickRegistry.registerTickHandler(worldTicker, Side.SERVER);

@@ -35,7 +35,9 @@ public class InventoryRequestPacket extends CentralPacket {
     public void execute(EntityPlayer player, Side side) throws ProtocolException {
         if (side.isServer()) {
             Integer[] coord = getXYZFromString(loc);
-            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(player.worldObj.getBlockTileEntity(coord[0], coord[1], coord[2]),loc).makePacket(),(Player)player);
+            if (coord != null) {
+                PacketDispatcher.sendPacketToPlayer(new InventoryPacket(player.worldObj.getBlockTileEntity(coord[0], coord[1], coord[2]), loc).makePacket(), (Player) player);
+            }
         } else {
             throw new ProtocolException("Cannot send this packet to the client!");
         }

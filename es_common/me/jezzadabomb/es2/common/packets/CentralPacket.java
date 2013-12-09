@@ -30,10 +30,9 @@ public abstract class CentralPacket {
     static {
         ImmutableBiMap.Builder<Integer, Class<? extends CentralPacket>> builder = ImmutableBiMap.builder();
 
-        builder.put(Integer.valueOf(0), TestPacket.class);
         builder.put(Integer.valueOf(1), InventoryRequestPacket.class);
         builder.put(Integer.valueOf(2), InventoryPacket.class);
-        
+
         idMap = builder.build();
     }
 
@@ -72,59 +71,51 @@ public abstract class CentralPacket {
             throw new RuntimeException("Packet " + getClass().getSimpleName() + " is missing a mapping!");
         }
     }
-    
-    public static Integer[] getXYZFromString(String loc){
-        Integer[] coord = new Integer[3]; 
+
+    public static Integer[] getXYZFromString(String loc) {
+        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
+            return null;
+        }
+        Integer[] coord = new Integer[3];
         coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
         coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
         coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
         return coord;
-        
+
     }
-    
-    public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException
-    {
-        if (par0ItemStack == null)
-        {
+
+    public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException {
+        if (par0ItemStack == null) {
             par1DataOutput.writeShort(-1);
-        }
-        else
-        {
+        } else {
             par1DataOutput.writeShort(par0ItemStack.itemID);
             par1DataOutput.writeByte(par0ItemStack.stackSize);
             par1DataOutput.writeShort(par0ItemStack.getItemDamage());
             NBTTagCompound nbttagcompound = null;
 
-            if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag())
-            {
+            if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag()) {
                 nbttagcompound = par0ItemStack.stackTagCompound;
             }
 
             writeNBTTagCompound(nbttagcompound, par1DataOutput);
         }
     }
-    
-    protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException
-    {
-        if (par0NBTTagCompound == null)
-        {
+
+    protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException {
+        if (par0NBTTagCompound == null) {
             par1DataOutput.writeShort(-1);
-        }
-        else
-        {
+        } else {
             byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
-            par1DataOutput.writeShort((short)abyte.length);
+            par1DataOutput.writeShort((short) abyte.length);
             par1DataOutput.write(abyte);
         }
     }
-    
-    public static ItemStack readItemStack(DataInput par0DataInput) throws IOException
-    {
+
+    public static ItemStack readItemStack(DataInput par0DataInput) throws IOException {
         ItemStack itemstack = null;
         short short1 = par0DataInput.readShort();
 
-        if (short1 >= 0)
-        {
+        if (short1 >= 0) {
             byte b0 = par0DataInput.readByte();
             short short2 = par0DataInput.readShort();
             itemstack = new ItemStack(short1, b0, short2);
@@ -133,23 +124,19 @@ public abstract class CentralPacket {
 
         return itemstack;
     }
-    
-    public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException
-    {
+
+    public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException {
         short short1 = par0DataInput.readShort();
 
-        if (short1 < 0)
-        {
+        if (short1 < 0) {
             return null;
-        }
-        else
-        {
+        } else {
             byte[] abyte = new byte[short1];
             par0DataInput.readFully(abyte);
             return CompressedStreamTools.decompress(abyte);
         }
     }
-    
+
     public final Packet makePacket() {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeByte(getPacketId());
