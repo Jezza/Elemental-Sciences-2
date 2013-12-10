@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.client.utils;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.ArrayList;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -37,7 +39,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 public class RenderUtils {
 
     static RenderBlocks renderBlocksInstance = new RenderBlocks();
-
+    static ArrayList<Integer> retardedItems = new ArrayList<Integer>();
+    
     public static void bindTexture(ResourceLocation rl) {
         Minecraft.getMinecraft().renderEngine.bindTexture(rl);
     }
@@ -54,6 +57,27 @@ public class RenderUtils {
         tessellator.draw();
     }
 
+    public static void addToArrayList(){
+        retardedItems.clear();
+        retardedItems.add(Block.hopperBlock.blockID);
+        retardedItems.add(Block.tripWireSource.blockID);
+        retardedItems.add(Block.fenceIron.blockID);
+        retardedItems.add(Block.thinGlass.blockID);
+    }
+    
+    public static void translateWithID(int ID){
+        if(retardedItems.contains(ID)){
+            glRotated(90, 0.0D, 1.0D, 0.0D);
+            glScaled(1.2D, 1.2D, 1.2D);
+            glScaled(0.8D, 1.0D, 1.0D);
+            glTranslated(-8D, 0D, 1D);
+        }else{
+            glRotated(40, -0.2D, 1.0D, 0.0D);
+            glRotated(30, 0.0D, 0.0D, 1.0D);
+            glRotated(30, 1.0D, 0.0D, -0.6D);
+        }        
+    }
+    
     public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel) {
         glPushMatrix();
         glDisable(GL_CULL_FACE);
@@ -64,8 +88,8 @@ public class RenderUtils {
         if (itemStack.getItem() instanceof ItemBlock) {
             glTranslated(x + 23, y + 15, zLevel + 3);
             glRotated(90, 0.0D, 1.0D, 0.0D);
-            glRotated(40, -0.2D, 1.0D, 0.0D);
             glScaled(2D, 2D, 2D);
+            translateWithID(itemStack.itemID);            
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
             entityItem.hoverStart = 0.0F;
             entityItem.setEntityItemStack(itemStack);

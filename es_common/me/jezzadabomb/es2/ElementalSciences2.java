@@ -2,6 +2,7 @@ package me.jezzadabomb.es2;
 
 import java.io.File;
 
+import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
@@ -47,6 +48,7 @@ public class ElementalSciences2 {
         ModItems.init();
         proxy.runClientSide();
         proxy.initSoundHandler();
+        RenderUtils.addToArrayList();
     }
 
     

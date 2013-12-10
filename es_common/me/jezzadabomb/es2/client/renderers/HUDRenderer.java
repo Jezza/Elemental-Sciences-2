@@ -20,8 +20,6 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -29,6 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class HUDRenderer {
     private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
     private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
+    
     private final RenderItem customItemRenderer;
 
     public HUDRenderer() {
@@ -105,12 +104,13 @@ public class HUDRenderer {
             if (UtilHelpers.canShowDebugHUD()) {
                 RenderUtils.renderRedBox(event, p);
                 RenderUtils.drawTextInAir(p.x, p.y + 0.5F, p.z, event.partialTicks, p.inventoryTitle);
+                RenderUtils.addToArrayList();
             }
-            renderInfoScreen2(p.x, p.y, p.z, event.partialTicks, p);
+            renderInfoScreen(p.x, p.y, p.z, event.partialTicks, p);
         }
     }
 
-    private void renderInfoScreen2(double x, double y, double z, double partialTicks, InventoryPacket p) {
+    private void renderInfoScreen(double x, double y, double z, double partialTicks, InventoryPacket p) {
         if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
             EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
             double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
