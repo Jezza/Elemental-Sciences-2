@@ -22,15 +22,10 @@ public class WorldTicker implements ITickHandler {
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
 
     }
-    
-    private boolean ticked = false;
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        if(!ticked){            
             breakTicks((WorldServer) tickData[0]);
-        }
-        ticked = !ticked;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class PlayerTicker implements ITickHandler {
     // private int ticked = 0;
     private int dis = 5;
     private int oldX, oldY, oldZ, notMoveTick;
-
+    
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
     }

@@ -39,6 +39,8 @@ public class InventoryInstance {
     }
     
     public boolean isName(String name){
+        if(name == null)return false;
+        if(this.name == null)return false;
         return this.name.compareTo(name) == 0;
     }
     

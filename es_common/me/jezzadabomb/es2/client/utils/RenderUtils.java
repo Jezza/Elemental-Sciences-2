@@ -65,37 +65,84 @@ public class RenderUtils {
         retardedItems.add(Block.thinGlass.blockID);
     }
     
-    public static void translateWithID(int ID){
+    public static void translateWithID(int ID, int indexNum){
         if(retardedItems.contains(ID)){
             glRotated(90, 0.0D, 1.0D, 0.0D);
+            glTranslated(-3D, 0D, 3D);
             glScaled(1.2D, 1.2D, 1.2D);
             glScaled(0.8D, 1.0D, 1.0D);
-            glTranslated(-8D, 0D, 1D);
+            glTranslated(-3D, -2D, 1D);
+            switch(indexNum){
+                case 0:
+                    glTranslated(3.0D,0.0D,0.0D);
+                    return;
+                case 1:
+                    glTranslated(-2.0D,0.0D,0.0D);
+                    return;
+                case 2:
+                    glTranslated(-9.0D,0.0D,0.0D);
+                    return;
+                default:
+                    return;
+            }
         }else{
+            glTranslated(3D, -2D, -3D);
             glRotated(40, -0.2D, 1.0D, 0.0D);
             glRotated(30, 0.0D, 0.0D, 1.0D);
-            glRotated(30, 1.0D, 0.0D, -0.6D);
+            glRotated(30, 1.0D, 0.0D, -0.7D);
+            glRotated(30, 1.0D, -0.3D, -0.8D);
+            glTranslated(-5D, 5D, -10D);
+            switch(indexNum){
+            case 0:
+                glTranslated(-1.0D,0.0D,0.0D);
+                return;
+            case 1:
+                glTranslated(-4.0D,2.0D,2.0D);
+                return;
+            case 2:
+                glTranslated(-8.0D,4.0D,4.0D);
+                return;
+            default:
+                return;
+        }
         }        
     }
     
-    public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel) {
+    private static void translateItem(int indexNum){
+        switch(indexNum){
+        case 0:
+            glTranslated(-23.0D,0.0D,0.0D);
+            return;
+        case 1:
+            glTranslated(-12.0D,0.0D,0.0D);
+        case 2:
+        
+        default:
+            return;
+        
+        }
+    }
+    
+    public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum) {
         glPushMatrix();
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
+        glScalef(0.8F, 1.0F, 1.0F);
         Minecraft mc = Minecraft.getMinecraft();
         TextureManager textureManager = mc.getTextureManager();
         FontRenderer fontRenderer = mc.fontRenderer;
         if (itemStack.getItem() instanceof ItemBlock) {
-            glTranslated(x + 23, y + 15, zLevel + 3);
+            glTranslated(x + 40, y + 15, zLevel + 3);
             glRotated(90, 0.0D, 1.0D, 0.0D);
-            glScaled(2D, 2D, 2D);
-            translateWithID(itemStack.itemID);            
+            glScaled(2.2D, 2.2D, 2.2D);
+            translateWithID(itemStack.itemID, indexNum);            
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
             entityItem.hoverStart = 0.0F;
             entityItem.setEntityItemStack(itemStack);
             customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
         } else {
-            glTranslated(x - 10, y + 5, zLevel - 37);
+            glTranslated(x + 20, y + 5, zLevel - 37);
+            translateItem(indexNum);
             glScaled(4D, 4D, 4D);
             ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
@@ -119,9 +166,9 @@ public class RenderUtils {
         glPopMatrix();
     }
 
-    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel) {
+    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum) {
         drawTextureSlot(x, y, zLevel + 1);
-        drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel);
+        drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum);
     }
 
     public static void renderRedBox(RenderWorldLastEvent event, InventoryPacket p) {

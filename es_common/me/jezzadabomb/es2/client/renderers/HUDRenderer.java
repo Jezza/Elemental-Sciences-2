@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
@@ -164,7 +165,7 @@ public class HUDRenderer {
                     indexNum = 0;
                     rowNum++;
                 }
-                RenderUtils.drawItemAndSlot(indexNum * xOffset, rowNum * yOffset, itemStack, customItemRenderer, -2);
+                RenderUtils.drawItemAndSlot(indexNum * xOffset, rowNum * yOffset, itemStack, customItemRenderer, -2, indexNum);
                 totalSlots++;
             }
 

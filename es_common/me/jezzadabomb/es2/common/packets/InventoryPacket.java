@@ -22,7 +22,7 @@ public class InventoryPacket extends CentralPacket {
 
     public ArrayList<ItemStack> itemStacks;
     public String loc = "null";
-    public String inventoryTitle = "";
+    public String inventoryTitle = null;
     public int x;
     public int y;
     public int z;
@@ -46,6 +46,7 @@ public class InventoryPacket extends CentralPacket {
 
     @Override
     public void write(ByteArrayDataOutput out) {
+        if(inventoryTitle == null)inventoryTitle = "null";
         out.writeUTF(inventoryTitle);
         out.writeUTF(loc);
         out.writeShort(itemStacks != null ? (itemStacks.isEmpty() ? (short) 0 : (short) itemStacks.size()) : (short) 0);
