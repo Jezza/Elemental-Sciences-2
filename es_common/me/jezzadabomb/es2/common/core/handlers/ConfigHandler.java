@@ -31,11 +31,15 @@ public class ConfigHandler {
             ItemIds.DEBUG_TOOL = config.getItem(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT).getInt();
             
             //Reference values
-            Reference.GLASSES_WAIT_TIMER = config.get(var, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT).getInt();
+            Reference.GLASSES_WAIT_TIMER = config.get(var, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "").getInt();
             
             //Blacklist
             BlackList.putValues(config.get(var, Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "These are the default block ids, and metas that can't be destroyed by the catalyst, easily configurable. Just id:meta. :)").getString());
         
+            //Boolean
+            //The default for the hud rotation is false.
+            Reference.HUD_VERTICAL_ROTATION = config.get(var, Strings.HUD_PITCH, false, "If this is set to true, then the glasses HUD follow you along your y-axis (rotation along the y axis)").getBoolean(false);
+            
         } catch (Exception e) {
             FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " has had a problem loading its block configuration");
         } finally {

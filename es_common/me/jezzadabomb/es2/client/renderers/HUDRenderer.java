@@ -2,12 +2,15 @@ package me.jezzadabomb.es2.client.renderers;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
+
 import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import net.minecraft.client.Minecraft;
@@ -126,24 +129,33 @@ public class HUDRenderer {
 
             glTranslated(-iPX + x + 0.5D, -iPY + y + 1.5D, -iPZ + z + 0.5D);
             glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
-
+            
             float xd = (float) (iPX - (x + 0.5D));
             float zd = (float) (iPZ - (z + 0.5D));
-            float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
-
-            glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
-
-            glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            glScalef(0.01F, 0.006F, 0.01F);
-            glScalef(0.6F, 0.6F, 0.6F);
+            float yd = (float) (iPY - (y + 1.8D));
 
             int xTextureOffset = 11;
             int yTextureOffset = 18;
             int xInventoryPos = -80;
             int yInventoryPos = -90;
-            if (!player.worldObj.isAirBlock(p.x, p.y + 1, p.z)) {
-                yInventoryPos = 190;
+            boolean renderOnBlock = !player.worldObj.isAirBlock(p.x, p.y + 1, p.z);
+            if (renderOnBlock) {
+            	yInventoryPos = 190;
+            	yd += 1.0F;
             }
+            
+            float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
+            float rotPitch = (float) (Math.atan2(yd, Math.sqrt(xd*xd + zd*zd)) * 180.0D / 3.141592653589793D);
+
+            glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
+            if(Reference.HUD_VERTICAL_ROTATION){            	
+            	glRotatef(rotPitch + 0.0F, 1.0F, 0.0F, 0.0F);
+            }
+
+            glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+            glScalef(0.01F, 0.006F, 0.01F);
+            glScalef(0.6F, 0.6F, 0.6F);
+
 
             // Inventory background
             RenderUtils.bindTexture(TextureMaps.HUD_INVENTORY);

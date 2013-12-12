@@ -6,7 +6,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 
 public class BlackList {
     public static ArrayList<Integer> blackList = new ArrayList<Integer>(0);
-    public static String blackListDefault = "8:0,9:0,10:0,11:0";
+    public static String blackListDefault = "7:0,8:0,9:0,10:0,11:0";
 
     private static String splitChar = ",";
     private static String sepChar = ":";
@@ -22,7 +22,7 @@ public class BlackList {
     }
 
     public static boolean OnBlackList(int id, int meta) {
-        for (int i = 0; i < blackList.size();i += 3) {
+        for (int i = 0; i < blackList.size();i += 2) {
             if(blackList.get(i) == id && blackList.get(i + 1) == meta){
                 return true;
             }

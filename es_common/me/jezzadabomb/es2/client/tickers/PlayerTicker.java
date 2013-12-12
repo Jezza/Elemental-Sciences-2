@@ -20,7 +20,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class PlayerTicker implements ITickHandler {
 
     // private int ticked = 0;
-    private int dis = 5;
+    private int dis = Reference.HUD_BLOCK_RANGE;
     private int oldX, oldY, oldZ, notMoveTick;
     
     @Override

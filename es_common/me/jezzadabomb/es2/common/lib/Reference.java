@@ -15,4 +15,10 @@ public class Reference {
     //Timing constants
     public static int GLASSES_WAIT_TIMER_DEFAULT = 10;
     public static int GLASSES_WAIT_TIMER;
+    
+    //Boolean constants
+    public static boolean HUD_VERTICAL_ROTATION;
+    
+    //Numerical constants
+    public static int HUD_BLOCK_RANGE = 6;
 }
