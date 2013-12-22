@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.client.tickers;
 import java.util.EnumSet;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -19,83 +20,84 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class PlayerTicker implements ITickHandler {
 
-    // private int ticked = 0;
-    private int dis = Reference.HUD_BLOCK_RANGE;
-    private int oldX, oldY, oldZ, notMoveTick;
-    
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-    }
+	// private int ticked = 0;
+	private int dis = Reference.HUD_BLOCK_RANGE;
+	private int oldX, oldY, oldZ, notMoveTick;
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+	@Override
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
+	}
 
-        int playerX = (int) Math.round(player.posX);
-        int playerY = (int) Math.round(player.posY);
-        int playerZ = (int) Math.round(player.posZ);
-        World world = player.worldObj;
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+		EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
 
-        if (player.getCurrentItemOrArmor(4) != null && player.getCurrentItemOrArmor(4).getItem() == ModItems.glasses) {
-            if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
-                notMoveTick = 0;
-                for (int x = -dis; x < dis; x++) {
-                    for (int y = -dis; y < dis; y++) {
-                        for (int z = -dis; z < dis; z++) {
-                            if (!world.isAirBlock(playerX + x, playerY + y, playerZ + z)) {
-                                if (world.blockHasTileEntity(playerX + x, playerY + y, playerZ + z)) {
-                                    TileEntity tileEntity = world.getBlockTileEntity(playerX + x, playerY + y, playerZ + z);
-                                    if (tileEntity instanceof IInventory) {
-                                        StoredQueues.instance().putTempInventory(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z));
-                                        if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z))) {
-                                            if (StoredQueues.instance().isAtXYZ(playerX + x, playerY + y, playerZ + z)) {
-                                                StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z));
-                                            } else {
-                                                StoredQueues.instance().putInventory(((IInventory) tileEntity).getInvName(), tileEntity, playerX + x, playerY + y, playerZ + z);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                this.oldX = playerX;
-                this.oldY = playerY;
-                this.oldZ = playerZ;
+		int playerX = (int) Math.round(player.posX);
+		int playerY = (int) Math.round(player.posY);
+		int playerZ = (int) Math.round(player.posZ);
+		World world = player.worldObj;
 
-                StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
-                StoredQueues.instance().removeTemp();
-                StoredQueues.instance().setLists();
-                requestPackets(player);
-                StoredQueues.instance().clearTempInv();
-            } else {
-                notMoveTick++;
-            }
+		if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+			if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
+				notMoveTick = 0;
+				for (int x = -dis; x < dis; x++) {
+					for (int y = -dis; y < dis; y++) {
+						for (int z = -dis; z < dis; z++) {
+							int tempX = playerX + x;
+							int tempY = playerY + y;
+							int tempZ = playerZ + z;
+							if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
+								TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
+								if (tileEntity instanceof IInventory) {
+									StoredQueues.instance().putTempInventory(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ));
+									if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ))) {
+										if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
+											StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ));
+										} else {
+											StoredQueues.instance().putInventory(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				this.oldX = playerX;
+				this.oldY = playerY;
+				this.oldZ = playerZ;
 
-        } else {
-            StoredQueues.instance().getPlayer().clear();
-        }
-    }
+				StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
+				StoredQueues.instance().removeTemp();
+				StoredQueues.instance().setLists();
+				requestPackets(player);
+				StoredQueues.instance().clearTempInv();
+			} else {
+				notMoveTick++;
+			}
 
-    public void requestPackets(EntityPlayer player) {
-        for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
-            PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
-        }
-    }
+		} else {
+			StoredQueues.instance().getPlayer().clear();
+		}
+	}
 
-    public boolean playerMoved(int x, int y, int z) {
-        return (oldX != x || oldY != y || oldZ != z);
-    }
+	public void requestPackets(EntityPlayer player) {
+		for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
+			PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
+		}
+	}
 
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER);
-    }
+	public boolean playerMoved(int x, int y, int z) {
+		return (oldX != x || oldY != y || oldZ != z);
+	}
 
-    @Override
-    public String getLabel() {
-        return "ES2-GlassesTicker";
-    }
+	@Override
+	public EnumSet<TickType> ticks() {
+		return EnumSet.of(TickType.PLAYER);
+	}
+
+	@Override
+	public String getLabel() {
+		return "ES2-GlassesTicker";
+	}
 
 }

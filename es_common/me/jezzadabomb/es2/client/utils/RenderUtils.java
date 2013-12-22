@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL12;
 import cpw.mods.fml.client.FMLClientHandler;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import net.minecraft.block.Block;
@@ -183,7 +184,8 @@ public class RenderUtils {
 	}
 
 	public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
-		drawTextureSlot(x, y, zLevel + 1);
+		if(Reference.DRAW_TEXTURED_SLOTS)
+			drawTextureSlot(x, y, zLevel + 1);
 		drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum, rowNum);
 	}
 

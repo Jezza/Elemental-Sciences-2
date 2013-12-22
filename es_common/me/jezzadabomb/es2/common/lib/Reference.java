@@ -18,6 +18,7 @@ public class Reference {
     
     //Boolean constants
     public static boolean HUD_VERTICAL_ROTATION;
+    public static boolean DRAW_TEXTURED_SLOTS;
     
     //Numerical constants
     public static int HUD_BLOCK_RANGE = 6;

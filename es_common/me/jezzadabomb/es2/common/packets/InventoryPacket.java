@@ -93,11 +93,12 @@ public class InventoryPacket extends CentralPacket {
     }
 
     public String getItemStacksInfo() {
-        String temp = " ";
+        StringBuilder temp = new StringBuilder();
         for (ItemStack tempStack : getItemStacks()) {
-            temp += tempStack.getUnlocalizedName() + ":" + tempStack.stackSize + ",";
+            temp.append(tempStack.getUnlocalizedName() + ":" + tempStack.stackSize + ",");
         }
-        return temp;
+        System.out.println(temp);
+        return temp.toString();
     }
 
     public ArrayList<ItemStack> getItemStacks() {

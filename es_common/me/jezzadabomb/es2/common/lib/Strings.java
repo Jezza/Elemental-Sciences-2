@@ -19,4 +19,5 @@ public class Strings {
     //String constants
     public static final String BLACKLIST_DEFAULT = "BlackList default";
     public static final String HUD_PITCH = "Enable hud pitch";
+    public static final String DRAW_TEXTURED_SLOTS = "Enable slot texture";
 }
