@@ -25,7 +25,7 @@ public class ConfigHandler {
             config.load();
             info("Starting config handler");
             //Blocks
-            BlockIds.BLOCK_TEST = config.getBlock(Strings.BLOCK_TEST, BlockIds.BLOCK_TEST_DEFAULT).getInt();
+            BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.BLOCK_TEST, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
             
             //Items
             ItemIds.ATOMIC_CATALYST = config.getItem(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT).getInt();

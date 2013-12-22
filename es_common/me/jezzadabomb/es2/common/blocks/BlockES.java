@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-public class BlockES extends Block{
+public abstract class BlockES extends Block{
 
     public BlockES(int par1, Material par2Material, String name) {
         super(par1, par2Material);

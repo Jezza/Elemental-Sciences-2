@@ -58,111 +58,119 @@ public class RenderUtils {
 		tessellator.draw();
 	}
 
-	public static void addToArrayList() {
-		retardedItems.clear();
-		retardedItems.add(Block.hopperBlock.blockID);
-		retardedItems.add(Block.tripWireSource.blockID);
-		retardedItems.add(Block.fenceIron.blockID);
-		retardedItems.add(Block.thinGlass.blockID);
-		retardedItems.add(Block.sapling.blockID);
-		retardedItems.add(Block.torchWood.blockID);
-		retardedItems.add(Block.ladder.blockID);
-		retardedItems.add(Block.plantYellow.blockID);
-		retardedItems.add(Block.plantRed.blockID);
-		retardedItems.add(Block.vine.blockID);
-		retardedItems.add(Block.mushroomBrown.blockID);
-		retardedItems.add(Block.mushroomRed.blockID);
+	public static float[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
+		double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
+		double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
+		double interpPosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * frame;
+
+		GL11.glTranslated(-interpPosX + x + 0.5D, -interpPosY + y + 1.5D, -interpPosZ + z + 0.5D);
+
+		float[] temp = new float[3];
+		temp[0] = (float) (interpPosX - (x + 0.5D));
+		temp[1] = (float) (interpPosZ - (z + 0.5D));
+		temp[2] = (float) (interpPosY - (y + 1.8D));
+		return temp;
 	}
 
-	public static void translateWithID(int ID, int indexNum) {
-		if (retardedItems.contains(ID)) {
-			glRotated(90, 0.0D, 1.0D, 0.0D);
-			glTranslated(-3D, 0D, 3D);
-			glScaled(1.2D, 1.2D, 1.2D);
-			glScaled(0.8D, 1.0D, 1.0D);
-			glTranslated(-3D, -2D, 1D);
+	public static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
+		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
-				glTranslated(3.0D, 0.0D, 0.0D);
-				return;
+				break;
 			case 1:
-				glTranslated(-2.0D, 0.0D, 0.0D);
-				return;
+				break;
 			case 2:
-				glTranslated(-9.0D, 0.0D, 0.0D);
+				break;
+			default:
 				return;
+			}
+
+			switch (rowNum) {
+			case 0:
+				break;
+			case 1:
+				glTranslated(0.0D, -10.0D, 0.0D);
+				break;
+			case 2:
+				glTranslated(0.0D, -25.0D, 0.0D);
+				break;
 			default:
 				return;
 			}
 		} else {
-			glTranslated(3D, -2D, -3D);
-			glRotated(40, -0.2D, 1.0D, 0.0D);
-			glRotated(30, 0.0D, 0.0D, 1.0D);
-			glRotated(30, 1.0D, 0.0D, -0.7D);
-			glRotated(30, 1.0D, -0.3D, -0.8D);
-			glTranslated(-5D, 5D, -10D);
 			switch (indexNum) {
 			case 0:
-				glTranslated(1.0D, 0.0D, 0.0D);
-				return;
+				glTranslated(0.0D, -3.0D, -3.0D);
+				break;
 			case 1:
-				glTranslated(-4.0D, 2.0D, 2.0D);
-				return;
+				break;
 			case 2:
-				glTranslated(-8.0D, 4.0D, 4.0D);
+				break;
+			default:
 				return;
+			}
+
+			switch (rowNum) {
+			case 0:
+				break;
+			case 1:
+				glTranslated(0.0D, -10.0D, 0.0D);
+				break;
+			case 2:
+				glTranslated(0.0D, -30.0D, 0.0D);
+				break;
 			default:
 				return;
 			}
 		}
+
 	}
 
-	private static void translateItem(int indexNum) {
-		switch (indexNum) {
-		case 0:
-			glTranslated(-23.0D, 0.0D, 0.0D);
-			return;
-		case 1:
-			glTranslated(-12.0D, 0.0D, 0.0D);
-		case 2:
-
-		default:
-			return;
-
-		}
-	}
-
-	public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum) {
-		glPushMatrix();
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glScalef(0.8F, 1.0F, 1.0F);
+	public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
 		Minecraft mc = Minecraft.getMinecraft();
 		TextureManager textureManager = mc.getTextureManager();
 		FontRenderer fontRenderer = mc.fontRenderer;
+
+		glPushMatrix();
+		glDisable(GL_CULL_FACE);
+
+		glScalef(0.8F, 1.0F, 1.0F);
+		glScalef(1.2F, 1.2F, 1.2F);
+
+		glTranslated(x, y, zLevel);
+		glTranslated(45.0D, 7.0D, 0.0D);
+
+		glRotated(90, 0.0D, 1.0D, 0.0D);
+
+		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock);
+
 		if (itemStack.getItem() instanceof ItemBlock) {
-			glTranslated(x + 40, y + 15, zLevel + 3);
 			glRotated(90, 0.0D, 1.0D, 0.0D);
+
+			// glTranslated(x - 10, y + 3, zLevel + 35);
+
 			glScaled(2.2D, 2.2D, 2.2D);
-			translateWithID(itemStack.itemID, indexNum);
+
+			// translateWithID((ItemBlock) itemStack.getItem(), indexNum, rowNum);
+
 			EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
 			entityItem.hoverStart = 0.0F;
 			entityItem.setEntityItemStack(itemStack);
+
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 		} else {
-			glTranslated(x + 20, y + 5, zLevel - 37);
-			translateItem(indexNum);
-			glScaled(4D, 4D, 4D);
-			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
-			EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
-			entityItem.hoverStart = 0.0F;
-			entityItem.setEntityItemStack(itemStack);
-			glPushMatrix();
-			glTranslated(2, 1, 9);
-			glScalef(0.8F, 0.8F, 0.8F);
+			glRotated(90, 0.0D, 1.0D, 0.0D);
+
+			glTranslated(-8, 0, 0);
+
+			glScaled(3D, 3D, 3D);
+
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-			glPopMatrix();
+			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
 		}
+		// Reset colours
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
+		glEnable(GL_CULL_FACE);
 		glPopMatrix();
 	}
 
@@ -171,13 +179,12 @@ public class RenderUtils {
 		glDisable(GL_LIGHTING);
 		bindTexture(TextureMaps.HUD_INVENTORY);
 		drawTexturedQuad(x, y, 175, 0, 49, 73, zLevel);
-		glEnable(GL_LIGHTING);
 		glPopMatrix();
 	}
 
-	public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum) {
+	public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
 		drawTextureSlot(x, y, zLevel + 1);
-		drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum);
+		drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum, rowNum);
 	}
 
 	public static void renderRedBox(RenderWorldLastEvent event, InventoryPacket p) {

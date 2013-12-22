@@ -50,7 +50,6 @@ public class ElementalSciences2 {
         proxy.runServerSide();
         proxy.initEventHandlers();
         proxy.initSoundHandler();
-        RenderUtils.addToArrayList();
     }
 
     

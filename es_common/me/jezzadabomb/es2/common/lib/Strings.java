@@ -4,6 +4,7 @@ public class Strings {
     
     // Block Name Constants
     public static final String BLOCK_TEST = "blockTest";
+    public static final String INVENTORY_SCANNER = "inventoryScanner";
     
     //Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
