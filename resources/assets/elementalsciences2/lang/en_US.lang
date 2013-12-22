@@ -2,3 +2,5 @@ itemGroup.ElementalSciences2=Elemental Sciences 2
 
 item.atomicCatalyst.name=Atomic Chain Catalyst
 item.glasses.name=Spectral Analysis Glasses
+item.debugTool.name=Debug Tool
+item.hoverBoots.name=Hover Boots

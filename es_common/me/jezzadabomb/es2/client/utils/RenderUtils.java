@@ -120,7 +120,7 @@ public class RenderUtils {
 	private static void translateItem(int indexNum) {
 		switch (indexNum) {
 		case 0:
-			glTranslated(-20.0D, 0.0D, 0.0D);
+			glTranslated(-23.0D, 0.0D, 0.0D);
 			return;
 		case 1:
 			glTranslated(-12.0D, 0.0D, 0.0D);

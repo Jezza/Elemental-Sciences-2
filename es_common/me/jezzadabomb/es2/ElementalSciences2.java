@@ -47,6 +47,8 @@ public class ElementalSciences2 {
         ModBlocks.init();
         ModItems.init();
         proxy.runClientSide();
+        proxy.runServerSide();
+        proxy.initEventHandlers();
         proxy.initSoundHandler();
         RenderUtils.addToArrayList();
     }

@@ -1,11 +1,13 @@
 package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
+import me.jezzadabomb.es2.client.handlers.HoverBootsHandler;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.ItemAtomicCatalystRenderer;
 import me.jezzadabomb.es2.client.sound.SoundHandler;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -22,7 +24,6 @@ public class ClientProxy extends CommonProxy {
 	public void runClientSide() {
 		initItemRenderer();
 		initTickHandlers();
-		initEventHandlers();
 	}
 
 	@Override
@@ -37,9 +38,10 @@ public class ClientProxy extends CommonProxy {
 	private void initItemRenderer() {
 		MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst.itemID, new ItemAtomicCatalystRenderer());
 	}
-	
-	private void initEventHandlers(){
+
+	public void initEventHandlers() {
 		MinecraftForge.EVENT_BUS.register(hudRenderer);
+		MinecraftForge.EVENT_BUS.register(hoverBootsHandler);
 	}
 
 }

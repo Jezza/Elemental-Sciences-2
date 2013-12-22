@@ -1,28 +1,72 @@
 package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 public class UtilHelpers {
 
-    public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow){
-        if(itemStack1 == null || itemStack2 == null || itemStack1.itemID != itemStack2.itemID)
-            return null;
-        itemStack1.stackSize += itemStack2.stackSize;
-        itemStack2.stackSize = 0;
-        if(!overflow && itemStack1.stackSize > 64){
-            itemStack1.stackSize = 64;
-        }
-        return itemStack1;
-    }
-    
-    public static boolean canShowDebugHUD(){
-        ItemStack itemStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-        if(itemStack != null){
-            return itemStack.itemID == ModItems.debugItem.itemID;
-        }
-        return false;
-    }
-    
+	public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow) {
+		if (itemStack1 == null || itemStack2 == null || itemStack1.itemID != itemStack2.itemID || itemStack1.getItemDamage() != itemStack2.getItemDamage())
+			return null;
+		itemStack1.stackSize += itemStack2.stackSize;
+		itemStack2.stackSize = 0;
+		if (!overflow && itemStack1.stackSize > 64) {
+			itemStack1.stackSize = 64;
+		}
+		return itemStack1;
+	}
+
+	public static boolean canShowDebugHUD() {
+		return isHoldingItem(ModItems.debugItem);
+	}
+
+	public static boolean isHoldingItem(Item item) {
+		return isHoldingItemStack(new ItemStack(item));
+	}
+
+	public static boolean isHoldingItemStack(ItemStack itemStack) {
+		ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
+		if (itemStack != null && tempStack != null)
+			return tempStack.getItem().equals(itemStack.getItem());
+		return false;
+	}
+
+	public static boolean isWearingItem(Item item) {
+		return isWearingItemStack(new ItemStack(item));
+	}
+
+	public static int getSlotFromIndex(int index) {
+		switch (index) {
+		case 0:
+			return 3;
+		case 1:
+			return 2;
+		case 2:
+			return 1;
+		case 3:
+			return 0;
+		default:
+			return -1;
+		}
+	}
+
+	public static boolean isWearingItemStack(ItemStack itemStack) {
+		if (!(itemStack.getItem() instanceof ItemArmor)) {
+			return false;
+		}
+		ItemArmor tempArmour = (ItemArmor) itemStack.getItem();
+		int index = getSlotFromIndex(tempArmour.armorType);
+		if (index == -1)
+			return false;
+		ItemStack tempStack = Minecraft.getMinecraft().thePlayer.inventory.armorItemInSlot(index);
+		if (tempStack != null) {
+			return tempStack.getItem().equals(itemStack.getItem());
+		}
+		return false;
+	}
+
 }
