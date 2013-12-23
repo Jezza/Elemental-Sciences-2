@@ -5,7 +5,8 @@ Build 0.0.012
     Flipped the HUD Renderer, so now they render similar to proper items in inventories.
     Started work for the Inventory Scanner model, will be very minimal.
     Fixed the gravity pulling you down with the hover boots.
-    
+    Added a recipe for the glasses for people who want to play with them in survival.
+    Added support for outside packets, eg display Inventory data without glasses.
 
 Build 0.0.011:
     Fixed a massive amount of rendering for the glasses, should be sexier.
