@@ -1,7 +1,7 @@
 package me.jezzadabomb.es2;
 
 import net.minecraftforge.common.MinecraftForge;
-import me.jezzadabomb.es2.client.handlers.HoverBootsHandler;
+import me.jezzadabomb.es2.common.core.handlers.HoverBootsHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.tickers.WorldTicker;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;

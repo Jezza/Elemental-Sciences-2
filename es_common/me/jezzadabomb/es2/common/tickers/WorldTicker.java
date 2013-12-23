@@ -57,11 +57,11 @@ public class WorldTicker implements ITickHandler {
 						ArrayList<ItemStack> ret = Block.blocksList[bi].getBlockDropped(world, vb.x, vb.y, vb.z, md, vb.fortune);
 						if (ret.size() > 0) {
 							for (ItemStack is : ret) {
-								if (!vb.player.capabilities.isCreativeMode) {
+//								if (!vb.player.capabilities.isCreativeMode) {
 									if (!vb.player.inventory.addItemStackToInventory(is)) {
 										world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
 									}
-								}
+//								}
 							}
 						}
 						world.destroyBlock(vb.x, vb.y, vb.z, false);

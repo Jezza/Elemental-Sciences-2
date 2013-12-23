@@ -8,6 +8,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
+import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -65,18 +67,16 @@ public class HUDRenderer {
 	}
 
 	public void addPacketToList(InventoryPacket p) {
-		if (!packetList.contains(p)) {
-			if (doesPacketAlreadyExistAtXYZ(p)) {
-				packetList.set(getPosInList(p), p);
-			} else {
-				packetList.add(p);
-			}
+		if (doesPacketAlreadyExistAtXYZ(p)) {
+			packetList.set(getPosInList(p), p);
+		} else {
+			packetList.add(p);
 		}
 	}
 
 	private boolean doesPacketAlreadyExistAtXYZ(InventoryPacket p) {
 		for (InventoryPacket packet : packetList) {
-			if (p.inventoryTitle.equals(packet.inventoryTitle) && p.x == packet.x && p.y == packet.y && p.z == packet.z) {
+			if (p.equals(packet)) {
 				return true;
 			}
 		}
@@ -85,7 +85,7 @@ public class HUDRenderer {
 
 	public int getPosInList(InventoryPacket p) {
 		for (InventoryPacket packet : packetList) {
-			if (p.inventoryTitle.equals(packet.inventoryTitle) && p.x == packet.x && p.y == packet.y && p.z == packet.z) {
+			if (p.equals(packet)) {
 				return packetList.indexOf(packet);
 			}
 		}
@@ -102,7 +102,9 @@ public class HUDRenderer {
 				removeList.add(packet);
 			}
 		}
+
 		packetList.removeAll(removeList);
+		removeList.clear();
 
 		for (InventoryPacket p : packetList) {
 			if (UtilHelpers.canShowDebugHUD()) {

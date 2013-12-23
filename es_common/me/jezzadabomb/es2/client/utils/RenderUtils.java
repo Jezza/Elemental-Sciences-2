@@ -93,7 +93,7 @@ public class RenderUtils {
 				glTranslated(0.0D, -10.0D, 0.0D);
 				break;
 			case 2:
-				glTranslated(0.0D, -25.0D, 0.0D);
+				glTranslated(0.0D, -22.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -104,6 +104,7 @@ public class RenderUtils {
 				glTranslated(0.0D, -3.0D, -3.0D);
 				break;
 			case 1:
+				glTranslated(0.0D, -3.0D, -2.0D);
 				break;
 			case 2:
 				break;
@@ -177,18 +178,19 @@ public class RenderUtils {
 
 	public static void drawTextureSlot(int x, int y, double zLevel) {
 		glPushMatrix();
-		glDisable(GL_LIGHTING);
 		bindTexture(TextureMaps.HUD_INVENTORY);
 		drawTexturedQuad(x, y, 175, 0, 49, 73, zLevel);
 		glPopMatrix();
 	}
 
 	public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
-		if(Reference.DRAW_TEXTURED_SLOTS)
+		glDisable(GL_LIGHTING);
+		if (Reference.DRAW_TEXTURED_SLOTS)
 			drawTextureSlot(x, y, zLevel + 1);
 		drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum, rowNum);
 	}
 
+	// Thanks to Player for this. :D
 	public static void renderRedBox(RenderWorldLastEvent event, InventoryPacket p) {
 		double partialTicks = event.partialTicks;
 

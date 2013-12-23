@@ -69,4 +69,8 @@ public class UtilHelpers {
 		return false;
 	}
 
+	public static String getLocFromArray(int[] coords) {
+		return coords[0] + ":" + coords[1] + ":" + coords[2];
+	}
+
 }

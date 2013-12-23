@@ -49,12 +49,13 @@ public class PlayerTicker implements ITickHandler {
 							if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
 								TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
 								if (tileEntity instanceof IInventory) {
-									StoredQueues.instance().putTempInventory(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ));
-									if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ))) {
+									String name = ((IInventory) tileEntity).getInvName();
+									StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
+									if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
 										if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
-											StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ));
+											StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
 										} else {
-											StoredQueues.instance().putInventory(((IInventory) tileEntity).getInvName(), tileEntity, tempX, tempY, tempZ);
+											StoredQueues.instance().putInventory(name, tileEntity, tempX, tempY, tempZ);
 										}
 									}
 								}
@@ -65,24 +66,19 @@ public class PlayerTicker implements ITickHandler {
 				this.oldX = playerX;
 				this.oldY = playerY;
 				this.oldZ = playerZ;
-
+				
 				StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
 				StoredQueues.instance().removeTemp();
 				StoredQueues.instance().setLists();
-				requestPackets(player);
+				for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
+					PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
+				}
 				StoredQueues.instance().clearTempInv();
 			} else {
 				notMoveTick++;
 			}
-
 		} else {
 			StoredQueues.instance().getPlayer().clear();
-		}
-	}
-
-	public void requestPackets(EntityPlayer player) {
-		for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
-			PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
 		}
 	}
 

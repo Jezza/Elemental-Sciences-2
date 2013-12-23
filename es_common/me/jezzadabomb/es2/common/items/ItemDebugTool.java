@@ -18,6 +18,7 @@ public class ItemDebugTool extends ItemES {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
 			InventoryPacket packet = ClientProxy.hudRenderer.getPacket(x, y, z);
 			if (packet != null) {
+				player.addChatMessage("");
 				player.addChatMessage("Inventory Name: " + packet.inventoryTitle);
 				player.addChatMessage("Contents: ");
 				String tempString = packet.getItemStacksInfo();
