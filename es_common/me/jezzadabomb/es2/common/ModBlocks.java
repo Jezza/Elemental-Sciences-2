@@ -15,7 +15,7 @@ public class ModBlocks {
         initBlockRecipes();
     }
     
-    public static void initBlockRecipes(){
-        //TODO Recipes
+    private static void initBlockRecipes(){
+    	//TODO all the recipes.
     }
 }

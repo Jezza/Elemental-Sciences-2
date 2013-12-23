@@ -5,27 +5,40 @@ import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.items.ItemGlasses;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
+import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.lib.ItemIds;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
+import net.minecraft.block.Block;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 
 public class ModItems {
 
-    public static Item atomicCatalyst;
-    public static Item glasses;
-    public static Item debugItem;
-    public static Item hoverBoots;
-    
-    private static int ironRenderIndex = 2;
+	public static Item atomicCatalyst;
+	public static Item glasses;
+	public static Item debugItem;
+	public static Item hoverBoots;
+	public static Item ironBarRecipe;
 
-    public static void init() {
-        // Bohr model. Bite me :P
-        atomicCatalyst = new ItemAtomicCatalyst(ItemIds.ATOMIC_CATALYST, Strings.ATOMIC_CATALYST);
-        glasses = new ItemGlasses(ItemIds.GLASSES, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
-        hoverBoots = new ItemHoverBoots(ItemIds.HOVER_BOOTS, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
-        
-        debugItem = new ItemDebugTool(ItemIds.DEBUG_TOOL, Strings.DEBUG_TOOL);
-    }
+	private static int ironRenderIndex = 2;
+
+	public static void init() {
+		// Bohr model. Bite me :P
+		atomicCatalyst = new ItemAtomicCatalyst(ItemIds.ATOMIC_CATALYST, Strings.ATOMIC_CATALYST);
+		glasses = new ItemGlasses(ItemIds.GLASSES, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
+		hoverBoots = new ItemHoverBoots(ItemIds.HOVER_BOOTS, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
+		ironBarRecipe = new ItemPlaceHolder(ItemIds.IRON_BAR_RECIPE, Strings.IRON_BAR_RECIPE);
+
+		debugItem = new ItemDebugTool(ItemIds.DEBUG_TOOL, Strings.DEBUG_TOOL);
+		initItemRecipes();
+	}
+
+	private static void initItemRecipes() {
+		// TODO all the recipes.
+//		CraftingManager.getInstance().addRecipe(new ItemStack(ironBarRecipe), new Object[] { "iii", "isi", "iii", Character.valueOf('i'), Block.glass, Character.valueOf('s'), Block.stone });
+		CraftingManager.getInstance().addRecipe(new ItemStack(ironBarRecipe), new Object[] { "i", Character.valueOf('i'), Block.pressurePlateIron});
+	}
 }

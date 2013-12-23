@@ -11,6 +11,7 @@ public class Strings {
     public static final String GLASSES = "glasses";
     public static final String DEBUG_TOOL = "debugTool";
     public static final String HOVER_BOOTS = "hoverBoots";
+    public static final String IRON_BAR_RECIPE = "ironBarRecipe";
 
     //Timing Constants
     public static final String TICK_TIMING = "glassesTickTimingConstant";
