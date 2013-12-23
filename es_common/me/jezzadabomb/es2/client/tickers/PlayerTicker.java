@@ -37,7 +37,7 @@ public class PlayerTicker implements ITickHandler {
 		int playerZ = (int) Math.round(player.posZ);
 		World world = player.worldObj;
 
-		if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+//		if (UtilHelpers.isWearingItem(ModItems.glasses)) {
 			if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
 				notMoveTick = 0;
 				for (int x = -dis; x < dis; x++) {
@@ -70,16 +70,18 @@ public class PlayerTicker implements ITickHandler {
 				StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
 				StoredQueues.instance().removeTemp();
 				StoredQueues.instance().setLists();
-				for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
-					PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
+				if (UtilHelpers.isWearingItem(ModItems.glasses)) {					
+					for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
+						PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
+					}
 				}
 				StoredQueues.instance().clearTempInv();
 			} else {
 				notMoveTick++;
 			}
-		} else {
-			StoredQueues.instance().getPlayer().clear();
-		}
+//		} else {
+//			StoredQueues.instance().getPlayer().clear();
+//		}
 	}
 
 	public boolean playerMoved(int x, int y, int z) {

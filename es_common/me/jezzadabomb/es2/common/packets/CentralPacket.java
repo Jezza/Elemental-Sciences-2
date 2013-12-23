@@ -32,6 +32,7 @@ public abstract class CentralPacket {
 
         builder.put(Integer.valueOf(1), InventoryRequestPacket.class);
         builder.put(Integer.valueOf(2), InventoryPacket.class);
+        builder.put(Integer.valueOf(3), InventoryTerminatePacket.class);
 
         idMap = builder.build();
     }
@@ -70,18 +71,6 @@ public abstract class CentralPacket {
         } else {
             throw new RuntimeException("Packet " + getClass().getSimpleName() + " is missing a mapping!");
         }
-    }
-
-    public static Integer[] getXYZFromString(String loc) {
-        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
-            return null;
-        }
-        Integer[] coord = new Integer[3];
-        coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
-        coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
-        coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
-        return coord;
-
     }
 
     public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException {

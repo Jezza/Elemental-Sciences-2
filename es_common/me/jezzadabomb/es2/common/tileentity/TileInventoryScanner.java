@@ -2,15 +2,17 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public class TileInventoryScanner extends TileES {
 
@@ -19,6 +21,19 @@ public class TileInventoryScanner extends TileES {
 
 	@Override
 	public void updateEntity() {
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+			return;
+		}
+
+		if (!worldObj.blockHasTileEntity(xCoord, yCoord + 1, zCoord)) {
+			return;
+		} else {
+			TileEntity tileEntity = worldObj.getBlockTileEntity(xCoord, yCoord + 1, zCoord);
+			if (!(tileEntity instanceof IInventory)) {
+				return;
+			}
+		}
+
 		if (tickTime < Reference.GLASSES_WAIT_TIMER) {
 			tickTime++;
 			return;
@@ -44,10 +59,17 @@ public class TileInventoryScanner extends TileES {
 		return playerList;
 	}
 
-	public void sendPacketToPlayers(ArrayList<EntityPlayer> players) {
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient()){
-			return;
+	public void sendTerminatePacket(){
+		for(EntityPlayer player : getNearbyPlayers()){
+			int[] coords = new int[3];
+			coords[0] = xCoord;
+			coords[1] = yCoord + 1;
+			coords[2] = zCoord;
+			PacketDispatcher.sendPacketToPlayer(new InventoryTerminatePacket(UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
 		}
+	}
+	
+	public void sendPacketToPlayers(ArrayList<EntityPlayer> players) {
 		if (players == null)
 			return;
 		for (EntityPlayer player : players) {
@@ -55,8 +77,7 @@ public class TileInventoryScanner extends TileES {
 			coords[0] = xCoord;
 			coords[1] = yCoord + 1;
 			coords[2] = zCoord;
-			ESLogger.debug("Sent packet to " + player.username);
-			PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilHelpers.getLocFromArray(coords)).makePacket(), (Player)player);
+			PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
 		}
 	}
 }

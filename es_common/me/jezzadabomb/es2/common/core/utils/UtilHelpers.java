@@ -72,5 +72,17 @@ public class UtilHelpers {
 	public static String getLocFromArray(int[] coords) {
 		return coords[0] + ":" + coords[1] + ":" + coords[2];
 	}
+	
+    public static int[] getArrayFromString(String loc) {
+        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
+            return null;
+        }
+        int[] coord = new int[3];
+        coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
+        coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
+        coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
+        return coord;
+
+    }
 
 }

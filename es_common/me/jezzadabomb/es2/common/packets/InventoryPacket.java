@@ -27,6 +27,7 @@ public class InventoryPacket extends CentralPacket {
 	public int x;
 	public int y;
 	public int z;
+	public int tickTiming;
 
 	public InventoryPacket(TileEntity tileEntity, String loc) {
 		if (tileEntity != null && tileEntity instanceof IInventory) {
@@ -82,13 +83,15 @@ public class InventoryPacket extends CentralPacket {
 	@Override
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
-			Integer[] coord = getXYZFromString(loc);
-			if (coord != null) {
-				x = coord[0];
-				y = coord[1];
-				z = coord[2];
-				ClientProxy.hudRenderer.addPacketToList(this);
+			int[] coord = UtilHelpers.getArrayFromString(loc);
+			if (coord == null) {
+				return;
 			}
+			x = coord[0];
+			y = coord[1];
+			z = coord[2];
+			ClientProxy.hudRenderer.addPacketToList(this);
+			tickTiming = 0;
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");
 		}
@@ -131,17 +134,23 @@ public class InventoryPacket extends CentralPacket {
 	public boolean equals(Object other) {
 		return equals(other, false);
 	}
-	
-	public boolean equals(Object other, boolean includeItemStacks){
-		if(other == null)return false;
-        if(!(other instanceof InventoryPacket))return false;
-        
-		InventoryPacket tempPacket = (InventoryPacket)other;
-		if(!includeItemStacks){
-			return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z;			
+
+	public boolean equals(Object other, boolean includeItemStacks) {
+		if (other == null)
+			return false;
+		if (!(other instanceof InventoryPacket))
+			return false;
+
+		InventoryPacket tempPacket = (InventoryPacket) other;
+		if (!includeItemStacks) {
+			return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z;
 		}
-		//TODO add itemStack support
+		// TODO add itemStack support
 		return false;
+	}
+
+	public boolean isCloserThan(InventoryPacket tempP, EntityPlayer player) {
+		return player.getDistance(x, y, z) < player.getDistance(tempP.x, tempP.y, tempP.z);
 	}
 
 }

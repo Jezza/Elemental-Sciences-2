@@ -73,10 +73,11 @@ public class RenderUtils {
 		return temp;
 	}
 
-	public static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
+	private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
 		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
+				glTranslated(-2.0D, 0.0D, 0.0D);
 				break;
 			case 1:
 				break;
@@ -101,10 +102,10 @@ public class RenderUtils {
 		} else {
 			switch (indexNum) {
 			case 0:
-				glTranslated(0.0D, -3.0D, -3.0D);
+				glTranslated(-3.0D, -5.0D, 0.0D);
 				break;
 			case 1:
-				glTranslated(0.0D, -3.0D, -2.0D);
+				glTranslated(-2.0D, -5.0D, 0.0D);
 				break;
 			case 2:
 				break;
@@ -137,37 +138,29 @@ public class RenderUtils {
 		glDisable(GL_CULL_FACE);
 
 		glScalef(0.8F, 1.0F, 1.0F);
-		glScalef(1.2F, 1.2F, 1.2F);
+		glScalef(1.2F, 1.2F, -1.2F);
 
-		glTranslated(x, y, zLevel);
-		glTranslated(45.0D, 7.0D, 0.0D);
-
-		glRotated(90, 0.0D, 1.0D, 0.0D);
+		glTranslated(x + 13.0D, y + 7.0D, zLevel + 5.0D);
 
 		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock);
 
 		if (itemStack.getItem() instanceof ItemBlock) {
-			glRotated(90, 0.0D, 1.0D, 0.0D);
-
-			// glTranslated(x - 10, y + 3, zLevel + 35);
-
+			glTranslated(-3.0D, 0.0D, 0.0D);
 			glScaled(2.2D, 2.2D, 2.2D);
-
-			// translateWithID((ItemBlock) itemStack.getItem(), indexNum, rowNum);
 
 			EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
 			entityItem.hoverStart = 0.0F;
 			entityItem.setEntityItemStack(itemStack);
 
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+			glDisable(GL_LIGHTING);
 		} else {
-			glRotated(90, 0.0D, 1.0D, 0.0D);
-
-			glTranslated(-8, 0, 0);
+			glTranslated(-10, 0, 0);
 
 			glScaled(3D, 3D, 3D);
 
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+			glDisable(GL_LIGHTING);
 			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
 		}
 		// Reset colours
@@ -191,7 +184,7 @@ public class RenderUtils {
 	}
 
 	// Thanks to Player for this. :D
-	public static void renderRedBox(RenderWorldLastEvent event, InventoryPacket p) {
+	public static void renderColouredBox(RenderWorldLastEvent event, InventoryPacket p, boolean underBlock) {
 		double partialTicks = event.partialTicks;
 
 		EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
@@ -216,7 +209,11 @@ public class RenderUtils {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 
-		tessellator.setColorRGBA(255, 0, 0, 150);
+		if (underBlock) {
+			tessellator.setColorRGBA(0, 255, 0, 75);
+		} else {
+			tessellator.setColorRGBA(255, 0, 0, 150);
+		}
 		// BOTTOM
 		tessellator.addVertex(x, y, z);
 		tessellator.addVertex(x + delta, y, z);
@@ -256,6 +253,7 @@ public class RenderUtils {
 		glPopMatrix();
 	}
 
+	// Thanks to Azanor ;)
 	public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {
 		if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
 			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;

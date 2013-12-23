@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.client.renderers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,6 +16,7 @@ import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -35,6 +37,9 @@ public class HUDRenderer {
 	private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
 
 	private final RenderItem customItemRenderer;
+
+	private boolean underBlock = false;
+	private int tickTiming = 0;
 
 	public HUDRenderer() {
 		customItemRenderer = new RenderItem() {
@@ -92,26 +97,71 @@ public class HUDRenderer {
 		return -1;
 	}
 
+	public InventoryPacket getPacketAtXYZ(String loc) {
+		int[] coord = UtilHelpers.getArrayFromString(loc);
+		for (InventoryPacket p : packetList) {
+			if (p.x == coord[0] && p.y == coord[1] && p.z == coord[2]) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
 		if (packetList.isEmpty())
 			return;
-
+		tickTiming++;
 		for (InventoryPacket packet : packetList) {
-			if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.x, packet.y, packet.z)) {
-				removeList.add(packet);
+			if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.x, packet.y, packet.z)) {
+					removeList.add(packet);
+				}
+			} else {
+				if (packet.tickTiming > 120) {
+					removeList.add(packet);
+				}
 			}
 		}
 
 		packetList.removeAll(removeList);
 		removeList.clear();
 
+		// ArrayList<InventoryPacket> disList = new ArrayList<InventoryPacket>();
+		// ArrayList<InventoryPacket> addList = new ArrayList<InventoryPacket>();
+		//
+		// boolean added = false;
+		// EntityPlayer player = null;
+		// if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
+		// player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
+		// }
+		// if(player == null){
+		// return;
+		// }
+		// for (InventoryPacket p : packetList) {
+		// for(InventoryPacket tempP : disList){
+		// if(p.isCloserThan(tempP, player)){
+		// addList.add(disList.indexOf(tempP), p);
+		// added = true;
+		// break;
+		// }
+		// }
+		// if(!added)
+		// addList.add(p);
+		// disList.clear();
+		// disList.addAll(addList);
+		// added = false;
+		// }
+
 		for (InventoryPacket p : packetList) {
-			if (UtilHelpers.canShowDebugHUD()) {
-				RenderUtils.renderRedBox(event, p);
-				RenderUtils.drawTextInAir(p.x, p.y + 0.5F, p.z, event.partialTicks, p.inventoryTitle);
-			}
 			renderInfoScreen(p.x, p.y, p.z, event.partialTicks, p);
+			if (UtilHelpers.canShowDebugHUD()) {
+				RenderUtils.renderColouredBox(event, p, underBlock);
+				if (!underBlock)
+					RenderUtils.drawTextInAir(p.x, p.y + 0.5F, p.z, event.partialTicks, p.inventoryTitle);
+				underBlock = false;
+			}
+			p.tickTiming++;
 		}
 	}
 
@@ -124,6 +174,7 @@ public class HUDRenderer {
 
 			glPushMatrix();
 			glDisable(GL_LIGHTING);
+			glDisable(GL_CULL_FACE);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
@@ -139,18 +190,24 @@ public class HUDRenderer {
 
 			int xTextureOffset = 11;
 			int yTextureOffset = 18;
-			int xInventoryPos = -80;
+			int xInventoryPos = -87;
 			int yInventoryPos = -90;
-			boolean renderOnBlock = !player.worldObj.isAirBlock(p.x, p.y + 1, p.z);
-			if (renderOnBlock) {
+			if (!player.worldObj.isAirBlock(p.x, p.y + 1, p.z)) {
 				yInventoryPos = 190;
 				yd += 1.0F;
+				// TODO Add support for blocks on top of inventory.
+				glEnable(GL_CULL_FACE);
+				glDisable(GL_BLEND);
+				glPopMatrix();
+				underBlock = true;
+				return;
 			}
 
 			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
 			float rotPitch = (float) (Math.atan2(yd, Math.sqrt(xd * xd + zd * zd)) * 180.0D / 3.141592653589793D);
 
 			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
+
 			if (Reference.HUD_VERTICAL_ROTATION) {
 				glRotatef(rotPitch + 0.0F, 1.0F, 0.0F, 0.0F);
 			}
@@ -161,7 +218,7 @@ public class HUDRenderer {
 
 			// Inventory background
 			RenderUtils.bindTexture(TextureMaps.HUD_INVENTORY);
-			RenderUtils.drawTexturedQuad(xInventoryPos, yInventoryPos, 0, 0, 172, 250, 0);
+			RenderUtils.drawTexturedQuad(xInventoryPos, yInventoryPos, 0, 0, 174, 250, 0);
 			glTranslated(xInventoryPos + xTextureOffset, yInventoryPos + yTextureOffset, 0.0D);
 			int xOffset = 52;
 			int yOffset = 74;
@@ -169,7 +226,27 @@ public class HUDRenderer {
 			int indexNum = -1;
 			int rowNum = 0;
 			int totalSlots = 0;
+			ArrayList<ItemStack> sortedList = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> addList = new ArrayList<ItemStack>();
+
+			boolean added = false;
 			for (ItemStack itemStack : p.getItemStacks()) {
+				for (ItemStack tempStack : sortedList) {
+					if (itemStack.stackSize > tempStack.stackSize) {
+						addList.add(sortedList.indexOf(tempStack), itemStack);
+						added = true;
+						break;
+					}
+				}
+				if (!added)
+					addList.add(itemStack);
+
+				sortedList.clear();
+				sortedList.addAll(addList);
+				added = false;
+			}
+
+			for (ItemStack itemStack : sortedList) {
 				if (totalSlots > 8) {
 					break;
 				}
@@ -182,8 +259,13 @@ public class HUDRenderer {
 				RenderUtils.drawItemAndSlot(indexNum * xOffset, rowNum * yOffset, itemStack, customItemRenderer, -2, indexNum, rowNum);
 				totalSlots++;
 			}
+			glEnable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
 			glPopMatrix();
 		}
+	}
+
+	public void addToRemoveList(InventoryTerminatePacket inventoryTerminatePacket) {
+		removeList.add(getPacketAtXYZ(inventoryTerminatePacket.loc));
 	}
 }

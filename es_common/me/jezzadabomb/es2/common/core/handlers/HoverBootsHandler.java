@@ -37,14 +37,14 @@ public class HoverBootsHandler {
 			// Scale it, so it isn't massive.
 			glScaled(0.01D, 0.01D, 0.01D);
 
-			glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+			glColor4f(1.0F, 1.0F, 0.6F, 0.5F);
 			
 			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			// Get the Util class to render it for us.
-			RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 257, 161);
+			RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
 			
 			glEnable(GL_LIGHTING);
 			glDisable(GL_BLEND);
