@@ -191,7 +191,7 @@ public class HUDRenderer {
 			int yTextureOffset = 18;
 			int xInventoryPos = -87;
 			int yInventoryPos = -130;
-			if (!player.worldObj.isAirBlock(p.x, p.y + 1, p.z) && (player.worldObj.getBlockId(p.x, p.y + 1, p.z) != ModBlocks.inventoryScanner.blockID)) {
+			if (player.worldObj.blockExists(p.x, p.y + 1, p.z) && (player.worldObj.getBlockId(p.x, p.y + 1, p.z) != ModBlocks.inventoryScanner.blockID)) {
 				yInventoryPos = 190;
 				yd += 1.0F;
 				// TODO Add support for blocks on top of inventory.

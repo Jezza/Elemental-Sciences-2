@@ -1,4 +1,14 @@
 Changelog:
+Build 0.0.014
+    Added fancy model for the Inventory Scanner.
+    Fixed more rendering.
+    Cleaned up more random code.
+    Removed CCL, as never really used it.
+    Cleaned a large amount of HUD code, seem to be doing that a lot. Mainly because I forget what I do, and I have to write something, or it just seems I spend forever doing nothing.
+    Starting to clean the Inventory Scanner code, as it's a complete mess.
+    Recipes were removed, because lots of items, and not enough 1.6.
+    
+    
 Build 0.0.012
     Fixed the Inventory Scanner, still a WIP.
     Fixed more rendering, so it WILL be better.

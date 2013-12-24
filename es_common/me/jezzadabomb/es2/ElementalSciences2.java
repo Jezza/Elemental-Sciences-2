@@ -10,6 +10,7 @@ import me.jezzadabomb.es2.common.core.handlers.ConfigHandler;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.PacketHandler;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import org.apache.commons.io.FileUtils;
@@ -23,6 +24,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, dependencies = "required-after:Forge@[9.11.1.953,)")
 @NetworkMod(channels = { Reference.CHANNEL_NAME }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
@@ -35,9 +38,11 @@ public class ElementalSciences2 {
     public static CommonProxy proxy;
     
     public static CreativeTabs creativeTab = new CreativeTabs(Reference.MOD_ID) {
-        public ItemStack getIconItemStack() {
-            return new ItemStack(ModItems.atomicCatalyst, 1, 0);
-        }
+		@Override
+		@SideOnly(Side.CLIENT)
+		public Item getTabIconItem() {
+			return ModItems.atomicCatalyst;
+		}
     };
     
     @EventHandler
