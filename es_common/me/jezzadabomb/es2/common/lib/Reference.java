@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.lib;
 
+import java.util.ArrayList;
+
 public class Reference {
     
     //Naming Constants

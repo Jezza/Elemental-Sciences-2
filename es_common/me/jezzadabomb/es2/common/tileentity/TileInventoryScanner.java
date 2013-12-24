@@ -1,39 +1,55 @@
 package me.jezzadabomb.es2.common.tileentity;
 
+import static org.lwjgl.opengl.GL11.glRotatef;
+
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 public class TileInventoryScanner extends TileES {
 
+	public float rotYaw;
 	private int tickTime = 0;
-	private int dis = Reference.HUD_BLOCK_RANGE;
-
+	private int dis = Reference.HUD_BLOCK_RANGE * 2;
+	
+	public boolean hasInventory;
+	public boolean restart = false;
+	
 	@Override
 	public void updateEntity() {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-			return;
+			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
+			rotYaw = (float) (Math.atan2((xCoord + 0.5F) - player.posX, (zCoord + 0.5F) - player.posZ) * 180.0D / 3.141592653589793D);
 		}
-
-		if (!worldObj.blockHasTileEntity(xCoord, yCoord + 1, zCoord)) {
+		if (!worldObj.blockHasTileEntity(xCoord, yCoord - 1, zCoord)) {
+			hasInventory = false;
+			worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
 			return;
 		} else {
-			TileEntity tileEntity = worldObj.getBlockTileEntity(xCoord, yCoord + 1, zCoord);
-			if (!(tileEntity instanceof IInventory)) {
+			if (!(worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord) instanceof IInventory)) {
+				hasInventory = false;
+				worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
 				return;
 			}
 		}
-
+		hasInventory = true;
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+			return;
+		}
 		if (tickTime < Reference.GLASSES_WAIT_TIMER) {
 			tickTime++;
 			return;
@@ -48,10 +64,7 @@ public class TileInventoryScanner extends TileES {
 		for (Object object : worldObj.playerEntities) {
 			if (object instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) object;
-				if (player.dimension != worldObj.provider.dimensionId) {
-					return null;
-				}
-				if (player.getDistance(xCoord, yCoord, zCoord) < dis) {
+				if (player.dimension == worldObj.provider.dimensionId && player.getDistance(xCoord, yCoord, zCoord) < dis) {
 					playerList.add(player);
 				}
 			}
@@ -59,23 +72,23 @@ public class TileInventoryScanner extends TileES {
 		return playerList;
 	}
 
-	public void sendTerminatePacket(){
-		for(EntityPlayer player : getNearbyPlayers()){
+	public void sendTerminatePacket() {
+		for (EntityPlayer player : getNearbyPlayers()) {
 			int[] coords = new int[3];
 			coords[0] = xCoord;
-			coords[1] = yCoord + 1;
+			coords[1] = yCoord - 1;
 			coords[2] = zCoord;
 			PacketDispatcher.sendPacketToPlayer(new InventoryTerminatePacket(UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
 		}
 	}
-	
+
 	public void sendPacketToPlayers(ArrayList<EntityPlayer> players) {
 		if (players == null)
 			return;
 		for (EntityPlayer player : players) {
 			int[] coords = new int[3];
 			coords[0] = xCoord;
-			coords[1] = yCoord + 1;
+			coords[1] = yCoord - 1;
 			coords[2] = zCoord;
 			PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
 		}

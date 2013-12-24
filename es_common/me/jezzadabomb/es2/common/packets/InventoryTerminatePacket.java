@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.packets;
 import java.util.ArrayList;
 
 import me.jezzadabomb.es2.client.ClientProxy;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.packets.CentralPacket.ProtocolException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.client.renderers;
+package me.jezzadabomb.es2.client.renderers.item;
 
 import me.jezzadabomb.es2.client.models.ModelAtomicCatalyst;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -134,7 +134,6 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
             default:
                 break;
         }
-
     }
 
 }

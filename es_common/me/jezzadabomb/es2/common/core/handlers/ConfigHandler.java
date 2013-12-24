@@ -17,7 +17,7 @@ public class ConfigHandler {
 	private static Configuration config;
 	private static String var = "Misc";
 	private static String glassesVar = "glassesVar";
-	private static int configNum = 9;
+	private static int configNum = 13;
 
 	public static void init(String file) {
 		config = new Configuration(new File(file + Reference.MOD_ID + ".cfg"));
@@ -26,14 +26,13 @@ public class ConfigHandler {
 			config.load();
 			info("Starting config handler");
 			// Blocks
-			BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.BLOCK_TEST, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
+			BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
 
 			// Items
 			ItemIds.ATOMIC_CATALYST = config.getItem(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT).getInt();
 			ItemIds.GLASSES = config.getItem(Strings.GLASSES, ItemIds.GLASSES_DEFAULT).getInt();
 			ItemIds.DEBUG_TOOL = config.getItem(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT).getInt();
 			ItemIds.HOVER_BOOTS = config.getItem(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT).getInt();
-			ItemIds.IRON_BAR_RECIPE = config.getItem(Strings.IRON_BAR_RECIPE, ItemIds.IRON_BAR_RECIPE_DEFAULT).getInt();
 
 			// Reference values
 			Reference.GLASSES_WAIT_TIMER = config.get(glassesVar, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "Wait time for sending packets, defaults to 10").getInt();

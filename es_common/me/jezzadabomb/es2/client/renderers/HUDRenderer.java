@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.client.renderers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
 
@@ -9,6 +10,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
+import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
@@ -158,7 +160,7 @@ public class HUDRenderer {
 			if (UtilHelpers.canShowDebugHUD()) {
 				RenderUtils.renderColouredBox(event, p, underBlock);
 				if (!underBlock)
-					RenderUtils.drawTextInAir(p.x, p.y + 0.5F, p.z, event.partialTicks, p.inventoryTitle);
+					RenderUtils.drawTextInAir(p.x, p.y + 0.63F, p.z, event.partialTicks, p.inventoryTitle);
 				underBlock = false;
 			}
 			p.tickTiming++;
@@ -168,16 +170,13 @@ public class HUDRenderer {
 	private void renderInfoScreen(double x, double y, double z, double partialTicks, InventoryPacket p) {
 		if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
 			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-			double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
-			double iPY = player.prevPosY + (player.posY - player.prevPosY) * partialTicks;
-			double iPZ = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks;
 
 			glPushMatrix();
 			glDisable(GL_LIGHTING);
 			glDisable(GL_CULL_FACE);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
+			RenderUtils.resetHUDColour();
 
 			float[] num = RenderUtils.translateToWorldCoordsShifted(player, partialTicks, x, y, z);
 			if (num == null) {
@@ -191,8 +190,8 @@ public class HUDRenderer {
 			int xTextureOffset = 11;
 			int yTextureOffset = 18;
 			int xInventoryPos = -87;
-			int yInventoryPos = -90;
-			if (!player.worldObj.isAirBlock(p.x, p.y + 1, p.z)) {
+			int yInventoryPos = -130;
+			if (!player.worldObj.isAirBlock(p.x, p.y + 1, p.z) && (player.worldObj.getBlockId(p.x, p.y + 1, p.z) != ModBlocks.inventoryScanner.blockID)) {
 				yInventoryPos = 190;
 				yd += 1.0F;
 				// TODO Add support for blocks on top of inventory.
@@ -202,6 +201,9 @@ public class HUDRenderer {
 				underBlock = true;
 				return;
 			}
+//			if(){player.worldObj
+//				
+//			}
 
 			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
 			float rotPitch = (float) (Math.atan2(yd, Math.sqrt(xd * xd + zd * zd)) * 180.0D / 3.141592653589793D);
@@ -266,6 +268,7 @@ public class HUDRenderer {
 	}
 
 	public void addToRemoveList(InventoryTerminatePacket inventoryTerminatePacket) {
+		packetList.clear();
 		removeList.add(getPacketAtXYZ(inventoryTerminatePacket.loc));
 	}
 }

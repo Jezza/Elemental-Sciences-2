@@ -4,5 +4,9 @@ item.atomicCatalyst.name=Atomic Chain Catalyst
 item.glasses.name=Spectral Analysis Glasses
 item.debugTool.name=Debug Tool
 item.hoverBoots.name=Hover Boots
+item.glassesLens.name=Delicate Glass Lens
+item.frameSegment.name=Glasses Frame Segment
+item.spectrumSensor.name=Spectrum Sensor
+item.ironBarRecipe.name=Iron Rod
 
 tile.inventoryScanner.name=Inventory Scanner [WIP]

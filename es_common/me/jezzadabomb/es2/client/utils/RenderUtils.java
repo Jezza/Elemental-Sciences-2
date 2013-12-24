@@ -41,7 +41,6 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 public class RenderUtils {
 
 	static RenderBlocks renderBlocksInstance = new RenderBlocks();
-	static ArrayList<Integer> retardedItems = new ArrayList<Integer>();
 
 	public static void bindTexture(ResourceLocation rl) {
 		Minecraft.getMinecraft().renderEngine.bindTexture(rl);
@@ -59,6 +58,10 @@ public class RenderUtils {
 		tessellator.draw();
 	}
 
+	public static void resetHUDColour() {
+		glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
+	}
+
 	public static float[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
 		double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
 		double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
@@ -73,11 +76,23 @@ public class RenderUtils {
 		return temp;
 	}
 
+	public static float[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
+		double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
+		double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
+		double interpPosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * frame;
+
+		float[] temp = new float[3];
+		temp[0] = (float) (interpPosX - (x + 0.5D));
+		temp[1] = (float) (interpPosZ - (z + 0.5D));
+		temp[2] = (float) (interpPosY - (y + 1.8D));
+		return temp;
+	}
+
 	private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
 		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
-				glTranslated(-2.0D, 0.0D, 0.0D);
+//				glTranslated(-2.0D, 0.0D, 0.0D);
 				break;
 			case 1:
 				break;
@@ -89,12 +104,13 @@ public class RenderUtils {
 
 			switch (rowNum) {
 			case 0:
+//				glTranslated(0.0D, 5.0D, 0.0D);
 				break;
 			case 1:
-				glTranslated(0.0D, -10.0D, 0.0D);
+//				glTranslated(0.0D, -10.0D, 0.0D);
 				break;
 			case 2:
-				glTranslated(0.0D, -22.0D, 0.0D);
+//				glTranslated(0.0D, -22.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -102,10 +118,10 @@ public class RenderUtils {
 		} else {
 			switch (indexNum) {
 			case 0:
-				glTranslated(-3.0D, -5.0D, 0.0D);
+//				glTranslated(-3.0D, -5.0D, 0.0D);
 				break;
 			case 1:
-				glTranslated(-2.0D, -5.0D, 0.0D);
+//				glTranslated(-2.0D, -5.0D, 0.0D);
 				break;
 			case 2:
 				break;
@@ -117,10 +133,9 @@ public class RenderUtils {
 			case 0:
 				break;
 			case 1:
-				glTranslated(0.0D, -10.0D, 0.0D);
+//				glTranslated(0.0D, -2.0D, 0.0D);
 				break;
 			case 2:
-				glTranslated(0.0D, -30.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -137,15 +152,16 @@ public class RenderUtils {
 		glPushMatrix();
 		glDisable(GL_CULL_FACE);
 
+
+		glTranslated(x + 10, y, zLevel);
+
 		glScalef(0.8F, 1.0F, 1.0F);
 		glScalef(1.2F, 1.2F, -1.2F);
-
-		glTranslated(x + 13.0D, y + 7.0D, zLevel + 5.0D);
 
 		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock);
 
 		if (itemStack.getItem() instanceof ItemBlock) {
-			glTranslated(-3.0D, 0.0D, 0.0D);
+			glTranslated(-3.0D, 8.0D, 0.0D);
 			glScaled(2.2D, 2.2D, 2.2D);
 
 			EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
@@ -153,18 +169,20 @@ public class RenderUtils {
 			entityItem.setEntityItemStack(itemStack);
 
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+			glDisable(GL_BLEND);
+			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
+			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
 		} else {
-			glTranslated(-10, 0, 0);
+			glTranslated(-7, 4, 0);
 
-			glScaled(3D, 3D, 3D);
+			glScaled(2.8D, 2.8D, 2.8D);
 
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 			glDisable(GL_LIGHTING);
 			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
 		}
-		// Reset colours
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
+		resetHUDColour();
 		glEnable(GL_CULL_FACE);
 		glPopMatrix();
 	}
@@ -274,11 +292,11 @@ public class RenderUtils {
 			glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 			glScalef(0.02F, 0.02F, 0.02F);
 			int sw = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-			glEnable(3042);
+			glEnable(GL_BLEND);
 			Minecraft.getMinecraft().fontRenderer.drawString(text, 1 - sw / 2, 1, 1118481);
 			glTranslated(0.0D, 0.0D, -0.1D);
 			Minecraft.getMinecraft().fontRenderer.drawString(text, -sw / 2, 0, 16777215);
-			glDisable(3042);
+			glDisable(GL_BLEND);
 			glPopMatrix();
 		}
 	}

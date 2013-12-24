@@ -1,11 +1,21 @@
 package me.jezzadabomb.es2.common.items;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import me.jezzadabomb.es2.client.ClientProxy;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemDebugTool extends ItemES {
 
@@ -32,9 +42,27 @@ public class ItemDebugTool extends ItemES {
 					}
 				}
 			}
+			
+			if(UtilHelpers.canShowDebugHUD()){
+				if(world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner){
+					TileInventoryScanner inventoryScanner = (TileInventoryScanner)world.getBlockTileEntity(x, y, z);
+					ESLogger.debug(inventoryScanner.hasInventory);
+					inventoryScanner.restart = true;
+				}
+			}
+			
 			return packet != null;
 		}
 		return false;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){			
+			list.add("Important dev stuff");
+		}
 	}
 
 }
