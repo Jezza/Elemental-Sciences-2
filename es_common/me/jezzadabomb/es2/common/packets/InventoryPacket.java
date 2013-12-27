@@ -102,7 +102,6 @@ public class InventoryPacket extends CentralPacket {
 		for (ItemStack tempStack : getItemStacks()) {
 			temp.append(tempStack.getUnlocalizedName() + ":" + tempStack.stackSize + ",");
 		}
-		System.out.println(temp);
 		return temp.toString();
 	}
 

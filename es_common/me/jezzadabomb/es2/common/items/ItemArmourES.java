@@ -1,10 +1,16 @@
 package me.jezzadabomb.es2.common.items;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -14,6 +20,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemArmourES extends ItemArmor {
 
+    protected ArrayList<String> infoList = new ArrayList<String>();
+    protected ArrayList<String> shiftList = new ArrayList<String>();
+    
 	int slot;
 	String textureLocation;
 
@@ -52,4 +61,24 @@ public abstract class ItemArmourES extends ItemArmor {
 	public void registerIcons(IconRegister register) {
 		itemIcon = register.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
+	
+	@Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        shiftList.clear();
+        infoList.clear();
+        addInformation();
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            list.addAll(shiftList);
+        } else {
+            list.addAll(infoList);
+        }
+    }
+
+    protected void defaultInfoList(){
+        infoList.add("Press shift for more info.");
+    }
+    
+    protected void addInformation() {}
 }

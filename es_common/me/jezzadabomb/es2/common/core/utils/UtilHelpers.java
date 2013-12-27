@@ -1,11 +1,12 @@
 package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class UtilHelpers {
 
@@ -24,11 +25,36 @@ public class UtilHelpers {
 		return isHoldingItem(ModItems.debugItem);
 	}
 
+	public static boolean isRenderType(TileEntity tileEntity, int type) {
+	    if(tileEntity == null){
+	        return false;
+	    }
+        return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
+    }
+	
+	public static boolean canFlood() {
+		if(canShowDebugHUD()){
+		    ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
+		    return ((ItemDebugTool)tempStack.getItem()).canFlood;
+		}
+		return false;
+	}
+	
+	public static boolean correctMode(int mode) {
+        if(canShowDebugHUD()){
+            ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
+            return ((ItemDebugTool)tempStack.getItem()).debugMode == mode;
+        }
+        return false;
+    }
+
 	public static boolean isHoldingItem(Item item) {
 		return isHoldingItemStack(new ItemStack(item));
 	}
 
 	public static boolean isHoldingItemStack(ItemStack itemStack) {
+		if (Minecraft.getMinecraft().thePlayer == null)
+			return false;
 		ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
 		if (itemStack != null && tempStack != null)
 			return tempStack.getItem().equals(itemStack.getItem());
@@ -72,17 +98,17 @@ public class UtilHelpers {
 	public static String getLocFromArray(int[] coords) {
 		return coords[0] + ":" + coords[1] + ":" + coords[2];
 	}
-	
-    public static int[] getArrayFromString(String loc) {
-        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
-            return null;
-        }
-        int[] coord = new int[3];
-        coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
-        coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
-        coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
-        return coord;
 
-    }
+	public static int[] getArrayFromString(String loc) {
+		if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
+			return null;
+		}
+		int[] coord = new int[3];
+		coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
+		coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
+		coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
+		return coord;
+
+	}
 
 }

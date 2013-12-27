@@ -2,9 +2,11 @@ package me.jezzadabomb.es2.client.sound;
 
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 
 public enum Sounds {
-    CATALYST_PULSE("pulse");
+    CATALYST_PULSE("pulse"),
+    SCANNING_WAVE("scanningWave");
     
     public static final String SOUNDS_LOCATION = Reference.MOD_ID.toLowerCase() + ":";
     private String name;
@@ -25,7 +27,11 @@ public enum Sounds {
         Minecraft.getMinecraft().sndManager.playSound(SOUNDS_LOCATION + name, (float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F, volume, pitch);
     }
     
-    public void play(int x, int y, int z){
+    public void play(double x, double y, double z){
         Minecraft.getMinecraft().sndManager.playSound(SOUNDS_LOCATION + name, (float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F, 1.0F, 0.0F);
+    }
+    
+    public void playAtPlayer(EntityLivingBase player){
+        play(player.posX, player.posY, player.posZ);
     }
 }

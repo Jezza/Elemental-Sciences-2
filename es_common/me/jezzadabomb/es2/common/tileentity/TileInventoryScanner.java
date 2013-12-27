@@ -4,7 +4,9 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
+import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -35,14 +37,13 @@ public class TileInventoryScanner extends TileES {
 			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
 			rotYaw = (float) (Math.atan2((xCoord + 0.5F) - player.posX, (zCoord + 0.5F) - player.posZ) * 180.0D / 3.141592653589793D);
 		}
-		if (!worldObj.blockHasTileEntity(xCoord, yCoord - 1, zCoord)) {
-			hasInventory = false;
-			worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
+		int y  = yCoord - 1;
+		if (!worldObj.blockHasTileEntity(xCoord, y, zCoord)) {
+		    notifyPacketList();
 			return;
 		} else {
-			if (!(worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord) instanceof IInventory)) {
-				hasInventory = false;
-				worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
+			if (!(worldObj.getBlockTileEntity(xCoord, y, zCoord) instanceof IInventory)) {
+			    notifyPacketList();
 				return;
 			}
 		}
@@ -59,6 +60,16 @@ public class TileInventoryScanner extends TileES {
 		sendPacketToPlayers(getNearbyPlayers());
 	}
 
+	private void notifyPacketList(){
+	    hasInventory = false;
+        worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
+        if(worldObj.isRemote){
+            if (!UtilHelpers.isWearingItem(ModItems.glasses)) {
+                ClientProxy.hudRenderer.addToRemoveList(xCoord, yCoord - 1, zCoord);
+            }
+        }
+	}
+	
 	public ArrayList<EntityPlayer> getNearbyPlayers() {
 		ArrayList<EntityPlayer> playerList = new ArrayList<EntityPlayer>();
 		for (Object object : worldObj.playerEntities) {

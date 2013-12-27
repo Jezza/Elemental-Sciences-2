@@ -25,13 +25,13 @@ public class ClientProxy extends CommonProxy {
 
 	public PlayerTicker playerTicker = new PlayerTicker();
 	public static HUDRenderer hudRenderer = new HUDRenderer();
-	public TileInventoryScanner inventoryScanner = new TileInventoryScanner();
+	public HoverBootsHandler hoverBootsHandler = new HoverBootsHandler();
 
 	@Override
 	public void runClientSide() {
+		initTickHandlers();
 		initTileRenderers();
 		initItemRenderer();
-		initTickHandlers();
 	}
 
 	@Override
@@ -53,9 +53,10 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void initEventHandlers() {
+		ESLogger.debug("Registering handler");
 		MinecraftForge.EVENT_BUS.register(hudRenderer);
+		ESLogger.debug("Registered handler");
 		MinecraftForge.EVENT_BUS.register(hoverBootsHandler);
-		MinecraftForge.EVENT_BUS.register(inventoryScanner);
 	}
 
 }

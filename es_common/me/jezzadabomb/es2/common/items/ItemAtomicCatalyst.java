@@ -7,8 +7,11 @@ import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.WorldTicker;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,13 +35,22 @@ public class ItemAtomicCatalyst extends ItemES {
 		}
 		return !BlackList.OnBlackList(world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z));
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-		list.add("Creates destructive energy wave,");
-		list.add("propagates it through a medium,");
-		list.add("destroying the medium.");
-	}
+    protected void addInformation() {
+        defaultInfoList();
+        shiftList.add("Creates a high energy particle");
+        shiftList.add("wave that propagates through");
+        shiftList.add("a medium, breaking it's wave");
+        shiftList.add("function, and thus");
+        shiftList.add("collapsing it.");
+    }
+	
+	public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entityLivingBase)
+    {
+	    itemStack.damageItem(80, player);
+	    player.swingItem();
+	    entityLivingBase.attackEntityFrom(DamageSource.outOfWorld, 40.0F);
+	    return true;
+    }
 }

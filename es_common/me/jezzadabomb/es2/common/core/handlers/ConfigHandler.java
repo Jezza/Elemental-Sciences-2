@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.core.handlers;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.logging.Level;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
@@ -17,14 +16,13 @@ public class ConfigHandler {
 	private static Configuration config;
 	private static String var = "Misc";
 	private static String glassesVar = "glassesVar";
-	private static int configNum = 13;
 
 	public static void init(String file) {
 		config = new Configuration(new File(file + Reference.MOD_ID + ".cfg"));
 
 		try {
 			config.load();
-			info("Starting config handler");
+			info("Starting to load configuration file.");
 			// Blocks
 			BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
 
@@ -43,8 +41,8 @@ public class ConfigHandler {
 			// Boolean
 			Reference.HUD_VERTICAL_ROTATION = config.get(glassesVar, Strings.HUD_PITCH, false, "If this is set to true, then the glasses HUD follow you along your y-axis (rotation along the y axis)").getBoolean(false);
 			Reference.DRAW_TEXTURED_SLOTS = config.get(glassesVar, Strings.DRAW_TEXTURED_SLOTS, true, "This oversees the slot texture being drawn on the glasses HUD").getBoolean(true);
-
-			info("Finished loading: " + configNum + " configs");
+			
+			info("Loaded successful.");
 		} catch (Exception e) {
 			FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " has had a problem loading its block configuration");
 		} finally {

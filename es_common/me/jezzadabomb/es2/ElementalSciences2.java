@@ -2,19 +2,16 @@ package me.jezzadabomb.es2;
 
 import java.io.File;
 
-import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.api.RenderBlackList;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.ConfigHandler;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.PacketHandler;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import org.apache.commons.io.FileUtils;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -28,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, dependencies = "required-after:Forge@[9.11.1.953,)")
-@NetworkMod(channels = { Reference.CHANNEL_NAME }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
+@NetworkMod(channels = { Reference.CHANNEL_NAME }, clientSideRequired = true, serverSideRequired = true, packetHandler = PacketHandler.class)
 public class ElementalSciences2 {
 
     @Instance(Reference.MOD_ID)
@@ -36,15 +33,15 @@ public class ElementalSciences2 {
 
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static CommonProxy proxy;
-    
+
     public static CreativeTabs creativeTab = new CreativeTabs(Reference.MOD_ID) {
-		@Override
-		@SideOnly(Side.CLIENT)
-		public Item getTabIconItem() {
-			return ModItems.atomicCatalyst;
-		}
+        @Override
+        @SideOnly(Side.CLIENT)
+        public Item getTabIconItem() {
+            return ModItems.atomicCatalyst;
+        }
     };
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ESLogger.init();
@@ -57,7 +54,6 @@ public class ElementalSciences2 {
         proxy.initSoundHandler();
     }
 
-    
     @EventHandler
     public void load(FMLInitializationEvent event) {
         proxy.registerTileEntities();
@@ -66,10 +62,10 @@ public class ElementalSciences2 {
     @EventHandler
     public void postLoaded(FMLPostInitializationEvent event) {
     }
-    
+
     @EventHandler
-    public void onServerStart(FMLServerStartingEvent event){
+    public void onServerStart(FMLServerStartingEvent event) {
         proxy.registerTickHandlers();
     }
-    
+
 }

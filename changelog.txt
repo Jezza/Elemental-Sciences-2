@@ -7,8 +7,18 @@ Build 0.0.014
     Cleaned a large amount of HUD code, seem to be doing that a lot. Mainly because I forget what I do, and I have to write something, or it just seems I spend forever doing nothing.
     Starting to clean the Inventory Scanner code, as it's a complete mess.
     Recipes were removed, because lots of items, and not enough 1.6.
-    
-    
+    Fixed some of the glasses packet code. Tad more effective.
+    Cleaned up Inventory Scanner renderer code. Looks prettier.
+    Made some framework cooler, such as item information.
+    Fixed hover boots a ton. Work a lot more like "hover" boots.
+    Implemented a blacklist for glasses.
+    Hover boots circle thing now fades as time runs out.
+    Added a whole new layer of debugging code, should make things easier.
+    Fixed packet removing. Inventory scanner now behaves as it should.
+
+Build 0.0.013
+    Lost forever.
+
 Build 0.0.012
     Fixed the Inventory Scanner, still a WIP.
     Fixed more rendering, so it WILL be better.

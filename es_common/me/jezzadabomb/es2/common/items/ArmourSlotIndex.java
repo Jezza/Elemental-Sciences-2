@@ -11,4 +11,6 @@ public enum ArmourSlotIndex {
 	ArmourSlotIndex(int slot){
 		this.slot = slot;
 	}
+	
+	
 }
