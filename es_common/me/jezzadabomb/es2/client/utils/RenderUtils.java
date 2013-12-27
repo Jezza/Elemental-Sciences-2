@@ -92,7 +92,7 @@ public class RenderUtils {
 		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
-//				glTranslated(-2.0D, 0.0D, 0.0D);
+				// glTranslated(-2.0D, 0.0D, 0.0D);
 				break;
 			case 1:
 				break;
@@ -104,13 +104,13 @@ public class RenderUtils {
 
 			switch (rowNum) {
 			case 0:
-//				glTranslated(0.0D, 5.0D, 0.0D);
+				// glTranslated(0.0D, 5.0D, 0.0D);
 				break;
 			case 1:
-//				glTranslated(0.0D, -10.0D, 0.0D);
+				// glTranslated(0.0D, -10.0D, 0.0D);
 				break;
 			case 2:
-//				glTranslated(0.0D, -22.0D, 0.0D);
+				// glTranslated(0.0D, -22.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -118,10 +118,10 @@ public class RenderUtils {
 		} else {
 			switch (indexNum) {
 			case 0:
-//				glTranslated(-3.0D, -5.0D, 0.0D);
+				// glTranslated(-3.0D, -5.0D, 0.0D);
 				break;
 			case 1:
-//				glTranslated(-2.0D, -5.0D, 0.0D);
+				// glTranslated(-2.0D, -5.0D, 0.0D);
 				break;
 			case 2:
 				break;
@@ -133,7 +133,7 @@ public class RenderUtils {
 			case 0:
 				break;
 			case 1:
-//				glTranslated(0.0D, -2.0D, 0.0D);
+				// glTranslated(0.0D, -2.0D, 0.0D);
 				break;
 			case 2:
 				break;
@@ -152,7 +152,6 @@ public class RenderUtils {
 		glPushMatrix();
 		glDisable(GL_CULL_FACE);
 
-
 		glTranslated(x + 10, y, zLevel);
 
 		glScalef(0.8F, 1.0F, 1.0F);
@@ -168,9 +167,10 @@ public class RenderUtils {
 			entityItem.hoverStart = 0.0F;
 			entityItem.setEntityItemStack(itemStack);
 
-			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 			glDisable(GL_BLEND);
-			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
+			if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
+				customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+			}
 			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
 		} else {
