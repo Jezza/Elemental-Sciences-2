@@ -81,7 +81,7 @@ public class HoverBootsHandler {
 					return;
 				}
 			}
-
+			// TODO Fix hovering on a server
 			if (hovering) {
 				startHovering(event, player);
 			}
@@ -101,17 +101,17 @@ public class HoverBootsHandler {
 	}
 
 	private void startHovering(LivingUpdateEvent event, EntityPlayer player) {
-//		if (!player.worldObj.isRemote) {
-			if (justStartedHovering) {
-				justStartedHovering = false;
-				player.moveEntity(0, 0.08F, 0);
-			}
-			if (player.motionY < 0)
-				player.motionY = 0;
-			player.moveEntity(player.motionX, 0, player.motionZ);
-			double slipperness = 0.95;
-			player.motionX *= slipperness;
-			player.motionZ *= slipperness;
-//		}
+		// if (!player.worldObj.isRemote) {
+		if (justStartedHovering) {
+			justStartedHovering = false;
+			player.moveEntity(0, 0.08F, 0);
+		}
+		if (player.motionY < 0)
+			player.motionY = 0;
+		player.moveEntity(player.motionX, 0, player.motionZ);
+		double slipperness = 0.95;
+		player.motionX *= slipperness;
+		player.motionZ *= slipperness;
+		// }
 	}
 }

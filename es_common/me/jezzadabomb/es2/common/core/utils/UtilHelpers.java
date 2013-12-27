@@ -2,11 +2,13 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class UtilHelpers {
 
@@ -108,7 +110,10 @@ public class UtilHelpers {
 		coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
 		coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
 		return coord;
-
+	}
+	
+	public static Block getBlockFromWorld(World world, int x, int y, int z){
+		return Block.blocksList[world.getBlockId(x, y, z)];
 	}
 
 }

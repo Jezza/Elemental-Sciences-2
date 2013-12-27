@@ -3,12 +3,14 @@ package me.jezzadabomb.es2.client.tickers;
 import java.util.EnumSet;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,6 +51,9 @@ public class PlayerTicker implements ITickHandler {
                             int tempZ = playerZ + z;
                             if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
                                 TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
+                                if(HUDBlackLists.ScannerBlackListContains(tileEntity.getBlockType())){
+                                	break;
+                                }
                                 if (tileEntity instanceof IInventory) {
                                     String name = ((IInventory) tileEntity).getInvName();
                                     StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));

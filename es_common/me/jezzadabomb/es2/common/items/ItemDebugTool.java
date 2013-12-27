@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.client.ClientProxy;
-import me.jezzadabomb.es2.common.api.RenderBlackList;
+import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -60,7 +60,7 @@ public class ItemDebugTool extends ItemES {
                     player.addChatMessage((canFlood ? "Enabled" : "Disabled") + " Debug Flooding.");                    
                     break;
                 case 2:
-                    RenderBlackList.refreshTestList();
+                    HUDBlackLists.refreshTestList();
                     player.addChatMessage("Refreshed renderBlackList.");
                     break;
                 case 3:

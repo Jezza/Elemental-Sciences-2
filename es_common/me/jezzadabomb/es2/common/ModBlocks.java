@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.common;
 
+import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
 import me.jezzadabomb.es2.common.lib.BlockIds;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -13,6 +14,8 @@ public class ModBlocks {
     public static void init() {
     	inventoryScanner = new BlockInventoryScanner(BlockIds.INVENTORY_SCANNER, Material.anvil, Strings.INVENTORY_SCANNER);
         initBlockRecipes();
+        
+        HUDBlackLists.addBlockToHUDIgnoreList(inventoryScanner);
     }
     
     private static void initBlockRecipes(){

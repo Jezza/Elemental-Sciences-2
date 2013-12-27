@@ -4,7 +4,7 @@ import java.io.File;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.api.RenderBlackList;
+import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.ConfigHandler;
 import me.jezzadabomb.es2.common.lib.Reference;
