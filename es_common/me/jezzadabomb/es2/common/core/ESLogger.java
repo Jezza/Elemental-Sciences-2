@@ -32,13 +32,15 @@ public class ESLogger {
 	
 	//Possible flood case.
 	public static void debugFlood(Object object) {
-		if (UtilHelpers.canShowDebugHUD() && UtilHelpers.canFlood())
+		if (UtilHelpers.canShowDebugHUD() && UtilHelpers.canFlood()){			
 			log(Level.WARNING, "[DEBUG] " + object.toString());
+		}
 	}
 	
 	public static void debug(Object object, int mode) {
-        if (UtilHelpers.canShowDebugHUD() && UtilHelpers.correctMode(mode))
-            log(Level.WARNING, "[DEBUG] " + object.toString());
+        if (UtilHelpers.canShowDebugHUD() && UtilHelpers.correctMode(mode)){        	
+        	log(Level.WARNING, "[DEBUG] " + object.toString());
+        }
     }
 
 	public static void warning(Object object) {

@@ -179,8 +179,8 @@ public class RenderUtils {
 			glScaled(2.8D, 2.8D, 2.8D);
 
 			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-			glDisable(GL_LIGHTING);
 			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
+			glDisable(GL_LIGHTING);
 		}
 		resetHUDColour();
 		glEnable(GL_CULL_FACE);

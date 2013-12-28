@@ -21,4 +21,5 @@ public class Strings {
     public static final String BLACKLIST_DEFAULT = "BlackList default";
     public static final String HUD_PITCH = "Enable hud pitch";
     public static final String DRAW_TEXTURED_SLOTS = "Enable slot texture";
+    public static final String CAN_DEBUG = "Enable debug mode";
 }

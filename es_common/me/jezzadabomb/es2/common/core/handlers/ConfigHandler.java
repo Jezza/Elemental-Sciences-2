@@ -41,6 +41,7 @@ public class ConfigHandler {
 			// Boolean
 			Reference.HUD_VERTICAL_ROTATION = config.get(glassesVar, Strings.HUD_PITCH, false, "If this is set to true, then the glasses HUD follow you along your y-axis (rotation along the y axis)").getBoolean(false);
 			Reference.DRAW_TEXTURED_SLOTS = config.get(glassesVar, Strings.DRAW_TEXTURED_SLOTS, true, "This oversees the slot texture being drawn on the glasses HUD").getBoolean(true);
+			Reference.CAN_DEBUG = config.get(var, Strings.CAN_DEBUG, true, "This puts the mod in debug mode, beware, can flood.").getBoolean(true);			
 			
 			info("Loaded successful.");
 		} catch (Exception e) {

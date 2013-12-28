@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
+import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -24,7 +25,7 @@ public class UtilHelpers {
 	}
 
 	public static boolean canShowDebugHUD() {
-		return isHoldingItem(ModItems.debugItem);
+		return isHoldingItem(ModItems.debugItem) && Reference.CAN_DEBUG;
 	}
 
 	public static boolean isRenderType(TileEntity tileEntity, int type) {

@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import net.minecraft.entity.player.EntityPlayer;
@@ -144,12 +145,10 @@ public class InventoryPacket extends CentralPacket {
 		if (!includeItemStacks) {
 			return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z;
 		}
-		// TODO add itemStack support
-		return false;
+		return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z && this.itemStacks.equals(itemStacks);
 	}
 
 	public boolean isCloserThan(InventoryPacket tempP, EntityPlayer player) {
 		return player.getDistance(x, y, z) < player.getDistance(tempP.x, tempP.y, tempP.z);
 	}
-
 }

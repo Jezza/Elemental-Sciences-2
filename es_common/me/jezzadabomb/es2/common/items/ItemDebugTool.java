@@ -7,6 +7,7 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
@@ -44,7 +45,7 @@ public class ItemDebugTool extends ItemES {
 
     @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        if (world.isRemote) {
+        if (world.isRemote && Reference.CAN_DEBUG) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 debugMode += 1;
                 if (debugMode == DEBUG_LIMIT) {

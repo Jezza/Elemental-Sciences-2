@@ -1,18 +1,6 @@
 package me.jezzadabomb.es2.client.renderers;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
@@ -152,7 +140,7 @@ public class HUDRenderer {
 		}
 		ESLogger.debugFlood(packetList);
 		tickTiming++;
-
+		
 		for (InventoryPacket packet : packetList) {
 			if (UtilHelpers.isWearingItem(ModItems.glasses)) {
 				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.x, packet.y, packet.z)) {
