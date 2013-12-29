@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL12;
 import cpw.mods.fml.client.FMLClientHandler;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
@@ -63,11 +64,11 @@ public class RenderUtils {
 	}
 
 	public static float[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
-		double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
-		double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
-		double interpPosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * frame;
+		double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
+		double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
+		double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
 
-		GL11.glTranslated(-interpPosX + x + 0.5D, -interpPosY + y + 1.5D, -interpPosZ + z + 0.5D);
+		GL11.glTranslated(-interpPosX + x, -interpPosY + y, -interpPosZ + z);
 
 		float[] temp = new float[3];
 		temp[0] = (float) (interpPosX - (x + 0.5D));
@@ -88,15 +89,17 @@ public class RenderUtils {
 		return temp;
 	}
 
+	//Individual translations if I want.
 	private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
 		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
-				// glTranslated(-2.0D, 0.0D, 0.0D);
+				glTranslated(2.0D, 0.0D, 0.0D);
 				break;
 			case 1:
 				break;
 			case 2:
+				glTranslated(-2.0D, 0.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -104,13 +107,12 @@ public class RenderUtils {
 
 			switch (rowNum) {
 			case 0:
-				// glTranslated(0.0D, 5.0D, 0.0D);
+				glTranslated(0.0D, 3.0D, 0.0D);
 				break;
 			case 1:
-				// glTranslated(0.0D, -10.0D, 0.0D);
+				glTranslated(0.0D, 2.0D, 0.0D);
 				break;
 			case 2:
-				// glTranslated(0.0D, -22.0D, 0.0D);
 				break;
 			default:
 				return;
@@ -118,10 +120,9 @@ public class RenderUtils {
 		} else {
 			switch (indexNum) {
 			case 0:
-				// glTranslated(-3.0D, -5.0D, 0.0D);
+				glTranslated(1.0D, 0.0D, 0.0D);
 				break;
 			case 1:
-				// glTranslated(-2.0D, -5.0D, 0.0D);
 				break;
 			case 2:
 				break;
@@ -154,8 +155,7 @@ public class RenderUtils {
 
 		glTranslated(x + 10, y, zLevel);
 
-		glScalef(0.8F, 1.0F, 1.0F);
-		glScalef(1.2F, 1.2F, -1.2F);
+		glScalef(0.96F, 1.2F, -1.2F);
 
 		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock);
 
@@ -164,22 +164,24 @@ public class RenderUtils {
 			glScaled(2.2D, 2.2D, 2.2D);
 
 			EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
-			entityItem.hoverStart = 0.0F;
 			entityItem.setEntityItemStack(itemStack);
 
 			glDisable(GL_BLEND);
 			if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
+				glEnable(GL_BLEND);
 				customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 			}
-			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
 		} else {
-			glTranslated(-7, 4, 0);
+			glTranslated(-9, 5, 0);
 
 			glScaled(2.8D, 2.8D, 2.8D);
 
-			customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-			ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0);
+			glTranslated(0, 3, 0);
+			if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
+				glTranslated(0, -3, 0);
+				customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+			}
 			glDisable(GL_LIGHTING);
 		}
 		resetHUDColour();

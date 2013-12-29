@@ -6,6 +6,8 @@ Build 0.0.015
     - An ignore whitelist: If the block is added to this, the inventory will be rendered regardless, useful for things that are not full blocks, or something like the Inventory scanner.
     Fixed a couple of bugs.
     Added support itemStacks in the packets equals method.
+    Added support for vertical rotation, to enable it, change it in the config.
+    
 
 Build 0.0.014
     Added fancy model for the Inventory Scanner.

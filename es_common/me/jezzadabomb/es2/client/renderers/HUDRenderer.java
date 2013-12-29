@@ -140,7 +140,7 @@ public class HUDRenderer {
 		}
 		ESLogger.debugFlood(packetList);
 		tickTiming++;
-		
+
 		for (InventoryPacket packet : packetList) {
 			if (UtilHelpers.isWearingItem(ModItems.glasses)) {
 				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.x, packet.y, packet.z)) {
@@ -181,9 +181,9 @@ public class HUDRenderer {
 			RenderUtils.resetHUDColour();
 
 			float[] num = RenderUtils.translateToWorldCoordsShifted(player, partialTicks, x, y, z);
-			if (num == null) {
+			glTranslated(0.5D, 1.5D, 0.5D);
+			if (num == null)
 				return;
-			}
 
 			float xd = num[0];
 			float zd = num[1];
@@ -203,7 +203,6 @@ public class HUDRenderer {
 				glPopMatrix();
 				underBlock = true;
 				return;
-
 			}
 
 			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
@@ -211,13 +210,11 @@ public class HUDRenderer {
 
 			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
 
-			if (Reference.HUD_VERTICAL_ROTATION) {
+			if (Reference.HUD_VERTICAL_ROTATION)
 				glRotatef(rotPitch + 0.0F, 1.0F, 0.0F, 0.0F);
-			}
 
 			glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-			glScalef(0.01F, 0.006F, 0.01F);
-			glScalef(0.6F, 0.6F, 0.6F);
+			glScalef(0.006F, 0.0036F, 0.006F);
 
 			// Inventory background
 			RenderUtils.bindTexture(TextureMaps.HUD_INVENTORY);

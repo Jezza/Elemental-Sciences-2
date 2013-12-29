@@ -22,7 +22,8 @@ public class ConfigHandler {
 
 		try {
 			config.load();
-			info("Starting to load configuration file.");
+			ESLogger.info("Starting to load configuration file.");
+
 			// Blocks
 			BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
 
@@ -35,23 +36,19 @@ public class ConfigHandler {
 			// Reference values
 			Reference.GLASSES_WAIT_TIMER = config.get(glassesVar, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "Wait time for sending packets, defaults to 10").getInt();
 
-			// Blacklist
+			// Catalyst Blacklist
 			BlackList.putValues(config.get(var, Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "These are the default block ids, and metas that can't be destroyed by the catalyst, easily configurable. Just id:meta. :)").getString());
 
-			// Boolean
+			// Reference Booleans
 			Reference.HUD_VERTICAL_ROTATION = config.get(glassesVar, Strings.HUD_PITCH, false, "If this is set to true, then the glasses HUD follow you along your y-axis (rotation along the y axis)").getBoolean(false);
 			Reference.DRAW_TEXTURED_SLOTS = config.get(glassesVar, Strings.DRAW_TEXTURED_SLOTS, true, "This oversees the slot texture being drawn on the glasses HUD").getBoolean(true);
-			Reference.CAN_DEBUG = config.get(var, Strings.CAN_DEBUG, true, "This puts the mod in debug mode, beware, can flood.").getBoolean(true);			
-			
-			info("Loaded successful.");
+			Reference.CAN_DEBUG = config.get(var, Strings.CAN_DEBUG, true, "This puts the mod in debug mode, beware, can flood.").getBoolean(true);
+
+			ESLogger.info("Loaded successful.");
 		} catch (Exception e) {
-			FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " has had a problem loading its block configuration");
+			ESLogger.severe("Failed loading item and block configuration.");
 		} finally {
 			config.save();
 		}
-	}
-
-	private static void info(Object object) {
-		ESLogger.info(object);
 	}
 }
