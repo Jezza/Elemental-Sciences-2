@@ -182,6 +182,7 @@ public class HUDRenderer {
 
 			float[] num = RenderUtils.translateToWorldCoordsShifted(player, partialTicks, x, y, z);
 			glTranslated(0.5D, 1.5D, 0.5D);
+
 			if (num == null)
 				return;
 
@@ -206,12 +207,13 @@ public class HUDRenderer {
 			}
 
 			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
-			float rotPitch = (float) (Math.atan2(yd, MathHelper.pythagoras(xd, zd)) * 180.0D / 3.141592653589793D);
 
 			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
 
-			if (Reference.HUD_VERTICAL_ROTATION)
-				glRotatef(rotPitch + 0.0F, 1.0F, 0.0F, 0.0F);
+			if (Reference.HUD_VERTICAL_ROTATION){				
+				float rotPitch = (float) (Math.atan2(yd, MathHelper.pythagoras(xd, zd)) * 180.0D / 3.141592653589793D);
+				glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
+			}
 
 			glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 			glScalef(0.006F, 0.0036F, 0.006F);
@@ -233,7 +235,6 @@ public class HUDRenderer {
 			for (ItemStack itemStack : p.getItemStacks()) {
 				for (ItemStack tempStack : sortedList) {
 					if (itemStack.stackSize > tempStack.stackSize) {
-
 						utilList.add(sortedList.indexOf(tempStack), itemStack);
 						added = true;
 						break;
@@ -278,7 +279,7 @@ public class HUDRenderer {
 	}
 
 	public void addToRemoveList(InventoryTerminatePacket inventoryTerminatePacket) {
-		packetList.clear();
+		// packetList.clear();
 		removeList.add(getPacketAtXYZ(inventoryTerminatePacket.loc));
 	}
 

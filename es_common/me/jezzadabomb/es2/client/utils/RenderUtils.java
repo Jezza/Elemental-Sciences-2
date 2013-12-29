@@ -78,9 +78,9 @@ public class RenderUtils {
 	}
 
 	public static float[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
-		double interpPosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * frame;
-		double interpPosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * frame;
-		double interpPosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * frame;
+		double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
+		double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
+		double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
 
 		float[] temp = new float[3];
 		temp[0] = (float) (interpPosX - (x + 0.5D));
@@ -89,8 +89,8 @@ public class RenderUtils {
 		return temp;
 	}
 
-	//Individual translations if I want.
-	private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock) {
+	// Individual translations if I want.
+	private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
 		if (itemBlock) {
 			switch (indexNum) {
 			case 0:
@@ -145,6 +145,30 @@ public class RenderUtils {
 
 	}
 
+	private static void translateSpecialRender(int indexRow, int rowNum, boolean neg) {
+		int tempNeg = neg ? 1 : -1;
+		switch (rowNum) {
+		case 0:
+			glTranslated(0.0D, -1.0D * tempNeg, 0.0D);
+			break;
+		case 2:
+			glTranslated(0.0D, 1.0D * tempNeg, 0.0D);
+			break;
+		default:
+			return;
+		}
+		switch (indexRow) {
+		case 0:
+			glTranslated(-1.0D * tempNeg, 0.0D, 0.0D);
+			break;
+		case 2:
+			glTranslated(0.0D, 0.0D, 1.0D * tempNeg);
+			break;
+		default:
+			return;
+		}
+	}
+
 	public static void drawItemInSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
 		Minecraft mc = Minecraft.getMinecraft();
 		TextureManager textureManager = mc.getTextureManager();
@@ -157,7 +181,7 @@ public class RenderUtils {
 
 		glScalef(0.96F, 1.2F, -1.2F);
 
-		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock);
+		translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock, false);
 
 		if (itemStack.getItem() instanceof ItemBlock) {
 			glTranslated(-3.0D, 8.0D, 0.0D);
@@ -177,9 +201,9 @@ public class RenderUtils {
 
 			glScaled(2.8D, 2.8D, 2.8D);
 
-			glTranslated(0, 3, 0);
+			translateSpecialRender(indexNum, rowNum, false);
 			if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
-				glTranslated(0, -3, 0);
+				translateSpecialRender(indexNum, rowNum, true);
 				customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 			}
 			glDisable(GL_LIGHTING);
@@ -201,6 +225,43 @@ public class RenderUtils {
 		if (Reference.DRAW_TEXTURED_SLOTS)
 			drawTextureSlot(x, y, zLevel + 1);
 		drawItemInSlot(x, y, itemStack, customItemRenderer, zLevel, indexNum, rowNum);
+	}
+
+	public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {
+		if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
+			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
+			double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
+			double iPY = player.prevPosY + (player.posY - player.prevPosY) * partialTicks;
+			double iPZ = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks;
+
+			glPushMatrix();
+
+			glTranslated(-iPX + x + 0.5D, -iPY + y + 1.5D, -iPZ + z + 0.5D);
+
+			float xd = (float) (iPX - (x + 0.5D));
+			float zd = (float) (iPZ - (z + 0.5D));
+			float yd = (float) (iPY - (y + 1.5D));
+
+			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
+
+			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
+			if (Reference.HUD_VERTICAL_ROTATION) {
+				glTranslated(0.0D, -0.7D, 0.0D);
+				float rotPitch = (float) (Math.atan2(yd, MathHelper.pythagoras(xd, zd)) * 180.0D / 3.141592653589793D);
+				glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
+				glTranslated(0.0D, 0.7D, 0.0D);
+			}
+
+			glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+			glScalef(0.02F, 0.02F, 0.02F);
+			int sw = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+			glEnable(GL_BLEND);
+			Minecraft.getMinecraft().fontRenderer.drawString(text, 1 - sw / 2, 1, 1118481);
+			glTranslated(0.0D, 0.0D, -0.1D);
+			Minecraft.getMinecraft().fontRenderer.drawString(text, -sw / 2, 0, 16777215);
+			glDisable(GL_BLEND);
+			glPopMatrix();
+		}
 	}
 
 	// Thanks to Player for this. :D
@@ -272,35 +333,4 @@ public class RenderUtils {
 		glPopAttrib();
 		glPopMatrix();
 	}
-
-	// Thanks to Azanor ;)
-	public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {
-		if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
-			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-			double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
-			double iPY = player.prevPosY + (player.posY - player.prevPosY) * partialTicks;
-			double iPZ = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks;
-
-			glPushMatrix();
-
-			glTranslated(-iPX + x + 0.5D, -iPY + y + 1.5D, -iPZ + z + 0.5D);
-
-			float xd = (float) (iPX - (x + 0.5D));
-			float zd = (float) (iPZ - (z + 0.5D));
-			float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
-
-			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
-
-			glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-			glScalef(0.02F, 0.02F, 0.02F);
-			int sw = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-			glEnable(GL_BLEND);
-			Minecraft.getMinecraft().fontRenderer.drawString(text, 1 - sw / 2, 1, 1118481);
-			glTranslated(0.0D, 0.0D, -0.1D);
-			Minecraft.getMinecraft().fontRenderer.drawString(text, -sw / 2, 0, 16777215);
-			glDisable(GL_BLEND);
-			glPopMatrix();
-		}
-	}
-
 }

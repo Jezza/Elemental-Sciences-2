@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 
 public class ItemAtomicCatalystRenderer implements IItemRenderer {
 
@@ -32,17 +32,17 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY: {
-                renderAtomicCatalyst(0F, 0.5F, 0F, 0.4F, false, false, false);
+                renderAtomicCatalyst(0.0F, 0.1F, 0.0F, 0.4F, false, false, false);
                 return;
             }
 
             case EQUIPPED_FIRST_PERSON: {
-                renderAtomicCatalyst(0F, 1.0F, 0.4F, 0.5F, true, false, false);
+                renderAtomicCatalyst(0.0F, 1.0F, 0.4F, 0.5F, true, false, false);
                 break;
             }
 
             case INVENTORY: {
-                renderAtomicCatalyst(0F, 0.1F, 0.0F, 0.4F, false, true, false);
+                renderAtomicCatalyst(0.0F, 0.1F, 0.0F, 0.4F, false, true, false);
                 return;
             }
             
@@ -61,25 +61,25 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
 
         TextureManager texture = Minecraft.getMinecraft().renderEngine;
 
-        GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_LIGHTING);
+        glPushMatrix();
+        glDisable(GL_LIGHTING);
 
         // Translate and Scale
-        GL11.glTranslatef(x, y, z);
-        GL11.glScalef(scale, scale, scale);
+        glTranslatef(x, y, z);
+        glScalef(scale, scale, scale);
 
         // Translate, render and texture the electrons.
         translateBindRender("Main", x, y, z, 0.0D);
 
         // First Person translations because it's weird for some reason..
         if (fp)
-            GL11.glTranslatef(0F, -0.20F, -0.17F);
+            glTranslatef(0F, -0.20F, -0.17F);
         // Inventory translations, because it's also a bit weird.
         if (inv)
-            GL11.glTranslatef(-0.01F, 0.12F, 0.0F);
+            glTranslatef(-0.01F, 0.12F, 0.0F);
         // Equipped translations, because it's even more retarded..
         if (eq)
-            GL11.glTranslatef(-0.22F, 0F, 0F);
+            glTranslatef(-0.22F, 0F, 0F);
 
         // Math for the rotation periods.
         double local = (24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL);
@@ -90,8 +90,8 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
         translateBindRender("Electron2", x, y, z, local);
         translateBindRender("Electron3", x, y, z, local);
 
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glPopMatrix();
+        glEnable(GL_LIGHTING);
+        glPopMatrix();
 
     }
 
@@ -101,35 +101,35 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
 
         switch (part) {
             case "Main":
-                GL11.glPushMatrix();
-                GL11.glRotatef((float)angle, 0.0F, 1.0F, 0.0F);
+                glPushMatrix();
+                glRotatef((float)angle, 0.0F, 1.0F, 0.0F);
                 RenderUtils.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_MAIN);
                 modelAtomicCatalyst.renderPart("Main");
-                GL11.glPopMatrix();
+                glPopMatrix();
                 break;
             case "Electron1":
-                GL11.glPushMatrix();
-                GL11.glScalef(0.4F, 0.4F, 0.4F);
-                GL11.glTranslatef(x - cosDis, y - 0.5F, z - sinDis);
+                glPushMatrix();
+                glScalef(0.4F, 0.4F, 0.4F);
+                glTranslatef(x - cosDis, y - 0.5F, z - sinDis);
                 RenderUtils.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_ELECTRON_1);
                 modelAtomicCatalyst.renderPart(part);
-                GL11.glPopMatrix();
+                glPopMatrix();
                 break;
             case "Electron2":
-                GL11.glPushMatrix();
-                GL11.glScalef(0.4F, 0.4F, 0.4F);
-                GL11.glTranslatef(x - sinDis, y + cosDis - 0.5F, z);
+                glPushMatrix();
+                glScalef(0.4F, 0.4F, 0.4F);
+                glTranslatef(x - sinDis, y + cosDis - 0.5F, z);
                 RenderUtils.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_ELECTRON_2);
                 modelAtomicCatalyst.renderPart(part);
-                GL11.glPopMatrix();
+                glPopMatrix();
                 break;
             case "Electron3":
-                GL11.glPushMatrix();
-                GL11.glScalef(0.4F, 0.4F, 0.4F);
-                GL11.glTranslatef(x, y - sinDis - 0.5F, z + cosDis);
+                glPushMatrix();
+                glScalef(0.4F, 0.4F, 0.4F);
+                glTranslatef(x, y - sinDis - 0.5F, z + cosDis);
                 RenderUtils.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_ELECTRON_3);
                 modelAtomicCatalyst.renderPart(part);
-                GL11.glPopMatrix();
+                glPopMatrix();
                 break;
             default:
                 break;
