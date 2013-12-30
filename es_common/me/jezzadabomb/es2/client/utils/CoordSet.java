@@ -4,12 +4,12 @@ import me.jezzadabomb.es2.common.packets.InventoryPacket;
 
 public class CoordSet {
 
-    double x, y, z;
+    private int x, y, z;
 
     public CoordSet(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = (int)x;
+        this.y = (int)y;
+        this.z = (int)z;
     }
 
     public CoordSet(int x, int y, int z) {
@@ -19,13 +19,30 @@ public class CoordSet {
     }
 
     public CoordSet(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = (int)x;
+        this.y = (int)y;
+        this.z = (int)z;
     }
     
     public boolean isPacket(InventoryPacket p){
-        return x == p.x && y == p.y && z == p.z;
+    	CoordSet tempSet = p.coordSet;
+        return x == tempSet.getX() && y == tempSet.getY() && z == tempSet.getZ();
+    }
+    
+    public int getX(){
+    	return x;
+    }
+
+    public int getY(){
+    	return y;
+    }
+    
+    public int getZ(){
+    	return z;
+    }
+    
+    public boolean isAtXYZ(int x, int y, int z){
+    	return this.x == x && this.y == y && this.z == z;
     }
     
     @Override

@@ -3,6 +3,6 @@ itemGroup.ElementalSciences2=Elemental Sciences 2
 item.atomicCatalyst.name=Atomic Chain Catalyst
 item.spectralGlasses.name=Spectral Analysis Glasses
 item.debugTool.name=Debug Tool
-item.hoverBoots.name=Hover Boots [WIP]
+item.hoverBoots.name=Hover Boots
 
 tile.inventoryScanner.name=Inventory Scanner

@@ -34,7 +34,6 @@ public class ItemDebugTool extends ItemES {
 		DEBUG_LIMIT = debugStringList.size();
 	}
 
-	@SideOnly(Side.CLIENT)
 	private static ArrayList<String> debugStringList = new ArrayList<String>() {
 		{
 			add("Normal Debug");

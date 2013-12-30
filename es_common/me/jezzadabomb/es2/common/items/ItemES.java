@@ -18,43 +18,43 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemES extends Item {
 
-    ArrayList<String> infoList = new ArrayList<String>();
-    ArrayList<String> shiftList = new ArrayList<String>();
+	ArrayList<String> infoList = new ArrayList<String>();
+	ArrayList<String> shiftList = new ArrayList<String>();
 
-    public ItemES(int id, String name) {
-        super(id);
-        setUnlocalizedName(name);
-        setCreativeTab(ElementalSciences2.creativeTab);
-        register(name);
-    }
+	public ItemES(int id, String name) {
+		super(id);
+		setUnlocalizedName(name);
+		setCreativeTab(ElementalSciences2.creativeTab);
+		register(name);
+	}
 
-    public void register(String name) {
-        GameRegistry.registerItem(this, name);
-    }
+	public void register(String name) {
+		GameRegistry.registerItem(this, name);
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister par1IconRegister) {
+		this.itemIcon = par1IconRegister.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
+	}
 
-    @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        shiftList.clear();
-        infoList.clear();
-        addInformation();
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.addAll(shiftList);
-        } else {
-            list.addAll(infoList);
-        }
-    }
+	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		shiftList.clear();
+		infoList.clear();
+		addInformation();
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			list.addAll(shiftList);
+		} else {
+			list.addAll(infoList);
+		}
+	}
 
-    protected void defaultInfoList(){
-        infoList.add(EnumChatFormatting.WHITE + "Press" + EnumChatFormatting.DARK_RED + " Shift" + EnumChatFormatting.WHITE + " for more info.");
-    }
-    
-    protected void addInformation() {}
+	protected void defaultInfoList() {
+		infoList.add("Press" + EnumChatFormatting.DARK_RED + " Shift" + EnumChatFormatting.GRAY + " for more info.");
+	}
+
+	protected abstract void addInformation();
 }

@@ -38,7 +38,7 @@ public class ElementalSciences2 {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return ModItems.atomicCatalyst;
+            return ModItems.glasses;
         }
     };
 

@@ -33,24 +33,24 @@ public class HoverBootsHandler {
 		if (hovering) {
 			// Bind texture
 			RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
-
 			// Flips it upright
 			glRotated(90, 1.0D, 0.0D, 0.0D);
+			glRotatef(-(float)(1440.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
 			// Push it under the player
 			glTranslated(-1.3D, -1.3D, 0.0D);
 			// Scale it, so it isn't massive.
 			glScaled(0.01D, 0.01D, 0.01D);
 
-			glColor4f(1.0F, 1.0F, 0.6F, (timeHovering / (WAIT_TIME * 2)) + 0.1F);
+			glColor4f(1.0F, 1.0F, 1.0F, (timeHovering / (WAIT_TIME * 2)) + 0.068F);
+			
+            glDisable(GL_LIGHTING);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_CULL_FACE);
 
-			glEnable(GL_BLEND);
-			glDisable(GL_LIGHTING);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
 
-			// Get the Util class to render it for us.
-			RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
-
-			glEnable(GL_LIGHTING);
+            glEnable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
 		}
 	}
@@ -62,13 +62,14 @@ public class HoverBootsHandler {
 		}
 		if (UtilHelpers.isWearingItem(ModItems.hoverBoots)) {
 			EntityPlayer player = (EntityPlayer) event.entity;
+			player.capabilities.setFlySpeed(0.1F);
 			if (player.onGround) {
 				justStartedHovering = true;
 				hovering = hitGround = false;
 				return;
 			}
 
-			if (timeHovering < WAIT_TIME / 2 && player.isCollided) {
+			if (timeHovering < (WAIT_TIME / 16) && player.isCollided) {
 				resetValues(player);
 				return;
 			}

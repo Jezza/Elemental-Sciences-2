@@ -33,7 +33,7 @@ public class TileInventoryScanner extends TileES {
 	
 	@Override
 	public void updateEntity() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+		if (worldObj.isRemote) {
 			EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
 			rotYaw = (float) (Math.atan2((xCoord + 0.5F) - player.posX, (zCoord + 0.5F) - player.posZ) * 180.0D / 3.141592653589793D);
 		}
@@ -48,7 +48,7 @@ public class TileInventoryScanner extends TileES {
 			}
 		}
 		hasInventory = true;
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+		if (worldObj.isRemote) {
 			return;
 		}
 		if (tickTime < Reference.GLASSES_WAIT_TIMER) {

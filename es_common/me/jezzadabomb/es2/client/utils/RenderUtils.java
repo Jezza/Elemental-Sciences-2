@@ -195,6 +195,7 @@ public class RenderUtils {
 				glEnable(GL_BLEND);
 				customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
 			}
+			glEnable(GL_BLEND);
 			glDisable(GL_LIGHTING);
 		} else {
 			glTranslated(-9, 5, 0);
@@ -276,9 +277,9 @@ public class RenderUtils {
 		double offset = 0.02;
 		double delta = 1 + 2 * offset;
 
-		double x = p.x - px - offset;
-		double y = p.y - py - offset;
-		double z = p.z - pz - offset;
+		double x = p.coordSet.getX() - px - offset;
+		double y = p.coordSet.getY() - py - offset;
+		double z = p.coordSet.getZ() - pz - offset;
 		glPushMatrix();
 		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

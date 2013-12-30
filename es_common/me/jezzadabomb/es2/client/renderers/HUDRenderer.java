@@ -30,8 +30,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HUDRenderer {
-	
-	//TODO On/Off animations
+
+	// TODO On/Off animations
 	private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
 	private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
 	private ArrayList<CoordSet> ignoreList = new ArrayList<CoordSet>();
@@ -42,23 +42,13 @@ public class HUDRenderer {
 	private int tickTiming = 0;
 
 	public HUDRenderer() {
-		customItemRenderer = new RenderItem() {
-			@Override
-			public boolean shouldBob() {
-				return false;
-			}
-
-			@Override
-			public boolean shouldSpreadItems() {
-				return false;
-			}
-		};
+		customItemRenderer = new RenderItem();
 		customItemRenderer.setRenderManager(RenderManager.instance);
 	}
 
 	public InventoryPacket getPacket(int x, int y, int z) {
 		for (InventoryPacket packet : packetList) {
-			if (packet.x == x && packet.y == y && packet.z == z) {
+			if (packet.coordSet.isAtXYZ(x, y, z)) {
 				return packet;
 			}
 		}
@@ -78,10 +68,10 @@ public class HUDRenderer {
 			return;
 		}
 		if (doesPacketAlreadyExistAtXYZ(p)) {
-			ESLogger.debug("Setting packet in list" + p, 1);
+			ESLogger.debug("Setting packet in list " + p, 1);
 			packetList.set(getPosInList(p), p);
 		} else {
-			ESLogger.debug("Adding packet to list" + p, 1);
+			ESLogger.debug("Adding packet to list " + p, 1);
 			packetList.add(p);
 		}
 		ESLogger.debug("Added packet: " + p, 1);
@@ -127,7 +117,7 @@ public class HUDRenderer {
 	public InventoryPacket getPacketAtXYZ(String loc) {
 		int[] coord = UtilHelpers.getArrayFromString(loc);
 		for (InventoryPacket p : packetList) {
-			if (p.x == coord[0] && p.y == coord[1] && p.z == coord[2]) {
+			if (p.coordSet.isAtXYZ(coord[0], coord[1], coord[2])) {
 				return p;
 			}
 		}
@@ -145,7 +135,7 @@ public class HUDRenderer {
 
 		for (InventoryPacket packet : packetList) {
 			if (UtilHelpers.isWearingItem(ModItems.glasses)) {
-				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.x, packet.y, packet.z)) {
+				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.coordSet.getX(), packet.coordSet.getY(), packet.coordSet.getZ())) {
 					removeList.add(packet);
 				}
 			} else {
@@ -154,16 +144,16 @@ public class HUDRenderer {
 				}
 			}
 		}
-
+		
 		packetList.removeAll(removeList);
 		removeList.clear();
 
 		for (InventoryPacket p : packetList) {
-			renderInfoScreen(p.x, p.y, p.z, event.partialTicks, p);
+			renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
 			if (UtilHelpers.canShowDebugHUD()) {
 				RenderUtils.renderColouredBox(event, p, underBlock);
 				if (!underBlock)
-					RenderUtils.drawTextInAir(p.x, p.y + 0.63F, p.z, event.partialTicks, p.inventoryTitle);
+					RenderUtils.drawTextInAir(p.coordSet.getX(), p.coordSet.getY() + 0.63F, p.coordSet.getZ(), event.partialTicks, p.inventoryTitle);
 				underBlock = false;
 			}
 			p.tickTiming++;
@@ -197,7 +187,11 @@ public class HUDRenderer {
 			int xInventoryPos = -87;
 			int yInventoryPos = -130;
 
-			if (!world.isAirBlock(p.x, p.y + 1, p.z) && !HUDBlackLists.IgnoreListContains(UtilHelpers.getBlockFromWorld(world, p.x, p.y + 1, p.z))) {
+			int packetX = p.coordSet.getX();
+			int packetY = p.coordSet.getY();
+			int packetZ = p.coordSet.getZ();
+
+			if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.IgnoreListContains(UtilHelpers.getBlockFromWorld(world, packetX, packetY + 1, packetZ))) {
 				yInventoryPos = 190;
 				yd += 1.0F;
 				// TODO Add support for blocks on top of inventory.
@@ -212,7 +206,7 @@ public class HUDRenderer {
 
 			glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
 
-			if (Reference.HUD_VERTICAL_ROTATION){				
+			if (Reference.HUD_VERTICAL_ROTATION) {
 				float rotPitch = (float) (Math.atan2(yd, MathHelper.pythagoras(xd, zd)) * 180.0D / 3.141592653589793D);
 				glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
 			}
@@ -281,13 +275,12 @@ public class HUDRenderer {
 	}
 
 	public void addToRemoveList(InventoryTerminatePacket inventoryTerminatePacket) {
-		// packetList.clear();
+		packetList.clear();
 		removeList.add(getPacketAtXYZ(inventoryTerminatePacket.loc));
 	}
 
 	public void addToRemoveList(int x, int y, int z) {
 		ESLogger.debug("Found", 1);
-
 		InventoryPacket p = getPacket(x, y, z);
 		if (p == null)
 			return;

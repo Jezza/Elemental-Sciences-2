@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
+import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
@@ -25,9 +26,10 @@ public class InventoryPacket extends CentralPacket {
 	public ArrayList<ItemStack> itemStacks;
 	public String loc = "null";
 	public String inventoryTitle = null;
-	public int x;
-	public int y;
-	public int z;
+	private int x;
+	private int y;
+	private int z;
+	public CoordSet coordSet;
 	public int tickTiming;
 
 	public InventoryPacket(TileEntity tileEntity, String loc) {
@@ -85,12 +87,9 @@ public class InventoryPacket extends CentralPacket {
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
 			int[] coord = UtilHelpers.getArrayFromString(loc);
-			if (coord == null) {
+			if (coord == null)
 				return;
-			}
-			x = coord[0];
-			y = coord[1];
-			z = coord[2];
+			coordSet = new CoordSet(coord[0], coord[1], coord[2]);
 			ClientProxy.hudRenderer.addPacketToList(this);
 			tickTiming = 0;
 		} else {
@@ -143,9 +142,9 @@ public class InventoryPacket extends CentralPacket {
 
 		InventoryPacket tempPacket = (InventoryPacket) other;
 		if (!includeItemStacks) {
-			return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z;
+			return inventoryTitle.equals(tempPacket.inventoryTitle) && coordSet.equals(tempPacket.coordSet);
 		}
-		return inventoryTitle.equals(tempPacket.inventoryTitle) && x == tempPacket.x && y == tempPacket.y && z == tempPacket.z && this.itemStacks.equals(itemStacks);
+		return inventoryTitle.equals(tempPacket.inventoryTitle) && coordSet == tempPacket.coordSet && this.itemStacks.equals(itemStacks);
 	}
 
 	public boolean isCloserThan(InventoryPacket tempP, EntityPlayer player) {
