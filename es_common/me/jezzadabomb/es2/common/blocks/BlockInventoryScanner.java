@@ -30,10 +30,8 @@ public class BlockInventoryScanner extends BlockES {
 	@Override
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
 		ESLogger.debug("Broken Block");
-		if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner) {
-			if (world.isRemote && !UtilHelpers.isWearingItem(ModItems.glasses)) {
-				ClientProxy.hudRenderer.addToRemoveList(x, y - 1, z);
-			}
+		if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner && world.isRemote && !UtilHelpers.isWearingItem(ModItems.glasses)) {
+			ClientProxy.hudRenderer.addToRemoveList(x, y - 1, z);
 		}
 		return super.removeBlockByPlayer(world, player, x, y, z);
 	}
@@ -64,17 +62,7 @@ public class BlockInventoryScanner extends BlockES {
 	}
 
 	@Override
-	public boolean renderAsNormalBlock() {
-		return false;
-	}
-
-	@Override
-	public int getRenderType() {
-		return -1;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
+	public boolean renderWithModel(){
+		return true;
 	}
 }

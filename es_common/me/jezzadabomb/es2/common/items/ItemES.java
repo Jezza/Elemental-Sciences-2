@@ -16,7 +16,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemES extends Item {
+public abstract class ItemES extends Item {
 
     ArrayList<String> infoList = new ArrayList<String>();
     ArrayList<String> shiftList = new ArrayList<String>();

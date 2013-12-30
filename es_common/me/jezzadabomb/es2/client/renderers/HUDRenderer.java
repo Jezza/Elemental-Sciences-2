@@ -30,6 +30,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HUDRenderer {
+	
+	//TODO On/Off animations
 	private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
 	private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
 	private ArrayList<CoordSet> ignoreList = new ArrayList<CoordSet>();
