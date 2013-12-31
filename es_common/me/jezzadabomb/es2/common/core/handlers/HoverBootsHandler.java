@@ -30,7 +30,7 @@ public class HoverBootsHandler {
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
-		if (hovering) {
+//		if (hovering) {
 			// Bind texture
 			RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
 			// Flips it upright
