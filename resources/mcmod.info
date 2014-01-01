@@ -2,7 +2,7 @@
 {
   "modid": "ElementalSciences2",
   "name": "Elemental Sciences 2",
-  "description": "An amalgamation of magic and science. Any sufficiently advanced technology is indistinguishable from magic. - Arthur C. Clarke",
+  "description": "An amalgamation of magic and science. Any sufficiently advanced technology is indistinguishable from magic. - Arthur C. Clarke.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "logoFile": "/assets/elementalsciences2/textures/logo/logo.png",
