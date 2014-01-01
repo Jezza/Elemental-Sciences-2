@@ -5,6 +5,11 @@
 
 This mod is under the [LGPLv3](http://www.tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3.0) license.
 
+**Compiling the mod**  
+Because this mod is really early stage, I can't blame you for wanting to compile this code, rather then the released versions. The released versions for now are behind because I want to establish a proper foothold in things. EG, code base, and build server up and running, etc.  
+But note that I take no responsibility for the outcome of the compile, as noted in the license.  
+If you need to ask how to compile it, because it's in the early stages I'd recommend not to.
+
 **About the Mod**
 ***
 Something that has always annoyed me, is that once you get to that late game area, there isn't a lot to do.  
