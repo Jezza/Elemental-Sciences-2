@@ -42,6 +42,8 @@ public class BlackList {
                 tempStringLength += (temp.length() + 1);
             } else {
                 ESLogger.severe("Couldn't not parse: " + temp);
+                ESLogger.severe("Defaulting to premade list.");
+                putValues(blackListDefault);
             }
         }
     }

@@ -12,4 +12,4 @@ tile.inventoryScanner.name=Inventory Scanner
 death.attack.atomicWave0=%1$s had their atomic structure shifted.
 death.attack.atomicWave1=%1$s had their molecular bonds vapourized.
 death.attack.atomicWave2=%1$s's body resonated with foreign particles.
-death.attack.quantumDisruption=%1$s had their life ripped from their body.
+death.attack.quantumDisruption=The body of %1$s had its quantum state collapsed. 

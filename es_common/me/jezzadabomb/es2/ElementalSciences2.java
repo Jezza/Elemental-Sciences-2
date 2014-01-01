@@ -45,7 +45,7 @@ public class ElementalSciences2 {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ESLogger.init();
-        ConfigHandler.init(event.getModConfigurationDirectory().getAbsolutePath() + File.separator + Reference.CHANNEL_NAME.toLowerCase() + File.separator);
+        ConfigHandler.init(event.getSuggestedConfigurationFile());
         ModBlocks.init();
         ModItems.init();
         proxy.runClientSide();

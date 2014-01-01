@@ -14,37 +14,20 @@ import cpw.mods.fml.common.FMLLog;
 
 public class ConfigHandler {
 	private static Configuration config;
-	private static String var = "Misc";
-	private static String glassesVar = "glassesVar";
+	private static String var = "Gameplay";
 
-	public static void init(String file) {
-		config = new Configuration(new File(file + Reference.MOD_ID + ".cfg"));
+	public static void init(File file) {
+		ESLogger.info(file);
+		config = new Configuration(file);
 
 		try {
-			config.load();
 			ESLogger.info("Starting to load configuration file.");
+			config.load();
 
-			// Blocks
-			BlockIds.INVENTORY_SCANNER = config.getBlock(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT).getInt();
-
-			// Items
-			ItemIds.ATOMIC_CATALYST = config.getItem(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT).getInt();
-			ItemIds.GLASSES = config.getItem(Strings.GLASSES, ItemIds.GLASSES_DEFAULT).getInt();
-			ItemIds.DEBUG_TOOL = config.getItem(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT).getInt();
-			ItemIds.HOVER_BOOTS = config.getItem(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT).getInt();
-			ItemIds.QUANTUM_STATE_DISRUPTER = config.getItem(Strings.QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT).getInt();
-			ItemIds.LIFE_COIN = config.getItem(Strings.LIFE_COIN, ItemIds.LIFE_COIN_DEFAULT).getInt();
-
-			// Reference values
-			Reference.GLASSES_WAIT_TIMER = config.get(glassesVar, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "Wait time for sending packets, defaults to 10").getInt();
-Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER =  config.get(var, Strings.QUANTUM_WAIT_TIMING, Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT, "The time in seconds that determines the time the server waits before the state disrupter detonates.").getInt();
-			// Catalyst Blacklist
-			BlackList.putValues(config.get(var, Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "These are the default block ids, and metas that can't be destroyed by the catalyst, easily configurable. Just id:meta. :)").getString());
-
-			// Reference Booleans
-			Reference.HUD_VERTICAL_ROTATION = config.get(glassesVar, Strings.HUD_PITCH, false, "If this is set to true, then the glasses HUD follow you along your y-axis (rotation along the y axis)").getBoolean(false);
-			Reference.DRAW_TEXTURED_SLOTS = config.get(glassesVar, Strings.DRAW_TEXTURED_SLOTS, true, "This oversees the slot texture being drawn on the glasses HUD").getBoolean(true);
-			Reference.CAN_DEBUG = config.get(var, Strings.CAN_DEBUG, true, "This puts the mod in debug mode, beware, can flood.").getBoolean(true);
+			getStrings();
+			getBooleanValues();
+			getReferenceConstants();
+			getIDs();
 
 			ESLogger.info("Loaded successful.");
 		} catch (Exception e) {
@@ -52,5 +35,48 @@ Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER =  config.get(var, Strings.QUANTUM_
 		} finally {
 			config.save();
 		}
+	}
+
+	public static void getIDs() {
+		BlockIds.INVENTORY_SCANNER = getID(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT);
+
+		ItemIds.ATOMIC_CATALYST = getID(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT);
+		ItemIds.GLASSES = getID(Strings.GLASSES, ItemIds.GLASSES_DEFAULT);
+		ItemIds.HOVER_BOOTS = getID(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT);
+		ItemIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
+		ItemIds.LIFE_COIN = getID(Strings.LIFE_COIN, ItemIds.LIFE_COIN_DEFAULT);
+		if (Reference.CAN_DEBUG) 
+			ItemIds.DEBUG_TOOL = getID(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT);
+	}
+
+	public static void getStrings() {
+		BlackList.putValues(getString(Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "The blacklist on what blocks the atomic catalyst can break.\nNote: Some blocks you cant break on purpose, such as bedrock.\nTo add to it simply put a comma then follow it with the id:meta of the block you want to protect.\n-Serverside."));
+	}
+
+	public static void getBooleanValues() {
+		Reference.HUD_VERTICAL_ROTATION = getBoolean(Strings.HUD_PITCH, false, "This determines whether or not to rotate the inventory HUD along your y-axis.\n-Clientside");
+		Reference.DRAW_TEXTURED_SLOTS = getBoolean(Strings.DRAW_TEXTURED_SLOTS, true, "Some people thought this looked better, so here it is.\nDisables the inventory slot texture when drawing the HUD.\nSo, it's just a smooth texture.\n-Clientside");
+		Reference.CAN_DEBUG = getBoolean(Strings.CAN_DEBUG, true, "Does what it says on the tin. Best to just leave this off.\n-Clientside");
+	}
+
+	public static void getReferenceConstants() {
+		Reference.GLASSES_WAIT_TIMER = getConstant(Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "How many ticks it waits before sending an update of an inventory.\n-Clientside");
+		Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER = getConstant(Strings.QUANTUM_WAIT_TIMING, Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT, "The time it takes for the Quantum State Disrupter to explode, in ticks.\nSo, just divide by twenty to get it in seconds.\n-Serverside");
+	}
+
+	public static int getID(String path, int defaultID) {
+		return config.get("IDs", path, defaultID).getInt();
+	}
+
+	public static boolean getBoolean(String path, boolean defaultBoolean, String comment) {
+		return config.get(var, path, defaultBoolean, comment).getBoolean(defaultBoolean);
+	}
+
+	public static String getString(String path, String defaultString, String comment) {
+		return config.get(var, path, defaultString, comment).getString();
+	}
+
+	public static int getConstant(String path, int defaultConstant, String comment) {
+		return config.get(var, path, defaultConstant, comment).getInt();
 	}
 }
