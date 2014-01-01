@@ -3,7 +3,7 @@
 
 [Minecraft Forums Page](http://www.minecraftforum.net/topic/2196292-164forgeelemental-sciences-2-wip-new-version00014/)
 
-This mod is under the [LGPLv3](http://www.tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3.0)) license.
+This mod is under the [LGPLv3](http://www.tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3.0) license.
 
 **About the Mod**
 ***
