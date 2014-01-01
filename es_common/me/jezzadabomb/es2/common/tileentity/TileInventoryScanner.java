@@ -8,7 +8,7 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
@@ -64,7 +64,7 @@ public class TileInventoryScanner extends TileES {
 	    hasInventory = false;
         worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
         if(worldObj.isRemote){
-            if (!UtilHelpers.isWearingItem(ModItems.glasses)) {
+            if (!UtilMethods.isWearingItem(ModItems.glasses)) {
                 ClientProxy.hudRenderer.addToRemoveList(xCoord, yCoord - 1, zCoord);
             }
         }
@@ -89,7 +89,7 @@ public class TileInventoryScanner extends TileES {
 			coords[0] = xCoord;
 			coords[1] = yCoord - 1;
 			coords[2] = zCoord;
-			PacketDispatcher.sendPacketToPlayer(new InventoryTerminatePacket(UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
+			PacketDispatcher.sendPacketToPlayer(new InventoryTerminatePacket(UtilMethods.getLocFromArray(coords)).makePacket(), (Player) player);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class TileInventoryScanner extends TileES {
 			coords[0] = xCoord;
 			coords[1] = yCoord - 1;
 			coords[2] = zCoord;
-			PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilHelpers.getLocFromArray(coords)).makePacket(), (Player) player);
+			PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilMethods.getLocFromArray(coords)).makePacket(), (Player) player);
 		}
 	}
 }

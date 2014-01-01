@@ -9,7 +9,7 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -86,7 +86,7 @@ public class InventoryPacket extends CentralPacket {
 	@Override
 	public void execute(EntityPlayer player, Side side) throws ProtocolException {
 		if (side.isClient()) {
-			int[] coord = UtilHelpers.getArrayFromString(loc);
+			int[] coord = UtilMethods.getArrayFromString(loc);
 			if (coord == null)
 				return;
 			coordSet = new CoordSet(coord[0], coord[1], coord[2]);
@@ -111,7 +111,7 @@ public class InventoryPacket extends CentralPacket {
 		for (ItemStack itemStack : itemStacks) {
 			for (ItemStack tempStack : tempStacks) {
 				if (itemStack.itemID == tempStack.itemID) {
-					UtilHelpers.mergeItemStacks(tempStacks.get(tempStacks.indexOf(tempStack)), itemStack, true);
+					UtilMethods.mergeItemStacks(tempStacks.get(tempStacks.indexOf(tempStack)), itemStack, true);
 					added = true;
 				}
 			}

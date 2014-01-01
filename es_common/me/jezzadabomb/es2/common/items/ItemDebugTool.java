@@ -3,10 +3,11 @@ package me.jezzadabomb.es2.common.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
@@ -40,6 +41,7 @@ public class ItemDebugTool extends ItemES {
 			add("Extreme Packet Monitoring");
 			add("Reset");
 			add("Y-Axis Toggle");
+			add("Get Bomb Holder");
 		}
 	};
 
@@ -62,12 +64,20 @@ public class ItemDebugTool extends ItemES {
 					break;
 				case 2:
 					HUDBlackLists.refreshTestList();
-					player.addChatMessage("Refreshed renderBlackList.");
+					player.addChatMessage("Refreshed BlackList");
 					break;
 				case 3:
 					boolean temp = Reference.HUD_VERTICAL_ROTATION;
 					Reference.HUD_VERTICAL_ROTATION = !temp;
 					player.addChatMessage("HUD Rotation: " + !temp);
+					break;
+				case 4:
+					String playerString = ElementalSciences2.proxy.quantumBomb.getPlayer();
+					if(playerString == null){
+						player.addChatMessage("Empty");
+					}else{						
+						player.addChatMessage(playerString);
+					}
 					break;
 				}
 			}
@@ -95,7 +105,7 @@ public class ItemDebugTool extends ItemES {
 				}
 			}
 
-			if (UtilHelpers.canShowDebugHUD()) {
+			if (UtilMethods.canShowDebugHUD()) {
 				if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner) {
 					TileInventoryScanner inventoryScanner = (TileInventoryScanner) world.getBlockTileEntity(x, y, z);
 					ESLogger.debug(inventoryScanner.hasInventory);

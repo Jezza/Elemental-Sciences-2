@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
+import me.jezzadabomb.es2.client.renderers.QuantumBombRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
@@ -10,9 +11,8 @@ import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.handlers.HoverBootsHandler;
+import me.jezzadabomb.es2.common.core.handlers.HandlerHoverBoots;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -23,9 +23,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-	public PlayerTicker playerTicker = new PlayerTicker();
 	public static HUDRenderer hudRenderer = new HUDRenderer();
-	public HoverBootsHandler hoverBootsHandler = new HoverBootsHandler();
+	
+//	public QuantumBombRenderer quantumBombRenderer = new QuantumBombRenderer();
 
 	@Override
 	public void runClientSide() {
@@ -49,14 +49,15 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	private void initTickHandlers() {
-		TickRegistry.registerTickHandler(playerTicker, Side.CLIENT);
+		TickRegistry.registerTickHandler(new PlayerTicker(), Side.CLIENT);
 	}
 
 	public void initEventHandlers() {
 		ESLogger.debug("Registering handler");
 		MinecraftForge.EVENT_BUS.register(hudRenderer);
+		MinecraftForge.EVENT_BUS.register(new HandlerHoverBoots());
+		MinecraftForge.EVENT_BUS.register(new QuantumBombRenderer());
 		ESLogger.debug("Registered handler");
-		MinecraftForge.EVENT_BUS.register(hoverBootsHandler);
 	}
 
 }

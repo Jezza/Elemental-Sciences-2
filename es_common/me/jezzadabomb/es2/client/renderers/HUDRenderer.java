@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.client.renderers;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -10,7 +11,7 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -115,7 +116,7 @@ public class HUDRenderer {
 	}
 
 	public InventoryPacket getPacketAtXYZ(String loc) {
-		int[] coord = UtilHelpers.getArrayFromString(loc);
+		int[] coord = UtilMethods.getArrayFromString(loc);
 		for (InventoryPacket p : packetList) {
 			if (p.coordSet.isAtXYZ(coord[0], coord[1], coord[2])) {
 				return p;
@@ -134,7 +135,7 @@ public class HUDRenderer {
 		tickTiming++;
 
 		for (InventoryPacket packet : packetList) {
-			if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+			if (UtilMethods.isWearingItem(ModItems.glasses)) {
 				if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.coordSet.getX(), packet.coordSet.getY(), packet.coordSet.getZ())) {
 					removeList.add(packet);
 				}
@@ -144,13 +145,13 @@ public class HUDRenderer {
 				}
 			}
 		}
-		
+
 		packetList.removeAll(removeList);
 		removeList.clear();
 
 		for (InventoryPacket p : packetList) {
 			renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
-			if (UtilHelpers.canShowDebugHUD()) {
+			if (UtilMethods.canShowDebugHUD()) {
 				RenderUtils.renderColouredBox(event, p, underBlock);
 				if (!underBlock)
 					RenderUtils.drawTextInAir(p.coordSet.getX(), p.coordSet.getY() + 0.63F, p.coordSet.getZ(), event.partialTicks, p.inventoryTitle);
@@ -191,7 +192,7 @@ public class HUDRenderer {
 			int packetY = p.coordSet.getY();
 			int packetZ = p.coordSet.getZ();
 
-			if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.IgnoreListContains(UtilHelpers.getBlockFromWorld(world, packetX, packetY + 1, packetZ))) {
+			if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.IgnoreListContains(UtilMethods.getBlockFromWorld(world, packetX, packetY + 1, packetZ))) {
 				yInventoryPos = 190;
 				yd += 1.0F;
 				// TODO Add support for blocks on top of inventory.

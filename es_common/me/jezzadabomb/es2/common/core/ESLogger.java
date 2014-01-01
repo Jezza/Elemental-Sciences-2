@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import cpw.mods.fml.common.FMLLog;
 
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 
 public class ESLogger {
@@ -26,19 +26,19 @@ public class ESLogger {
 	}
 
 	public static void debug(Object object) {
-		if (UtilHelpers.canShowDebugHUD())
+		if (UtilMethods.canShowDebugHUD())
 			log(Level.WARNING, "[DEBUG] " + object.toString());
 	}
 	
 	//Possible flood case.
 	public static void debugFlood(Object object) {
-		if (UtilHelpers.canShowDebugHUD() && UtilHelpers.canFlood()){			
+		if (UtilMethods.canShowDebugHUD() && UtilMethods.canFlood()){			
 			log(Level.WARNING, "[DEBUG] " + object.toString());
 		}
 	}
 	
 	public static void debug(Object object, int mode) {
-        if (UtilHelpers.canShowDebugHUD() && UtilHelpers.correctMode(mode)){        	
+        if (UtilMethods.canShowDebugHUD() && UtilMethods.correctMode(mode)){        	
         	log(Level.WARNING, "[DEBUG] " + object.toString());
         }
     }

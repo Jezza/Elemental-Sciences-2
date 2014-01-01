@@ -6,7 +6,7 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -29,7 +29,7 @@ public class BlockInventoryScanner extends BlockES {
 
 	@Override
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner && world.isRemote && !UtilHelpers.isWearingItem(ModItems.glasses)) {
+		if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner && world.isRemote && !UtilMethods.isWearingItem(ModItems.glasses)) {
 			ClientProxy.hudRenderer.addToRemoveList(x, y - 1, z);
 		}
 		return super.removeBlockByPlayer(world, player, x, y, z);

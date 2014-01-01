@@ -5,7 +5,7 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
@@ -36,7 +36,7 @@ public class TileInventoryScannerRenderer extends TileEntitySpecialRenderer {
         // Scaling
         glScalef(0.5F, 0.5F, 0.5F);
 
-        if (UtilHelpers.isRenderType(inventoryScanner, Block.chest.getRenderType())) {
+        if (UtilMethods.isRenderType(inventoryScanner, Block.chest.getRenderType())) {
             glTranslated(0.0D, -0.25D, 0.0D);
             glScalef(0.85F, 0.85F, 0.85F);
         }

@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class HoverBootsHandler {
+public class HandlerHoverBoots {
 
 	private boolean hovering = false;
 	private boolean hitGround = false;
@@ -24,33 +24,33 @@ public class HoverBootsHandler {
 	private float WAIT_TIME = 60;
 	private float timeHovering = WAIT_TIME;
 
-	public HoverBootsHandler() {
+	public HandlerHoverBoots() {
 	}
 
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
-//		if (hovering) {
+		if (hovering) {
 			// Bind texture
 			RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
 			// Flips it upright
 			glRotated(90, 1.0D, 0.0D, 0.0D);
-			glRotatef(-(float)(1440.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
+			glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
 			// Push it under the player
 			glTranslated(-1.3D, -1.3D, 0.0D);
 			// Scale it, so it isn't massive.
 			glScaled(0.01D, 0.01D, 0.01D);
 
 			glColor4f(1.0F, 1.0F, 1.0F, (timeHovering / (WAIT_TIME * 2)) + 0.068F);
-			
-            glDisable(GL_LIGHTING);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_CULL_FACE);
 
-            RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
+			glDisable(GL_LIGHTING);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_CULL_FACE);
 
-            glEnable(GL_CULL_FACE);
+			RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
+
+			glEnable(GL_CULL_FACE);
 			glDisable(GL_BLEND);
 		}
 	}
@@ -60,7 +60,7 @@ public class HoverBootsHandler {
 		if (event.entity == null || !(event.entity instanceof EntityPlayer)) {
 			return;
 		}
-		if (UtilHelpers.isWearingItem(ModItems.hoverBoots)) {
+		if (UtilMethods.isWearingItem(ModItems.hoverBoots)) {
 			EntityPlayer player = (EntityPlayer) event.entity;
 			player.capabilities.setFlySpeed(0.1F);
 			if (player.onGround) {

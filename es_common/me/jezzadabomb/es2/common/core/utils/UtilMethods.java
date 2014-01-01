@@ -5,13 +5,14 @@ import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class UtilHelpers {
+public class UtilMethods {
 
 	public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow) {
 		if (itemStack1 == null || itemStack2 == null || itemStack1.itemID != itemStack2.itemID || itemStack1.getItemDamage() != itemStack2.getItemDamage())
@@ -34,6 +35,15 @@ public class UtilHelpers {
 	    }
         return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
     }
+	
+	public static boolean hasItemInInventory(EntityPlayer player, Item item){
+		for(ItemStack itemStack : player.inventory.mainInventory){
+			if(itemStack != null && itemStack.getItem().equals(item)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public static boolean canFlood() {
 		if(canShowDebugHUD()){

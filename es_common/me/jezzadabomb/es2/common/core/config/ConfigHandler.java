@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.core.handlers;
+package me.jezzadabomb.es2.common.core.config;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -32,6 +32,8 @@ public class ConfigHandler {
 			ItemIds.GLASSES = config.getItem(Strings.GLASSES, ItemIds.GLASSES_DEFAULT).getInt();
 			ItemIds.DEBUG_TOOL = config.getItem(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT).getInt();
 			ItemIds.HOVER_BOOTS = config.getItem(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT).getInt();
+			ItemIds.QUANTUM_STATE_DISRUPTOR = config.getItem(Strings.QUANTUM_STATE_DISRUPTOR, ItemIds.QUANTUM_STATE_DISRUPTOR_DEFAULT).getInt();
+			ItemIds.LIFE_COIN = config.getItem(Strings.LIFE_COIN, ItemIds.LIFE_COIN_DEFAULT).getInt();
 
 			// Reference values
 			Reference.GLASSES_WAIT_TIMER = config.get(glassesVar, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "Wait time for sending packets, defaults to 10").getInt();

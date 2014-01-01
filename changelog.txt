@@ -11,6 +11,7 @@ Build 0.0.015
     Made some debugging easier.
     Fixed a derp with the HUD with custom tileEntities.
     Made the texture for the hover boots really sexy.
+    Textures are now from: Ails and Myself.
 
 Build 0.0.014
     Added fancy model for the Inventory Scanner.

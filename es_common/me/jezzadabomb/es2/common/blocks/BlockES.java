@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 
 public abstract class BlockES extends Block {
 
-	public BlockES(int par1, Material par2Material, String name) {
-		super(par1, par2Material);
+	public BlockES(int id, Material material, String name) {
+		super(id, material);
 		setUnlocalizedName(name);
 		setCreativeTab(ElementalSciences2.creativeTab);
 		register(name);

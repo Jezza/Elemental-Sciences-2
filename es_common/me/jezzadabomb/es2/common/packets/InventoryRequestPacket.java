@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.common.packets;
 
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -35,7 +35,7 @@ public class InventoryRequestPacket extends CentralPacket {
     @Override
     public void execute(EntityPlayer player, Side side) throws ProtocolException {
         if (side.isServer()) {
-            int[] coord = UtilHelpers.getArrayFromString(loc);
+            int[] coord = UtilMethods.getArrayFromString(loc);
             if (coord != null) {
                 PacketDispatcher.sendPacketToPlayer(new InventoryPacket(player.worldObj.getBlockTileEntity(coord[0], coord[1], coord[2]), loc).makePacket(), (Player) player);
             }

@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilHelpers;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -33,7 +33,7 @@ public class PlayerTicker implements ITickHandler {
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+        if (UtilMethods.isWearingItem(ModItems.glasses)) {
             EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
 
             int playerX = (int) Math.round(player.posX);
@@ -76,7 +76,7 @@ public class PlayerTicker implements ITickHandler {
                 StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
                 StoredQueues.instance().removeTemp();
                 StoredQueues.instance().setLists();
-                if (UtilHelpers.isWearingItem(ModItems.glasses)) {
+                if (UtilMethods.isWearingItem(ModItems.glasses)) {
                     for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
                         PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
                     }

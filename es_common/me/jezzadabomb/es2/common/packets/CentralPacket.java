@@ -33,6 +33,7 @@ public abstract class CentralPacket {
         builder.put(Integer.valueOf(1), InventoryRequestPacket.class);
         builder.put(Integer.valueOf(2), InventoryPacket.class);
         builder.put(Integer.valueOf(3), InventoryTerminatePacket.class);
+        builder.put(Integer.valueOf(4), PlayerBombPacket.class);
 
         idMap = builder.build();
     }
