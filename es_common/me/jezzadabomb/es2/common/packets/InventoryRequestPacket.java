@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.packets;
 
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
+import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.common.io.ByteArrayDataInput;

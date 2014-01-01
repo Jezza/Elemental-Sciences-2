@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
+import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -90,7 +92,7 @@ public class InventoryPacket extends CentralPacket {
 			if (coord == null)
 				return;
 			coordSet = new CoordSet(coord[0], coord[1], coord[2]);
-			ClientProxy.hudRenderer.addPacketToList(this);
+			ElementalSciences2.proxy.hudRenderer.addPacketToList(this);
 			tickTiming = 0;
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

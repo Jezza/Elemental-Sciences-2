@@ -25,6 +25,14 @@ public class UtilMethods {
 		return itemStack1;
 	}
 
+	public static int getTicksFromSeconds(int seconds){
+		return seconds * 20;
+	}
+	
+	public static int getSecondsFromTicks(int ticks){
+		return ticks / 20;
+	}
+	
 	public static boolean canShowDebugHUD() {
 		return isHoldingItem(ModItems.debugItem) && Reference.CAN_DEBUG;
 	}
@@ -36,9 +44,12 @@ public class UtilMethods {
         return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
     }
 	
-	public static boolean hasItemInInventory(EntityPlayer player, Item item){
+	public static boolean hasItemInInventory(EntityPlayer player, Item item, boolean shouldRemove){
 		for(ItemStack itemStack : player.inventory.mainInventory){
 			if(itemStack != null && itemStack.getItem().equals(item)){
+				if(shouldRemove){
+					//TODO Remove the itemStack.
+				}
 				return true;
 			}
 		}

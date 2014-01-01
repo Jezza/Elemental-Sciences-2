@@ -1,8 +1,8 @@
-package me.jezzadabomb.es2.common.packets;
+package me.jezzadabomb.es2.common.packets.handler;
 
 import java.util.logging.Logger;
 
-import me.jezzadabomb.es2.common.packets.CentralPacket.ProtocolException;
+import me.jezzadabomb.es2.common.packets.handler.CentralPacket.ProtocolException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;

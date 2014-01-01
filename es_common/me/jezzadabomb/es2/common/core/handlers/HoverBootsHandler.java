@@ -16,7 +16,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class HandlerHoverBoots {
+public class HoverBootsHandler {
 
 	private boolean hovering = false;
 	private boolean hitGround = false;
@@ -24,7 +24,7 @@ public class HandlerHoverBoots {
 	private float WAIT_TIME = 60;
 	private float timeHovering = WAIT_TIME;
 
-	public HandlerHoverBoots() {
+	public HoverBootsHandler() {
 	}
 
 	@SideOnly(Side.CLIENT)

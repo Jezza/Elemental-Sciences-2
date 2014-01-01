@@ -8,7 +8,7 @@ import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.config.ConfigHandler;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.packets.PacketHandler;
+import me.jezzadabomb.es2.common.packets.handler.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -50,8 +50,6 @@ public class ElementalSciences2 {
         ModItems.init();
         proxy.runClientSide();
         proxy.runServerSide();
-        proxy.initEventHandlers();
-        proxy.initSoundHandler();
     }
 
     @EventHandler

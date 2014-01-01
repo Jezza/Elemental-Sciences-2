@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
@@ -65,7 +66,7 @@ public class TileInventoryScanner extends TileES {
         worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
         if(worldObj.isRemote){
             if (!UtilMethods.isWearingItem(ModItems.glasses)) {
-                ClientProxy.hudRenderer.addToRemoveList(xCoord, yCoord - 1, zCoord);
+                ElementalSciences2.proxy.hudRenderer.addToRemoveList(xCoord, yCoord - 1, zCoord);
             }
         }
 	}

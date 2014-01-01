@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2;
 
+import me.jezzadabomb.es2.client.renderers.HUDRenderer;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
@@ -12,15 +14,11 @@ import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy {
 	
+	public HUDRenderer hudRenderer = new HUDRenderer();
 	public QuantumBombTicker quantumBomb = new QuantumBombTicker();
 
-	public void runClientSide() {
-	}
-
-	public void initSoundHandler() {
-	}
-
 	public void runServerSide() {
+		MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
 	}
 
 	public void registerTickHandlers() {
@@ -32,8 +30,5 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileInventoryScanner.class, Strings.INVENTORY_SCANNER);
 	}
 
-	public void initEventHandlers() {
-		MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
-	}
-
+	public void runClientSide() {}
 }

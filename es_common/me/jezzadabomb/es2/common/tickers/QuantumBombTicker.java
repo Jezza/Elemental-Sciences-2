@@ -6,6 +6,7 @@ import java.util.List;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,7 @@ public class QuantumBombTicker implements ITickHandler {
 	private EntityPlayer entityPlayer;
 	private int tickTiming = 0;
 	private double lastTickPosX, lastTickPosY, lastTickPosZ;
+	private boolean ticked = false;
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -35,11 +37,12 @@ public class QuantumBombTicker implements ITickHandler {
 		if (type.equals(EnumSet.of(TickType.SERVER))) {
 			if (player != null) {
 				stopMovement();
-				if (++tickTiming > 160) {
+				if (++tickTiming > Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER) {
 					tickTiming = 0;
 					beginExplosion(MinecraftServer.getServer().getConfigurationManager().playerEntityList);
 					entityPlayer = null;
 					player = null;
+					ticked = false;
 				}
 			}
 			if (player != prevPlayer) {
@@ -71,8 +74,9 @@ public class QuantumBombTicker implements ITickHandler {
 	}
 
 	private void stopMovement() {
-		entityPlayer.velocityChanged = true;
-		entityPlayer.motionX = entityPlayer.motionZ = entityPlayer.motionY = 0.00000000000D;
+		// TODO Stop all movement from entityPlayer
+		// entityPlayer.motionX = entityPlayer.motionZ = entityPlayer.motionY = entityPlayer.moveForward = entityPlayer.moveStrafing = 0.0F;
+		// entityPlayer.velocityChanged = true;
 	}
 
 	public void setPlayer(String name) {
@@ -87,7 +91,11 @@ public class QuantumBombTicker implements ITickHandler {
 		for (Object object : playerEntities) {
 			if (object instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) object;
-				if (UtilMethods.hasItemInInventory(player, ModItems.lifeCoin)) {
+				if (player.capabilities.isCreativeMode)
+					continue;
+				if (UtilMethods.hasItemInInventory(player, ModItems.lifeCoin, true)) {
+					// TODO Remove the disrupter.
+					// player.inventory.clearInventory(ModItems.quantumStateDisruptor.itemID, 0);
 					continue;
 				}
 				player.inventory.clearInventory(-1, -1);

@@ -12,12 +12,13 @@ public class Strings {
     public static final String DEBUG_TOOL = "debugTool";
     public static final String HOVER_BOOTS = "hoverBoots";
     public static final String PLACEHOLDER = "placeHolder";
-    public static final String QUANTUM_STATE_DISRUPTOR = "quantumStateDisruptor";
+    public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
     public static final String LIFE_COIN = "lifeCoin";
 
     // Timing Constants
-    public static final String TICK_TIMING = "glassesTickTimingConstant";
-    public static final String PACKET_TIMING = "Glasses Idle packet time";
+    public static final String TICK_TIMING = "Glasses tick timing constant";
+    public static final String PACKET_TIMING = "Glasses idle packet time";
+    public static final String QUANTUM_WAIT_TIMING = "Quantum wait timer";
 
     // String constants
     public static final String BLACKLIST_DEFAULT = "BlackList default";

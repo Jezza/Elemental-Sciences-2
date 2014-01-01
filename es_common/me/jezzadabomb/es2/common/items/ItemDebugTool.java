@@ -88,7 +88,7 @@ public class ItemDebugTool extends ItemES {
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-			InventoryPacket packet = ClientProxy.hudRenderer.getPacket(x, y, z);
+			InventoryPacket packet = ElementalSciences2.proxy.hudRenderer.getPacket(x, y, z);
 			if (packet != null) {
 				player.addChatMessage("");
 				player.addChatMessage("Inventory Name: " + packet.inventoryTitle);

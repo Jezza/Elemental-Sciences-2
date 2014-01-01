@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.packets;
+package me.jezzadabomb.es2.common.packets.handler;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -20,6 +20,10 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
 import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
+import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
+import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
 
 public abstract class CentralPacket {
 

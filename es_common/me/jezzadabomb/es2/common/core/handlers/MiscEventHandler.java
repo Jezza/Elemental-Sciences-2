@@ -11,12 +11,9 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 public class MiscEventHandler {
 
 	@ForgeSubscribe
-	public void onItemDrop(ItemTossEvent event){
-		ESLogger.info(event);
-		if(event.entityItem.getEntityItem().getItem().equals(ModItems.quantumStateDisruptor)){
-			ESLogger.info("Oh noes, " + event.player.username + " dropped something.");
+	public void onItemDrop(ItemTossEvent event) {
+		if (event.entityItem.getEntityItem().getItem().equals(ModItems.quantumStateDisrupter))
 			ElementalSciences2.proxy.quantumBomb.canAdd(event.player);
-		}
 	}
-	
+
 }

@@ -1,7 +1,8 @@
 package me.jezzadabomb.es2.common.packets;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.packets.CentralPacket.ProtocolException;
+import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
+import me.jezzadabomb.es2.common.packets.handler.CentralPacket.ProtocolException;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.common.io.ByteArrayDataInput;

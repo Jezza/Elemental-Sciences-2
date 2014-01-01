@@ -19,7 +19,7 @@ public class ModItems {
 	public static Item glasses;
 	public static Item debugItem;
 	public static Item hoverBoots;
-	public static Item quantumStateDisruptor;
+	public static Item quantumStateDisrupter;
 	public static Item lifeCoin;
 	
 	// Recipe items.
@@ -32,7 +32,7 @@ public class ModItems {
 		atomicCatalyst = new ItemAtomicCatalyst(ItemIds.ATOMIC_CATALYST, Strings.ATOMIC_CATALYST);
 		glasses = new ItemGlasses(ItemIds.GLASSES, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
 		hoverBoots = new ItemHoverBoots(ItemIds.HOVER_BOOTS, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
-		quantumStateDisruptor = new ItemQuantumStateDisruptor(ItemIds.QUANTUM_STATE_DISRUPTOR, Strings.QUANTUM_STATE_DISRUPTOR);
+		quantumStateDisrupter = new ItemQuantumStateDisruptor(ItemIds.QUANTUM_STATE_DISRUPTER, Strings.QUANTUM_STATE_DISRUPTER);
 		lifeCoin = new ItemLifeCoin(ItemIds.LIFE_COIN, Strings.LIFE_COIN);
 		
 		debugItem = new ItemDebugTool(ItemIds.DEBUG_TOOL, Strings.DEBUG_TOOL);

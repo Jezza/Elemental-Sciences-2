@@ -32,12 +32,12 @@ public class ConfigHandler {
 			ItemIds.GLASSES = config.getItem(Strings.GLASSES, ItemIds.GLASSES_DEFAULT).getInt();
 			ItemIds.DEBUG_TOOL = config.getItem(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT).getInt();
 			ItemIds.HOVER_BOOTS = config.getItem(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT).getInt();
-			ItemIds.QUANTUM_STATE_DISRUPTOR = config.getItem(Strings.QUANTUM_STATE_DISRUPTOR, ItemIds.QUANTUM_STATE_DISRUPTOR_DEFAULT).getInt();
+			ItemIds.QUANTUM_STATE_DISRUPTER = config.getItem(Strings.QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT).getInt();
 			ItemIds.LIFE_COIN = config.getItem(Strings.LIFE_COIN, ItemIds.LIFE_COIN_DEFAULT).getInt();
 
 			// Reference values
 			Reference.GLASSES_WAIT_TIMER = config.get(glassesVar, Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "Wait time for sending packets, defaults to 10").getInt();
-
+Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER =  config.get(var, Strings.QUANTUM_WAIT_TIMING, Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT, "The time in seconds that determines the time the server waits before the state disrupter detonates.").getInt();
 			// Catalyst Blacklist
 			BlackList.putValues(config.get(var, Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "These are the default block ids, and metas that can't be destroyed by the catalyst, easily configurable. Just id:meta. :)").getString());
 

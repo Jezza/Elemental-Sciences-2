@@ -11,7 +11,7 @@ import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.handlers.HandlerHoverBoots;
+import me.jezzadabomb.es2.common.core.handlers.HoverBootsHandler;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,19 +22,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-
-	public static HUDRenderer hudRenderer = new HUDRenderer();
-	
-//	public QuantumBombRenderer quantumBombRenderer = new QuantumBombRenderer();
-
 	@Override
 	public void runClientSide() {
 		initTickHandlers();
 		initTileRenderers();
 		initItemRenderer();
+		initEventHandlers();
+		initSoundHandler();
 	}
 
-	@Override
 	public void initSoundHandler() {
 		MinecraftForge.EVENT_BUS.register(new SoundHandler());
 	}
@@ -53,11 +49,9 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	public void initEventHandlers() {
-		ESLogger.debug("Registering handler");
 		MinecraftForge.EVENT_BUS.register(hudRenderer);
-		MinecraftForge.EVENT_BUS.register(new HandlerHoverBoots());
+		MinecraftForge.EVENT_BUS.register(new HoverBootsHandler());
 		MinecraftForge.EVENT_BUS.register(new QuantumBombRenderer());
-		ESLogger.debug("Registered handler");
 	}
 
 }
