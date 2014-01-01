@@ -20,8 +20,6 @@ But you're forgetting one thing, the reason minecraft is fun, and moderately eas
 
 But once you get to the realm of the gods, it gets easy.
 
-What if, we level stuff at the power of gods.
-
-What if, we gave everyone, the power of gods.
-
+What if, we level stuff at the power of gods.  
+What if, we gave everyone, the power of gods.  
 What if, god became the common man.
