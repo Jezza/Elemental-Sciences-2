@@ -13,16 +13,20 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
 
 public class ConfigHandler {
+	
 	private static Configuration config;
 	private static String var = "Gameplay";
+	
+	//Local dev environment.
+	private static final String debugString = "G:\\Minecraft\\forge\\eclipse\\config\\ElementalSciences2.cfg";
 
 	public static void init(File file) {
-		ESLogger.info(file);
 		config = new Configuration(file);
 
 		try {
 			ESLogger.info("Starting to load configuration file.");
 			config.load();
+			Reference.CAN_DEBUG = file.toString().equals(debugString);
 
 			getStrings();
 			getBooleanValues();
@@ -31,7 +35,7 @@ public class ConfigHandler {
 
 			ESLogger.info("Loaded successful.");
 		} catch (Exception e) {
-			ESLogger.severe("Failed loading item and block configuration.");
+			ESLogger.severe("Failed loading configurations.");
 		} finally {
 			config.save();
 		}
@@ -44,8 +48,9 @@ public class ConfigHandler {
 		ItemIds.GLASSES = getID(Strings.GLASSES, ItemIds.GLASSES_DEFAULT);
 		ItemIds.HOVER_BOOTS = getID(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT);
 		ItemIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
-		ItemIds.LIFE_COIN = getID(Strings.LIFE_COIN, ItemIds.LIFE_COIN_DEFAULT);
-		if (Reference.CAN_DEBUG) 
+		ItemIds.PLACEHOLDER = getID(Strings.PLACEHOLDER, ItemIds.PLACEHOLDER_DEFAULT);
+
+		if (Reference.CAN_DEBUG)
 			ItemIds.DEBUG_TOOL = getID(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT);
 	}
 
@@ -56,7 +61,6 @@ public class ConfigHandler {
 	public static void getBooleanValues() {
 		Reference.HUD_VERTICAL_ROTATION = getBoolean(Strings.HUD_PITCH, false, "This determines whether or not to rotate the inventory HUD along your y-axis.\n-Clientside");
 		Reference.DRAW_TEXTURED_SLOTS = getBoolean(Strings.DRAW_TEXTURED_SLOTS, true, "Some people thought this looked better, so here it is.\nDisables the inventory slot texture when drawing the HUD.\nSo, it's just a smooth texture.\n-Clientside");
-		Reference.CAN_DEBUG = getBoolean(Strings.CAN_DEBUG, true, "Does what it says on the tin. Best to just leave this off.\n-Clientside");
 	}
 
 	public static void getReferenceConstants() {

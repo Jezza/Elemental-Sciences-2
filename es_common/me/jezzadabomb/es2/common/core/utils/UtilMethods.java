@@ -5,6 +5,7 @@ import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -25,52 +26,56 @@ public class UtilMethods {
 		return itemStack1;
 	}
 
-	public static int getTicksFromSeconds(int seconds){
+	public static int getTicksFromSeconds(int seconds) {
 		return seconds * 20;
 	}
-	
-	public static int getSecondsFromTicks(int ticks){
+
+	public static int getSecondsFromTicks(int ticks) {
 		return ticks / 20;
 	}
-	
+
 	public static boolean canShowDebugHUD() {
 		return isHoldingItem(ModItems.debugItem) && Reference.CAN_DEBUG;
 	}
 
 	public static boolean isRenderType(TileEntity tileEntity, int type) {
-	    if(tileEntity == null){
-	        return false;
-	    }
-        return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
-    }
-	
-	public static boolean hasItemInInventory(EntityPlayer player, Item item, boolean shouldRemove){
-		for(ItemStack itemStack : player.inventory.mainInventory){
-			if(itemStack != null && itemStack.getItem().equals(item)){
-				if(shouldRemove){
-					//TODO Remove the itemStack.
+		if (tileEntity == null) {
+			return false;
+		}
+		return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
+	}
+
+	public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume) {
+		for (ItemStack tempStack : player.inventory.mainInventory) {
+			if (tempStack != null && areItemStacksEqual(itemStack, tempStack)) {
+				if (shouldConsume) {
+					tempStack.setItemDamage(1);
 				}
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
+	public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+		return itemStack1 != null && itemStack2 != null && itemStack1.getItemDamage() == itemStack2.getItemDamage() && itemStack1.getItem().equals(itemStack2.getItem());
+	}
+
 	public static boolean canFlood() {
-		if(canShowDebugHUD()){
-		    ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-		    return ((ItemDebugTool)tempStack.getItem()).canFlood;
+		if (canShowDebugHUD()) {
+			ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
+			return ((ItemDebugTool) tempStack.getItem()).canFlood;
 		}
 		return false;
 	}
-	
+
 	public static boolean correctMode(int mode) {
-        if(canShowDebugHUD()){
-            ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-            return ((ItemDebugTool)tempStack.getItem()).debugMode == mode;
-        }
-        return false;
-    }
+		if (canShowDebugHUD()) {
+			ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
+			return ((ItemDebugTool) tempStack.getItem()).debugMode == mode;
+		}
+		return false;
+	}
 
 	public static boolean isHoldingItem(Item item) {
 		return isHoldingItemStack(new ItemStack(item));
@@ -108,8 +113,7 @@ public class UtilMethods {
 		if (!(itemStack.getItem() instanceof ItemArmor)) {
 			return false;
 		}
-		ItemArmor tempArmour = (ItemArmor) itemStack.getItem();
-		int index = getSlotFromIndex(tempArmour.armorType);
+		int index = getSlotFromIndex(((ItemArmor) itemStack.getItem()).armorType);
 		if (index == -1)
 			return false;
 		ItemStack tempStack = Minecraft.getMinecraft().thePlayer.inventory.armorItemInSlot(index);
@@ -124,18 +128,16 @@ public class UtilMethods {
 	}
 
 	public static int[] getArrayFromString(String loc) {
-		if (!loc.matches("-?\\d*:-?\\d*:-?\\d*")) {
+		if (!loc.matches("-?\\d*:-?\\d*:-?\\d*"))
 			return null;
-		}
 		int[] coord = new int[3];
 		coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
 		coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
 		coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
 		return coord;
 	}
-	
-	public static Block getBlockFromWorld(World world, int x, int y, int z){
+
+	public static Block getBlockAtXYZ(World world, int x, int y, int z) {
 		return Block.blocksList[world.getBlockId(x, y, z)];
 	}
-
 }

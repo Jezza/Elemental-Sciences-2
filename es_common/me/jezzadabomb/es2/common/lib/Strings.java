@@ -13,7 +13,6 @@ public class Strings {
     public static final String HOVER_BOOTS = "hoverBoots";
     public static final String PLACEHOLDER = "placeHolder";
     public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
-    public static final String LIFE_COIN = "lifeCoin";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";

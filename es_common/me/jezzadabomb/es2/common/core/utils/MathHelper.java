@@ -10,7 +10,7 @@ public class MathHelper {
 		return Math.sqrt(a * a + b * b);
 	}
 
-	public static double clipValue(double value, double min, double max) {
+	public static double clipDouble(double value, double min, double max) {
 		if (value > max)
 			value = max;
 		if (value < min)
@@ -18,12 +18,28 @@ public class MathHelper {
 		return value;
 	}
 
-	public static float clipValue(float value, float min, float max) {
+	public static float clipFloat(float value, float min, float max) {
 		if (value > max)
 			value = max;
 		if (value < min)
 			value = min;
 		return value;
+	}
+	
+	public static int clipInt(int value, int min, int max){
+		if (value > max)
+			value = max;
+		if (value < min)
+			value = min;
+		return value;		
+	}
+	
+	public static int clipInt(int value, int max){
+		if (value > max)
+			value = max;
+		if (value < 0)
+			value = 0;
+		return value;		
 	}
 
 	public static double interpolate(double a, double b, double d) {

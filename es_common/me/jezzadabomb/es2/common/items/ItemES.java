@@ -44,7 +44,7 @@ public abstract class ItemES extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		shiftList.clear();
 		infoList.clear();
-		addInformation();
+		addInformation(player, stack);
 		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			list.addAll(shiftList);
 		} else {
@@ -55,6 +55,11 @@ public abstract class ItemES extends Item {
 	protected void defaultInfoList() {
 		infoList.add("Press" + EnumChatFormatting.DARK_RED + " Shift" + EnumChatFormatting.GRAY + " for more info.");
 	}
+	
+	protected void addToBothLists(String string){
+		shiftList.add(string);
+		infoList.add(string);
+	}
 
-	protected abstract void addInformation();
+	protected abstract void addInformation(EntityPlayer player, ItemStack stack);
 }

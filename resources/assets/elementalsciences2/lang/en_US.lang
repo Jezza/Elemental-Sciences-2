@@ -5,6 +5,7 @@ item.spectralGlasses.name=Spectral Analysis Glasses
 item.debugTool.name=Debug Tool
 item.hoverBoots.name=Hover Boots
 item.lifeCoin.name=Inconspicuous Coin
+item.deadCoin.name=Inconspicuous Coin
 item.quantumStateDisrupter.name=Quantum State Disrupter
 
 tile.inventoryScanner.name=Inventory Scanner

@@ -38,7 +38,7 @@ public class ItemAtomicCatalyst extends ItemES {
 	}
 
 	@Override
-	protected void addInformation() {
+	protected void addInformation(EntityPlayer player, ItemStack stack) {
 		defaultInfoList();
 		shiftList.add("Creates a high energy particle");
 		shiftList.add("wave that propagates through");

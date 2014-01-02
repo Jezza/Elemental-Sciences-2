@@ -26,7 +26,7 @@ public class ESLogger {
 	}
 
 	public static void debug(Object object) {
-		if (UtilMethods.canShowDebugHUD())
+//		if (UtilMethods.canShowDebugHUD())
 			log(Level.WARNING, "[DEBUG] " + object.toString());
 	}
 	

@@ -192,7 +192,7 @@ public class HUDRenderer {
 			int packetY = p.coordSet.getY();
 			int packetZ = p.coordSet.getZ();
 
-			if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.IgnoreListContains(UtilMethods.getBlockFromWorld(world, packetX, packetY + 1, packetZ))) {
+			if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.IgnoreListContains(UtilMethods.getBlockAtXYZ(world, packetX, packetY + 1, packetZ))) {
 				yInventoryPos = 190;
 				yd += 1.0F;
 				// TODO Add support for blocks on top of inventory.

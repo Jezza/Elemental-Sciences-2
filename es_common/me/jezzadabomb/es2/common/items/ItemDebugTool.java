@@ -30,6 +30,7 @@ public class ItemDebugTool extends ItemES {
 
 	public ItemDebugTool(int id, String name) {
 		super(id, name);
+		setMaxStackSize(1);
 		canFlood = false;
 		debugMode = 0;
 		DEBUG_LIMIT = debugStringList.size();
@@ -120,7 +121,7 @@ public class ItemDebugTool extends ItemES {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected void addInformation() {
+	protected void addInformation(EntityPlayer player, ItemStack stack) {
 		defaultInfoList();
 		switch (debugMode) {
 		case 0:

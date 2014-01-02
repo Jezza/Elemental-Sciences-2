@@ -8,13 +8,11 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -37,7 +35,7 @@ public class QuantumBombTicker implements ITickHandler {
 		if (type.equals(EnumSet.of(TickType.SERVER))) {
 			if (player != null) {
 				stopMovement();
-				if (++tickTiming > Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER) {
+				if (++tickTiming > (Reference.CAN_DEBUG ? 60 : Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER)) {
 					tickTiming = 0;
 					beginExplosion(MinecraftServer.getServer().getConfigurationManager().playerEntityList);
 					entityPlayer = null;
@@ -91,20 +89,23 @@ public class QuantumBombTicker implements ITickHandler {
 		for (Object object : playerEntities) {
 			if (object instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) object;
-				if (player.capabilities.isCreativeMode)
-					continue;
-				if (UtilMethods.hasItemInInventory(player, ModItems.lifeCoin, true)) {
-					// TODO Remove the disrupter.
-					// player.inventory.clearInventory(ModItems.quantumStateDisruptor.itemID, 0);
+				// if (player.capabilities.isCreativeMode)
+				// continue;
+				if (UtilMethods.hasItemInInventory(player, new ItemStack(ModItems.placeHolders, 1, 0), true)) {
+					ESLogger.info("Found coin");
 					continue;
 				}
 				player.inventory.clearInventory(-1, -1);
-				String name = DamageSource.outOfWorld.damageType;
-				DamageSource.outOfWorld.damageType = "quantumDisruption";
-				player.attackEntityFrom(DamageSource.outOfWorld, 25000.0F);
-				DamageSource.outOfWorld.damageType = name;
+				damageEntity(player);
 			}
 		}
+	}
+	
+	private void damageEntity(EntityPlayer entityPlayer){
+		String name = DamageSource.outOfWorld.damageType;
+		DamageSource.outOfWorld.damageType = "quantumDisruption";
+		entityPlayer.attackEntityFrom(DamageSource.outOfWorld, 25000.0F);
+		DamageSource.outOfWorld.damageType = name;
 	}
 
 	@Override
