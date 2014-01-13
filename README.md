@@ -5,6 +5,10 @@
 
 This mod is under the [LGPLv3](http://www.tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3.0) license.
 
+**Credits**
+Credit for the power system goes to the CoFH team. Thanks a lot gents. :)
+Thanks to all the people that could put up with my presence in #minecraftforge.
+
 **Compiling the mod**  
 Because this mod is really early stage, I can't blame you for wanting to compile this code, rather then the released versions. The released versions for now are behind because I want to establish a proper foothold in things. EG, code base, and build server up and running, etc.  
 But note that I take no responsibility for the outcome of the compile, as noted in the license.  

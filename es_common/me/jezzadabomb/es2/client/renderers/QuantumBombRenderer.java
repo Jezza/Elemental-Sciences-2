@@ -15,12 +15,9 @@ public class QuantumBombRenderer {
 
 	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
-		String tempString = ElementalSciences2.proxy.quantumBomb.getPlayer();
-		if (tempString == null || tempString.equals("null"))
+	    player = ElementalSciences2.proxy.quantumBomb.getPlayer();
+		if (player == null || player.equals("null"))
 			return;
-		if (!tempString.equals(player)) {
-			player = tempString;
-		}
 
 		// TODO write rendering code
 	}

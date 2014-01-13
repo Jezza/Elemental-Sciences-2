@@ -9,9 +9,21 @@ Build 0.0.015
     Added support for vertical rotation, to enable it, change it in the config.
     Cleaned rendering code, should be much more efficient.
     Made some debugging easier.
-    Fixed a derp with the HUD with custom tileEntities.
+    Fixed a derp with the HUD with custom tileEntities and tileEntities that extend ISidedInventory.
     Made the texture for the hover boots really sexy.
-
+    Re-added recipes because why the hell not.
+    Fixed hovering on a server. Still more to be done, but basic functionality is there.
+    Changed the texture for hovering, because this one looks cooler.
+    Added the Atomic Constructor. It will serve as the machine in the future whenever you want to build something.
+    Added the drone. It's for the atomic constructor. These are the things that will build your item.
+    Changed the model for the inventory scanner, and texture, because it was ugly beyond belief, now it's slightly more tolerable.
+    Changed a fair amount of textures.
+    Cleaned a chunk of rendering code for both the HUD and for some tile Renderers.
+    The Atomic constructor is now a completely dynamic multiblock. Placing multiple next to each other will increase the range the drones can travel in.
+    Added the solar lens. Used to power the atomic constructor. Must be in sight of the sky, and at least 2 blocks above the constructor. It doesn't have to be directly above it, it will loop down, until it hits the ground, and then spread within a 5x5 centred around the block it hit looking for them. They can power as many as 25. As hitting one doesn't mean that it stops looking.
+    Added the CoFHLib, because it made a lot of things a lot easier.
+    The code for the HUD renderer now supports damage values.
+    
 Build 0.0.014
     Added fancy model for the Inventory Scanner.
     Fixed more rendering.

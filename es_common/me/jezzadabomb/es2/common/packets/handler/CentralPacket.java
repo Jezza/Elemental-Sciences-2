@@ -4,6 +4,13 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
+import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
+import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
+import me.jezzadabomb.es2.common.packets.NeighbourChangedPacket;
+import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -19,128 +26,124 @@ import com.google.common.io.ByteStreams;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
-import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.packets.InventoryPacket;
-import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
-import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
-import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
-
 public abstract class CentralPacket {
 
-    public static final String CHANNEL = Reference.CHANNEL_NAME;
+	public static final String CHANNEL = Reference.CHANNEL_NAME;
 
-    private static final BiMap<Integer, Class<? extends CentralPacket>> idMap;
+	private static final BiMap<Integer, Class<? extends CentralPacket>> idMap;
+	static {
+		int i = 1;
+		ImmutableBiMap.Builder<Integer, Class<? extends CentralPacket>> builder = ImmutableBiMap.builder();
 
-    static {
-        ImmutableBiMap.Builder<Integer, Class<? extends CentralPacket>> builder = ImmutableBiMap.builder();
+		builder.put(Integer.valueOf(i++), InventoryRequestPacket.class);
+		builder.put(Integer.valueOf(i++), InventoryPacket.class);
+		builder.put(Integer.valueOf(i++), InventoryTerminatePacket.class);
+		builder.put(Integer.valueOf(i++), PlayerBombPacket.class);
+		builder.put(Integer.valueOf(i++), NeighbourChangedPacket.class);
+		builder.put(Integer.valueOf(i++), HoverHandlerPacket.class);
+		
+		idMap = builder.build();
+	}
 
-        builder.put(Integer.valueOf(1), InventoryRequestPacket.class);
-        builder.put(Integer.valueOf(2), InventoryPacket.class);
-        builder.put(Integer.valueOf(3), InventoryTerminatePacket.class);
-        builder.put(Integer.valueOf(4), PlayerBombPacket.class);
+	public static CentralPacket constructPacket(int packetId) throws ProtocolException, ReflectiveOperationException {
+		Class<? extends CentralPacket> clazz = idMap.get(Integer.valueOf(packetId));
+		if (clazz == null) {
+			throw new ProtocolException("Unknown Packet Id!");
+		} else {
+			return clazz.newInstance();
+		}
+	}
 
-        idMap = builder.build();
-    }
+	@SuppressWarnings("serial")
+	public static class ProtocolException extends Exception {
 
-    public static CentralPacket constructPacket(int packetId) throws ProtocolException, ReflectiveOperationException {
-        Class<? extends CentralPacket> clazz = idMap.get(Integer.valueOf(packetId));
-        if (clazz == null) {
-            throw new ProtocolException("Unknown Packet Id!");
-        } else {
-            return clazz.newInstance();
-        }
-    }
+		public ProtocolException() {
+		}
 
-    @SuppressWarnings("serial")
-    public static class ProtocolException extends Exception {
+		public ProtocolException(String message, Throwable cause) {
+			super(message, cause);
+		}
 
-        public ProtocolException() {
-        }
+		public ProtocolException(String message) {
+			super(message);
+		}
 
-        public ProtocolException(String message, Throwable cause) {
-            super(message, cause);
-        }
+		public ProtocolException(Throwable cause) {
+			super(cause);
+		}
+	}
 
-        public ProtocolException(String message) {
-            super(message);
-        }
+	public final int getPacketId() {
+		if (idMap.inverse().containsKey(getClass())) {
+			return idMap.inverse().get(getClass()).intValue();
+		} else {
+			throw new RuntimeException("Packet " + getClass().getSimpleName() + " is missing a mapping!");
+		}
+	}
 
-        public ProtocolException(Throwable cause) {
-            super(cause);
-        }
-    }
+	public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException {
+		if (par0ItemStack == null) {
+			par1DataOutput.writeShort(-1);
+		} else {
+			par1DataOutput.writeShort(par0ItemStack.itemID);
+			par1DataOutput.writeByte(par0ItemStack.stackSize);
+			par1DataOutput.writeShort(par0ItemStack.getItemDamage());
+			NBTTagCompound nbttagcompound = null;
 
-    public final int getPacketId() {
-        if (idMap.inverse().containsKey(getClass())) {
-            return idMap.inverse().get(getClass()).intValue();
-        } else {
-            throw new RuntimeException("Packet " + getClass().getSimpleName() + " is missing a mapping!");
-        }
-    }
+			if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag()) {
+				nbttagcompound = par0ItemStack.stackTagCompound;
+			}
 
-    public static void writeItemStack(ItemStack par0ItemStack, DataOutput par1DataOutput) throws IOException {
-        if (par0ItemStack == null) {
-            par1DataOutput.writeShort(-1);
-        } else {
-            par1DataOutput.writeShort(par0ItemStack.itemID);
-            par1DataOutput.writeByte(par0ItemStack.stackSize);
-            par1DataOutput.writeShort(par0ItemStack.getItemDamage());
-            NBTTagCompound nbttagcompound = null;
+			writeNBTTagCompound(nbttagcompound, par1DataOutput);
+		}
+	}
 
-            if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag()) {
-                nbttagcompound = par0ItemStack.stackTagCompound;
-            }
+	protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException {
+		if (par0NBTTagCompound == null) {
+			par1DataOutput.writeShort(-1);
+		} else {
+			byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
+			par1DataOutput.writeShort((short) abyte.length);
+			par1DataOutput.write(abyte);
+		}
+	}
 
-            writeNBTTagCompound(nbttagcompound, par1DataOutput);
-        }
-    }
+	public static ItemStack readItemStack(DataInput par0DataInput) throws IOException {
+		ItemStack itemstack = null;
+		short short1 = par0DataInput.readShort();
 
-    protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException {
-        if (par0NBTTagCompound == null) {
-            par1DataOutput.writeShort(-1);
-        } else {
-            byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
-            par1DataOutput.writeShort((short) abyte.length);
-            par1DataOutput.write(abyte);
-        }
-    }
+		if (short1 >= 0) {
+			byte b0 = par0DataInput.readByte();
+			short short2 = par0DataInput.readShort();
+			itemstack = new ItemStack(short1, b0, short2);
+			itemstack.stackTagCompound = readNBTTagCompound(par0DataInput);
+		}
 
-    public static ItemStack readItemStack(DataInput par0DataInput) throws IOException {
-        ItemStack itemstack = null;
-        short short1 = par0DataInput.readShort();
+		return itemstack;
+	}
 
-        if (short1 >= 0) {
-            byte b0 = par0DataInput.readByte();
-            short short2 = par0DataInput.readShort();
-            itemstack = new ItemStack(short1, b0, short2);
-            itemstack.stackTagCompound = readNBTTagCompound(par0DataInput);
-        }
+	public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException {
+		short short1 = par0DataInput.readShort();
 
-        return itemstack;
-    }
+		if (short1 < 0) {
+			return null;
+		} else {
+			byte[] abyte = new byte[short1];
+			par0DataInput.readFully(abyte);
+			return CompressedStreamTools.decompress(abyte);
+		}
+	}
 
-    public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException {
-        short short1 = par0DataInput.readShort();
+	public final Packet makePacket() {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeByte(getPacketId());
+		write(out);
+		return PacketDispatcher.getPacket(CHANNEL, out.toByteArray());
+	}
 
-        if (short1 < 0) {
-            return null;
-        } else {
-            byte[] abyte = new byte[short1];
-            par0DataInput.readFully(abyte);
-            return CompressedStreamTools.decompress(abyte);
-        }
-    }
+	public abstract void write(ByteArrayDataOutput out);
 
-    public final Packet makePacket() {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeByte(getPacketId());
-        write(out);
-        return PacketDispatcher.getPacket(CHANNEL, out.toByteArray());
-    }
+	public abstract void read(ByteArrayDataInput in) throws ProtocolException;
 
-    public abstract void write(ByteArrayDataOutput out);
-
-    public abstract void read(ByteArrayDataInput in) throws ProtocolException;
-
-    public abstract void execute(EntityPlayer player, Side side) throws ProtocolException;
+	public abstract void execute(EntityPlayer player, Side side) throws ProtocolException;
 }

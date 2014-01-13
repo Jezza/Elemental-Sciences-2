@@ -1,16 +1,8 @@
 package me.jezzadabomb.es2.common.packets;
 
-import java.util.ArrayList;
-
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.client.ClientProxy;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
-import me.jezzadabomb.es2.common.packets.handler.CentralPacket.ProtocolException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;

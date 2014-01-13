@@ -13,11 +13,11 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
 
 public class ConfigHandler {
-	
+
 	private static Configuration config;
 	private static String var = "Gameplay";
-	
-	//Local dev environment.
+
+	// Local dev environment.
 	private static final String debugString = "G:\\Minecraft\\forge\\eclipse\\config\\ElementalSciences2.cfg";
 
 	public static void init(File file) {
@@ -43,11 +43,15 @@ public class ConfigHandler {
 
 	public static void getIDs() {
 		BlockIds.INVENTORY_SCANNER = getID(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT);
+		BlockIds.ATOMIC_CONSTRUCTOR = getID(Strings.ATOMIC_CONSTRUCTOR, BlockIds.ATOMIC_CONSTRUCTOR_DEFAULT);
+		BlockIds.RUNNING_WHEEL = getID(Strings.RUNNING_WHEEL, BlockIds.RUNNING_WHEEL_DEFAULT);
+		BlockIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, BlockIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
+		BlockIds.SOLAR_LENS = getID(Strings.SOLAR_LENS, BlockIds.SOLAR_LENS_DEFAULT);
 
 		ItemIds.ATOMIC_CATALYST = getID(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT);
 		ItemIds.GLASSES = getID(Strings.GLASSES, ItemIds.GLASSES_DEFAULT);
 		ItemIds.HOVER_BOOTS = getID(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT);
-		ItemIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
+		ItemIds.QUANTUM_STATE_DISRUPTER = getID(Strings.ITEM_QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
 		ItemIds.PLACEHOLDER = getID(Strings.PLACEHOLDER, ItemIds.PLACEHOLDER_DEFAULT);
 
 		if (Reference.CAN_DEBUG)

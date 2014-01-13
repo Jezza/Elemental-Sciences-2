@@ -5,14 +5,18 @@ import java.util.ArrayList;
 public class Strings {
     // Block Name Constants
     public static final String INVENTORY_SCANNER = "inventoryScanner";
-
+    
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
     public static final String GLASSES = "spectralGlasses";
     public static final String DEBUG_TOOL = "debugTool";
     public static final String HOVER_BOOTS = "hoverBoots";
     public static final String PLACEHOLDER = "placeHolder";
+    public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
     public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
+    public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
+    public static final String RUNNING_WHEEL = "runningWheel";
+    public static final String SOLAR_LENS = "solarLens";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";

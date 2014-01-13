@@ -2,19 +2,14 @@ package me.jezzadabomb.es2.common.packets;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.client.ClientProxy;
-import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -35,14 +30,26 @@ public class InventoryPacket extends CentralPacket {
 	public int tickTiming;
 
 	public InventoryPacket(TileEntity tileEntity, String loc) {
-		if (tileEntity != null && tileEntity instanceof IInventory) {
-			itemStacks = new ArrayList<ItemStack>(0);
-			this.loc = loc;
-			IInventory inventory = ((IInventory) tileEntity);
-			inventoryTitle = inventory.getInvName();
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				if (inventory.getStackInSlot(i) != null) {
-					itemStacks.add(inventory.getStackInSlot(i));
+		if(tileEntity != null){			
+			if (tileEntity instanceof IInventory) {
+				itemStacks = new ArrayList<ItemStack>(0);
+				this.loc = loc;
+				IInventory inventory = ((IInventory) tileEntity);
+				inventoryTitle = inventory.getInvName();
+				for (int i = 0; i < inventory.getSizeInventory(); i++) {
+					if (inventory.getStackInSlot(i) != null) {
+						itemStacks.add(inventory.getStackInSlot(i));
+					}
+				}
+			}else if(tileEntity instanceof ISidedInventory){
+				itemStacks = new ArrayList<ItemStack>(0);
+				this.loc = loc;
+				ISidedInventory inventory = ((ISidedInventory) tileEntity);
+				inventoryTitle = inventory.getInvName();
+				for (int i = 0; i < inventory.getSizeInventory(); i++) {
+					if (inventory.getStackInSlot(i) != null) {
+						itemStacks.add(inventory.getStackInSlot(i));
+					}
 				}
 			}
 		}
@@ -112,7 +119,7 @@ public class InventoryPacket extends CentralPacket {
 		boolean added = false;
 		for (ItemStack itemStack : itemStacks) {
 			for (ItemStack tempStack : tempStacks) {
-				if (itemStack.itemID == tempStack.itemID) {
+				if (UtilMethods.areItemStacksEqual(itemStack, tempStack)) {
 					UtilMethods.mergeItemStacks(tempStacks.get(tempStacks.indexOf(tempStack)), itemStack, true);
 					added = true;
 				}

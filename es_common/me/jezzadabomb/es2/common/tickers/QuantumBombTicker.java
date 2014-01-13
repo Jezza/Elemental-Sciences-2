@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.common.tickers;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -25,6 +27,12 @@ public class QuantumBombTicker implements ITickHandler {
 	private int tickTiming = 0;
 	private double lastTickPosX, lastTickPosY, lastTickPosZ;
 	private boolean ticked = false;
+	ArrayList<EntityItem> itemList, removeList;
+	
+	public QuantumBombTicker(){
+	    itemList = new ArrayList<EntityItem>();
+	    removeList = new ArrayList<EntityItem>();
+	}
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -33,8 +41,16 @@ public class QuantumBombTicker implements ITickHandler {
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
 		if (type.equals(EnumSet.of(TickType.SERVER))) {
+		    for(EntityItem item : itemList){
+		        if(item.isCollided){
+		            item.setDead();
+		            removeList.add(item);
+		        }
+		    }
+		    itemList.removeAll(removeList);
+		    removeList.clear();
+		    
 			if (player != null) {
-				stopMovement();
 				if (++tickTiming > (Reference.CAN_DEBUG ? 60 : Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER)) {
 					tickTiming = 0;
 					beginExplosion(MinecraftServer.getServer().getConfigurationManager().playerEntityList);
@@ -58,6 +74,10 @@ public class QuantumBombTicker implements ITickHandler {
 		}
 	}
 
+	public void addItemEntityToList(EntityItem item){
+	    itemList.add(item);
+	}
+	
 	public boolean canAdd(EntityPlayer player) {
 		if (this.player != null || player == null) {
 			return false;
@@ -69,12 +89,6 @@ public class QuantumBombTicker implements ITickHandler {
 
 	public String getPlayer() {
 		return player;
-	}
-
-	private void stopMovement() {
-		// TODO Stop all movement from entityPlayer
-		// entityPlayer.motionX = entityPlayer.motionZ = entityPlayer.motionY = entityPlayer.moveForward = entityPlayer.moveStrafing = 0.0F;
-		// entityPlayer.velocityChanged = true;
 	}
 
 	public void setPlayer(String name) {
@@ -89,10 +103,7 @@ public class QuantumBombTicker implements ITickHandler {
 		for (Object object : playerEntities) {
 			if (object instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) object;
-				// if (player.capabilities.isCreativeMode)
-				// continue;
 				if (UtilMethods.hasItemInInventory(player, new ItemStack(ModItems.placeHolders, 1, 0), true)) {
-					ESLogger.info("Found coin");
 					continue;
 				}
 				player.inventory.clearInventory(-1, -1);
@@ -100,8 +111,8 @@ public class QuantumBombTicker implements ITickHandler {
 			}
 		}
 	}
-	
-	private void damageEntity(EntityPlayer entityPlayer){
+
+	private void damageEntity(EntityPlayer entityPlayer) {
 		String name = DamageSource.outOfWorld.damageType;
 		DamageSource.outOfWorld.damageType = "quantumDisruption";
 		entityPlayer.attackEntityFrom(DamageSource.outOfWorld, 25000.0F);

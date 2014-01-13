@@ -34,7 +34,7 @@ public class InventoryInstance {
         return z;
     }
 
-    public TileEntity getIInventory() {
+    public TileEntity getTileEntity() {
         return tileEntity;
     }
     

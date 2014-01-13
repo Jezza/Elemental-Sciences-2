@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
@@ -51,11 +52,21 @@ public class PlayerTicker implements ITickHandler {
                             int tempZ = playerZ + z;
                             if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
                                 TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
-                                if(HUDBlackLists.ScannerBlackListContains(tileEntity.getBlockType())){
+                                if(HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType())){
                                 	break;
                                 }
                                 if (tileEntity instanceof IInventory) {
                                     String name = ((IInventory) tileEntity).getInvName();
+                                    StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
+                                    if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
+                                        if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
+                                            StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
+                                        } else {
+                                            StoredQueues.instance().putInventory(name, tileEntity, tempX, tempY, tempZ);
+                                        }
+                                    }
+                                }else if(tileEntity instanceof ISidedInventory){
+                                	String name = ((ISidedInventory) tileEntity).getInvName();
                                     StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
                                     if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
                                         if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {

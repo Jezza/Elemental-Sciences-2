@@ -32,7 +32,6 @@ public class ConnectionHandler implements IConnectionHandler {
 
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {
-		//TODO Add packet to send the info for the player.
 		PacketDispatcher.sendPacketToPlayer(new PlayerBombPacket(ElementalSciences2.proxy.quantumBomb.getPlayer()).makePacket(), player);
 	}
 

@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.items;
 
 import java.util.List;
 
+import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -10,6 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -17,7 +19,7 @@ public class ItemPlaceHolder extends ItemES {
 
 	@SideOnly(Side.CLIENT)
 	private Icon[] icons;
-	public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor"};
+	public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger" };
 
 	public ItemPlaceHolder(int id, String name) {
 		super(id, name);
@@ -26,26 +28,33 @@ public class ItemPlaceHolder extends ItemES {
 	}
 
 	protected void addInformation(EntityPlayer player, ItemStack stack) {
-		defaultInfoList();
 		switch (stack.getItemDamage()) {
 		case 0:
-			infoList.clear();
 			addToBothLists("You got it for getting");
 			addToBothLists("a perfect pacman game.");
 			break;
 		case 1:
-			infoList.clear();
 			addToBothLists("Just an ordinary coin.");
 			break;
 		case 2:
-			shiftList.add("Something");
+			addToBothLists("A carefully crafted, highly fragile glass lens.");
 			break;
 		case 3:
-			shiftList.add("PlaceHolder");
+			addToBothLists("A tough piece of metal, could be used for a frame.");
+			break;
+		case 4:
+			addToBothLists("A solid iron rod.");
+			break;
+		case 5:
+			addToBothLists("A very fragile crystal.");
+			break;
+		case 6:
+			infoList.add("A shiny drone for shiny things.");
+			shiftList.add("He shall be called Geoff.");
 			break;
 		}
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
@@ -65,7 +74,7 @@ public class ItemPlaceHolder extends ItemES {
 	public Icon getIconFromDamage(int damage) {
 		return icons[damage];
 	}
-	
+
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
 		return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length)];

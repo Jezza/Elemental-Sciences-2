@@ -12,9 +12,7 @@ public class MiscEventHandler {
 	public void onItemDrop(ItemTossEvent event) {
 		if (event.entityItem.getEntityItem().getItem().equals(ModItems.quantumStateDisrupter)){
 			ElementalSciences2.proxy.quantumBomb.canAdd(event.player);
-			ItemStack tempStack = event.entityItem.getEntityItem().copy();
-			tempStack.stackSize--;
-			event.entityItem.setEntityItemStack(tempStack);
+			ElementalSciences2.proxy.quantumBomb.addItemEntityToList(event.entityItem);
 		}
 	}
 
