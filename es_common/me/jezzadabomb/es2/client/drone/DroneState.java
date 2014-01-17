@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+
 import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -19,7 +21,8 @@ public class DroneState {
     AtomicConstructorCoordSet coordSet, targetSet, workingSet;
     TileAtomicConstructor tAC;
     float motionX, motionY, motionZ;
-    CoordSet mainCoordSet;
+    CoordSet mainCoordSet, targetTAC;
+    boolean movingOutside;
     float xMinMargin = 0.12F;
     float xMaxMargin = 0.89F;
     float yMinMargin = 0.12F;
@@ -39,6 +42,7 @@ public class DroneState {
         targetSet = new AtomicConstructorCoordSet(MathHelper.clipFloat((float) new Random().nextFloat(), xMinMargin, xMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), yMinMargin, yMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), zMinMargin, zMaxMargin));
         setMotion(0.01F);
         mode = 1;
+        movingOutside = false;
     }
 
     public DroneState(AtomicConstructorCoordSet coordSet) {
@@ -113,8 +117,6 @@ public class DroneState {
             } else if (isWorking()) {
                 setNewTargetCoordsForWork();
             }
-        } else {
-
         }
 
         targetSet.setX(MathHelper.clipFloat(targetSet.getX(), xMinMargin, xMaxMargin));
@@ -144,14 +146,6 @@ public class DroneState {
         }
     }
 
-    public AtomicConstructorCoordSet getCoordSet() {
-        return coordSet;
-    }
-
-    public AtomicConstructorCoordSet getTargetSet() {
-        return targetSet;
-    }
-
     public boolean isIdle() {
         return mode == 1;
     }
@@ -160,70 +154,17 @@ public class DroneState {
         return mode == 2;
     }
 
-    public void setNewCoords(AtomicConstructorCoordSet coordSet) {
-        this.coordSet = coordSet;
-    }
-
     public void setNewTargetCoords(AtomicConstructorCoordSet targetSet) {
         this.targetSet = targetSet;
     }
 
     public void setNewTargetCoordsForIdle() {
-        if (!tAC.worldObj.isRemote && new Random().nextInt(20) < 19) {
-            TileAtomicConstructor tAC = pickRandomNearbyTAC();
-            if (tAC == null) {
-                setNewTargetCoordsForIdle();
-                return;
-            }
-            this.tAC.passDroneToNearbyTAC(tAC, this);
-            this.tAC.markForUpdate();
-            tAC.markForUpdate();
-        } else {
-            if (MathHelper.withinRange(coordSet.getX(), targetSet.getX(), motionX))
-                targetSet.setX(MathHelper.clipFloat(new Random().nextFloat(), xMinMargin, xMaxMargin));
-            if (MathHelper.withinRange(coordSet.getY(), targetSet.getY(), motionY))
-                targetSet.setY(MathHelper.clipFloat(new Random().nextFloat(), yMinMargin, yMaxMargin));
-            if (MathHelper.withinRange(coordSet.getZ(), targetSet.getZ(), motionZ))
-                targetSet.setZ(MathHelper.clipFloat(new Random().nextFloat(), zMinMargin, zMaxMargin));
-        }
-    }
-
-    public TileAtomicConstructor pickRandomNearbyTAC() {
-        TileAtomicConstructor tAC = null;
-        int side = new Random().nextInt(6);
-        int x = mainCoordSet.getX();
-        int y = mainCoordSet.getY();
-        int z = mainCoordSet.getZ();
-        World world = this.tAC.worldObj;
-        switch (side) {
-        case 0:
-            if (isMatch(x + 1, y, z))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x + 1, y, z);
-            break;
-        case 1:
-            if (isMatch(x - 1, y, z))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x - 1, y, z);
-            break;
-        case 2:
-            if (isMatch(x, y + 1, z))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y + 1, z);
-            break;
-        case 3:
-            if (isMatch(x, y - 1, z))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y - 1, z);
-            break;
-        case 4:
-            if (isMatch(x, y, z + 1))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z + 1);
-            break;
-        case 5:
-            if (isMatch(x, y, z - 1))
-                tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z - 1);
-            break;
-        default:
-            break;
-        }
-        return tAC;
+        if (MathHelper.withinRange(coordSet.getX(), targetSet.getX(), motionX))
+            targetSet.setX(MathHelper.clipFloat(new Random().nextFloat(), xMinMargin, xMaxMargin));
+        if (MathHelper.withinRange(coordSet.getY(), targetSet.getY(), motionY))
+            targetSet.setY(MathHelper.clipFloat(new Random().nextFloat(), yMinMargin, yMaxMargin));
+        if (MathHelper.withinRange(coordSet.getZ(), targetSet.getZ(), motionZ))
+            targetSet.setZ(MathHelper.clipFloat(new Random().nextFloat(), zMinMargin, zMaxMargin));
     }
 
     private boolean isMatch(int x, int y, int z) {

@@ -4,6 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;

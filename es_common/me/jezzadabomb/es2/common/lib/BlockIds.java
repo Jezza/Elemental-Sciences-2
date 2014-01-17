@@ -6,10 +6,12 @@ public class BlockIds {
 	public static int RUNNING_WHEEL_DEFAULT = 2042;
 	public static int QUANTUM_STATE_DISRUPTER_DEFAULT = 2043;
 	public static int SOLAR_LENS_DEFAULT = 2044;
+	public static int CONSOLE_DEFAULT = 2045;
 
 	public static int INVENTORY_SCANNER;
 	public static int ATOMIC_CONSTRUCTOR;
 	public static int RUNNING_WHEEL;
 	public static int QUANTUM_STATE_DISRUPTER;
 	public static int SOLAR_LENS;
+	public static int CONSOLE;
 }

@@ -88,6 +88,10 @@ public class CoordSet {
         return false;
     }
 
+    public CoordSet subtractCoords(CoordSet tempSet) {
+        return new CoordSet(x - tempSet.getX(), y - tempSet.getY(), z - tempSet.getZ());
+    }
+
     /*
      * Truncated.
      */

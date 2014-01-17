@@ -17,6 +17,7 @@ public class Strings {
     public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
     public static final String RUNNING_WHEEL = "runningWheel";
     public static final String SOLAR_LENS = "solarLens";
+    public static final String CONSOLE = "console";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";

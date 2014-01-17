@@ -134,7 +134,7 @@ public class ItemDebugTool extends ItemES {
         if (getDebugMode("Constructor - Energy add") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IEnergyHandler) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
             int prevEnergy = tEH.getEnergyStored(null);
-            tEH.receiveEnergy(null, 2000, false);
+            tEH.receiveEnergy(null, 20, false);
             if (world.isRemote) {
                 player.addChatMessage("Client Side: " + prevEnergy + " ==> " + tEH.getEnergyStored(null));
             } else {
@@ -145,24 +145,12 @@ public class ItemDebugTool extends ItemES {
         if (world.isRemote) {
             if (getDebugMode("Constructor - Get Nearby Count") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
                 ArrayList<TileAtomicConstructor> tempList = new ArrayList<TileAtomicConstructor>();
-                if (isMatch(world, x + 1, y, z)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x + 1, y, z));
-                }
-                if (isMatch(world, x - 1, y, z)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x - 1, y, z));
-                }
-                if (isMatch(world, x, y + 1, z)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x, y + 1, z));
-                }
-                if (isMatch(world, x, y - 1, z)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x, y - 1, z));
-                }
-                if (isMatch(world, x, y, z + 1)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x, y, z + 1));
-                }
-                if (isMatch(world, x, y, z - 1)) {
-                    tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x, y, z - 1));
-                }
+                for (int i = -1; i < 2; i++)
+                    for (int j = -1; j < 2; j++)
+                        for (int k = -1; k < 2; k++) {
+                            if (!(i == 0 && j == 0 && k == 0) && world.blockHasTileEntity(x + i, y + j, z + k) && world.getBlockTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor)
+                                tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x + i, y + j, z + k));
+                        }
                 player.addChatMessage("" + tempList.size());
             }
 

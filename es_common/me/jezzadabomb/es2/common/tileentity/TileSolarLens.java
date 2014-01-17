@@ -48,7 +48,7 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
     private void searchForTileEntity() {
         constructorList.clear();
         int y = loopDownUntilLastAirBlock(xCoord, yCoord, zCoord) - 1;
-        heightBonus = (int) Math.floor(y / 4);
+        heightBonus = (int) Math.floor(y / 2);
         if(heightBonus < 1)
             heightBonus = 1;
         if (isMatch(xCoord, y, zCoord)) {

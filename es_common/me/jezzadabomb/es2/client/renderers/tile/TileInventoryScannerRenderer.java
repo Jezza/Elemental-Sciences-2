@@ -19,11 +19,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TileInventoryScannerRenderer extends TileEntitySpecialRenderer {
 
-    private ModelInventoryScanner modelInventoryScanner = new ModelInventoryScanner();
-    private int fader = 0;
-    private boolean broken = false;
-    private boolean ticked = false;
-    private boolean onChest;
+    private ModelInventoryScanner modelInventoryScanner;
+
+    public TileInventoryScannerRenderer() {
+        modelInventoryScanner = new ModelInventoryScanner();
+    }
 
     public void renderInventoryScanner(TileInventoryScanner inventoryScanner, double x, double y, double z, float tick) {
         glPushMatrix();
@@ -33,6 +33,7 @@ public class TileInventoryScannerRenderer extends TileEntitySpecialRenderer {
 
         glTranslatef(0.5F, 1.5F, 0.5F);
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);
+
         RenderUtils.bindTexture(TextureMaps.INVENTORY_SCANNER);
         modelInventoryScanner.render();
 

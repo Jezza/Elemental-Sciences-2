@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
@@ -25,7 +26,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     boolean finished, hasWork, breakCheck;
     ArrayList<DroneState> droneList, workingList, removeList, addList;
     ItemStack itemStack;
-    int tickTiming, prevSize, renderTiming;
+    int tickTiming, prevSize;
     int width = 2;
     int height = 2;
 
@@ -34,28 +35,24 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         removeList = new ArrayList<DroneState>();
         workingList = new ArrayList<DroneState>();
         addList = new ArrayList<DroneState>();
-        tickTiming = prevSize = renderTiming = 0;
+        tickTiming = prevSize;
     }
 
     @Override
     public void updateEntity() {
         // TODO Handle the multiblock.
-        if (++renderTiming > UtilMethods.getTicksFromSeconds(new Random().nextInt(20))) {
-            constructRenderMatrix();
-            renderTiming = 0;
-        }
         if (renderMatrix == null)
             constructRenderMatrix();
         droneMaintenance();
         if (prevSize != droneList.size())
             markForUpdate();
-        if (storage.getEnergyStored() == 0)
+        if (storage.getEnergyStored() < 1)
             return;
         distroTotalPower();
         markForUpdate();
 
         for (DroneState drone : droneList) {
-            if (storage.extractEnergy(1, false) == 0)
+            if (storage.extractEnergy(5, false) == 0)
                 break;
             drone.moveDrone();
             if (hasWork && droneList.size() > workingList.size() && ++tickTiming > 80) {
@@ -64,37 +61,63 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
             }
         }
         prevSize = droneList.size();
+        markForUpdate();
     }
 
     private void distroTotalPower() {
-        ArrayList<TileAtomicConstructor> atomicList = getTotalMachines();
-        int powerToDistro = Math.round(storage.getEnergyStored() / (atomicList.size() + 1));
+        ArrayList<TileAtomicConstructor> atomicList = getNearbyMachines();
+        ArrayList<TileAtomicConstructor> utilList = new ArrayList<TileAtomicConstructor>();
+        if (atomicList.isEmpty())
+            return;
+
+        int lowestPower = 500;
         for (TileAtomicConstructor atomic : atomicList) {
-            atomic.receiveEnergy(null, storage.extractEnergy(powerToDistro, false), false);
+            int power = atomic.getEnergyStored(null);
+            if (power <= lowestPower) {
+                lowestPower = power;
+                utilList.add(atomic);
+            }
         }
+
+        int powerToDistro = Math.round(storage.getEnergyStored() / (utilList.size() + 1));
+        for (TileAtomicConstructor atomic : utilList) {
+            atomic.receiveEnergy(null, storage.extractEnergy(powerToDistro, false), false);
+            atomic.markForUpdate();
+        }
+        markForUpdate();
     }
 
-    private ArrayList<TileAtomicConstructor> getTotalMachines() {
+    private ArrayList<TileAtomicConstructor> getNearbyMachines() {
         ArrayList<TileAtomicConstructor> tempList = new ArrayList<TileAtomicConstructor>();
-        if (isMatch(xCoord + 1, yCoord, zCoord)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + 1, yCoord, zCoord));
+        for (int i = -1; i < 2; i++)
+            for (int j = -1; j < 2; j++)
+                for (int k = -1; k < 2; k++)
+                    if (!(i == 0 && j == 0 && k == 0) && isMatch(xCoord + i, yCoord + j, zCoord + k)) {
+                        TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                        if (tile.getEnergyStored(null) <= storage.getEnergyStored())
+                            tempList.add(tile);
+                    }
+
+        ArrayList<TileAtomicConstructor> sortedList = new ArrayList<TileAtomicConstructor>();
+        ArrayList<TileAtomicConstructor> utilList = new ArrayList<TileAtomicConstructor>();
+
+        boolean added = false;
+        for (TileAtomicConstructor atomic : tempList) {
+            for (TileAtomicConstructor temp : sortedList) {
+                if (atomic.getEnergyStored(null) < temp.getEnergyStored(null)) {
+                    utilList.set(utilList.indexOf(temp), atomic);
+                    added = true;
+                }
+            }
+            if (!added)
+                utilList.add(atomic);
+
+            sortedList.clear();
+            sortedList.addAll(utilList);
+            added = false;
         }
-        if (isMatch(xCoord - 1, yCoord, zCoord)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord - 1, yCoord, zCoord));
-        }
-        if (isMatch(xCoord, yCoord + 1, zCoord)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, yCoord + 1, zCoord));
-        }
-        if (isMatch(xCoord, yCoord - 1, zCoord)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord));
-        }
-        if (isMatch(xCoord, yCoord, zCoord + 1)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, yCoord, zCoord + 1));
-        }
-        if (isMatch(xCoord, yCoord, zCoord - 1)) {
-            tempList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, yCoord, zCoord - 1));
-        }
-        return tempList;
+
+        return sortedList;
     }
 
     private boolean isMatch(int x, int y, int z) {
@@ -109,15 +132,13 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         droneList.removeAll(removeList);
         removeList.clear();
 
-        for (DroneState drone : addList) {
-            drone.setNewTargetCoords(new AtomicConstructorCoordSet(0.5F, 0.5F, 0.5F));
-        }
-
         droneList.addAll(addList);
         addList.clear();
 
-        if (droneList.isEmpty())
+        if (droneList.isEmpty()) {
+            workingList.clear();
             return;
+        }
 
         for (DroneState drone : droneList) {
             if (drone.isIdle()) {
@@ -174,19 +195,6 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         return itemStack;
     }
 
-    public boolean getIsBelow() {
-        if (worldObj == null)
-            return false;
-        return worldObj.getBlockId(xCoord, yCoord - 1, zCoord) == ModBlocks.atomicConstructor.blockID;
-    }
-
-    public TileAtomicConstructor getConstructor() {
-        if (getIsBelow()) {
-            return (TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord);
-        }
-        return null;
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
@@ -227,11 +235,6 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     }
 
     public void addDrones(int size) {
-        // if (getIsBelow()) {
-        // TileAtomicConstructor below = getConstructor();
-        // below.addDrones(size);
-        // return;
-        // }
         for (int i = 0; i < size; i++) {
             droneList.add(new DroneState(this));
         }
@@ -247,9 +250,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         addList.add(droneState);
     }
 
-    public void passDroneToNearbyTAC(TileAtomicConstructor tAC, DroneState droneState) {
-        ESLogger.info("Moved drone.");
-        tAC.addDroneFromNearbyTAC(droneState);
+    public void removeDroneFromList(DroneState droneState) {
         removeList.add(droneState);
     }
 
@@ -277,7 +278,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
-                    if (i == 0 && j == 0 && k == 0 || worldObj.blockHasTileEntity(xCoord + i, yCoord + j, zCoord + k))
+                    if (i == 0 && j == 0 && k == 0 || !worldObj.blockHasTileEntity(xCoord + i, yCoord + j, zCoord + k))
                         continue;
                     if (worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k) instanceof TileAtomicConstructor)
                         ((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k)).constructRenderMatrix();
