@@ -26,6 +26,8 @@ public class TextureMaps {
     public static final ResourceLocation INVENTORY_SCANNER = getResource("inventoryScanner");
     public static final ResourceLocation CONSOLE_BASE = getResource("consolePlate");
     public static final ResourceLocation CONSOLE_SCREEN = getResource("consoleScreen");
+    public static final ResourceLocation BLANK_SCREEN = getResource("blankScreen");
+    public static final ResourceLocation CABLE_PIXEL = getResource("cable");
 
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";

@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import me.jezzadabomb.es2.client.models.ModelPlate;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -25,31 +26,31 @@ public class ItemConsoleRenderer implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return false;
+        return true;
     }
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY: {
-                renderConsole(0.0F, 1.2F, 0.0F, 1.0F);
+                renderConsole(-0.5F, 0.0F, -0.5F, 1.0F);
                 break;
             }
             case EQUIPPED_FIRST_PERSON: {
-                renderConsole(0.4F, 1.5F, 0.5F, 1.0F);
+                renderConsole(0.0F, 0.2F, 0.1F, 1.0F);
                 break;
             }
             case INVENTORY: {
-                renderConsole(0.0F, 1.0F, 0.0F, 1.0F);
+                renderConsole(0.0F, -0.2F, 0.0F, 0.8F);
                 break;
             }
             case EQUIPPED: {
-                renderConsole(0.4F, 1.5F, 0.4F, 1.0F);
+                renderConsole(0.0F, 0.4F, 0.1F, 1.0F);
                 break;
             }
             default:
@@ -88,6 +89,8 @@ public class ItemConsoleRenderer implements IItemRenderer {
         modelPlate.render();
 
         glEnable(GL_LIGHTING);
+        glPopMatrix();
+        
         glPopMatrix();
     }
 

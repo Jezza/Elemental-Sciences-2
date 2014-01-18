@@ -13,7 +13,7 @@ public class BlockConsole extends BlockES {
 
     public BlockConsole(int id, Material material, String name) {
         super(id, material, name);
-        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 3F / 4F, 1.0F);
+        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 7F / 8F, 1.0F);
     }
 
     @Override
@@ -31,9 +31,15 @@ public class BlockConsole extends BlockES {
             } else if (facing == 3) {
                 direction = ForgeDirection.WEST.ordinal();
             }
-
-            ((TileConsole) world.getBlockTileEntity(x, y, z)).setOrientation(direction);
+            TileConsole tC = ((TileConsole) world.getBlockTileEntity(x, y, z));
+            tC.setOrientation(direction);
+            tC.updateRenderCables();
         }
+    }
+
+    @Override
+    protected boolean canSendUpdatePacket() {
+        return true;
     }
 
     @Override

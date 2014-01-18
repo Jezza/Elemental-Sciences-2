@@ -1,6 +1,9 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
 import static org.lwjgl.opengl.GL11.*;
+
+import java.util.BitSet;
+
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.models.ModelPixel;
 import me.jezzadabomb.es2.client.models.ModelPlate;
@@ -56,24 +59,38 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
         }
 
         glPushMatrix();
-        glTranslatef(0.5F, 0.5F, 0.5F);
-        glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
 
-        glTranslatef(0.0F, 0.0F, -0.6F);
-        glRotatef(90F / 2F, 1.0F, 0.0F, 0.0F);
+        if (tileConsole.worldObj.isAirBlock(tileConsole.xCoord, tileConsole.yCoord + 1, tileConsole.zCoord)) {
+            glTranslatef(0.5F, 0.5F, 0.5F);
+            glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
 
-        
-        
-        RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
+            glTranslatef(0.0F, (float) ((0.4 * (Math.sin((24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL)))) / 8), -0.6F);
+            glRotatef(90F / 2F, 1.0F, 0.0F, 0.0F);
+            RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
+        } else {
+            glTranslatef(0.5F, 0.125F, 0.5F);
+            RenderUtils.bindTexture(TextureMaps.BLANK_SCREEN);
+        }
+
         modelPlate.render();
         glPopMatrix();
 
+        BitSet check = tileConsole.getRenderCables();
+
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                renderPixelAt(i, 1, 7 + j);
-                renderPixelAt(14 + i, 1, 7 + j);
-                renderPixelAt(7 + j, 1, i);
-                renderPixelAt(7 + j, 1, 14 + i);
+                // X NEG
+                if (check.get(0))
+                    renderPixelAt(i, 1, 7 + j);
+                // X POS
+                if (check.get(1))
+                    renderPixelAt(14 + i, 1, 7 + j);
+                // Z NEG
+                if (check.get(2))
+                    renderPixelAt(7 + j, 1, i);
+                // Z POS
+                if (check.get(3))
+                    renderPixelAt(7 + j, 1, 14 + i);
             }
         }
 
@@ -85,9 +102,9 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
         glPushMatrix();
         glTranslatef(0.029F, 0.029F, 0.029F);
         glTranslatef(x / 16F, y / 16F, z / 16F);
-        glScalef(0.06F, 0.06F, 0.06F);
+        glScalef(0.065F, 0.065F, 0.065F);
 
-        RenderUtils.bindTexture(TextureMaps.BLANK_PIXEL);
+        RenderUtils.bindTexture(TextureMaps.CABLE_PIXEL);
         modelPixel.renderAll();
         glPopMatrix();
     }
