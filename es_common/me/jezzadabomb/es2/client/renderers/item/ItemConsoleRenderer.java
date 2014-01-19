@@ -19,6 +19,7 @@ import net.minecraftforge.client.IItemRenderer;
 public class ItemConsoleRenderer implements IItemRenderer {
 
     ModelPlate modelPlate;
+    int renderType = 0;
 
     public ItemConsoleRenderer() {
         modelPlate = new ModelPlate();
@@ -42,11 +43,13 @@ public class ItemConsoleRenderer implements IItemRenderer {
                 break;
             }
             case EQUIPPED_FIRST_PERSON: {
-                renderConsole(0.0F, 0.2F, 0.1F, 1.0F);
+                renderType = 1;
+                renderConsole(0.9F, 0.5F, 0.8F, 0.7F);
+                renderType = 0;
                 break;
             }
             case INVENTORY: {
-                renderConsole(0.0F, -0.2F, 0.0F, 0.8F);
+                renderConsole(-0.2F, -0.4F, -0.2F, 0.8F);
                 break;
             }
             case EQUIPPED: {
@@ -64,7 +67,8 @@ public class ItemConsoleRenderer implements IItemRenderer {
 
         glTranslatef((float) x, (float) y, (float) z);
         glScalef(scale, scale, scale);
-
+        if (renderType == 1)
+            glRotatef(180F, 0.0F, 1.0F, 0.0F);
         glPushMatrix();
         glTranslatef(0.5F, 1.5F - 0.625F, 0.5F);
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);
@@ -76,21 +80,17 @@ public class ItemConsoleRenderer implements IItemRenderer {
         }
         glPopMatrix();
 
-        int tempNum = 1;
-
         glPushMatrix();
         glTranslatef(0.5F, 0.5F, 0.5F);
-        glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
+        glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-        glTranslatef(0.0F, 0.0F, -0.6F);
+        glTranslatef(0.0F, (float) ((0.4 * (Math.sin((24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL)))) / 8), -0.6F);
         glRotatef(90F / 2F, 1.0F, 0.0F, 0.0F);
-
         RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
         modelPlate.render();
+        glPopMatrix();
 
         glEnable(GL_LIGHTING);
-        glPopMatrix();
-        
         glPopMatrix();
     }
 

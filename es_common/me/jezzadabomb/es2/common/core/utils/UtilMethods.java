@@ -7,6 +7,8 @@ import org.lwjgl.input.Keyboard;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -29,6 +31,14 @@ public class UtilMethods {
             itemStack1.stackSize = 64;
         }
         return itemStack1;
+    }
+    
+    public static boolean isConsole(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileConsole;
+    }
+
+    public static boolean isConstructor(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
     }
     
     public static boolean hasPressedShift(){

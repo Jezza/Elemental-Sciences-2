@@ -5,8 +5,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.Vector3I;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.tileentity.TileES;
@@ -77,7 +77,7 @@ public abstract class BlockES extends Block {
         if (getTileEntity() == null) {
             super.onNeighborBlockChange(world, x, y, z, ID);
         } else if (getTileEntity() instanceof TileES) {
-            PacketDispatcher.sendPacketToAllAround(x, y, z, 64, world.provider.dimensionId, new NeighbourChangedPacket(new CoordSet(x, y, z)).makePacket());
+            PacketDispatcher.sendPacketToAllAround(x, y, z, 64, world.provider.dimensionId, new NeighbourChangedPacket(new Vector3I(x, y, z)).makePacket());
         }
         super.onNeighborBlockChange(world, x, y, z, ID);
     }

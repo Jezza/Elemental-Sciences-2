@@ -4,9 +4,12 @@ import java.util.List;
 
 import cofh.api.energy.IEnergyHandler;
 
+import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -33,30 +36,39 @@ public class ItemPlaceHolder extends ItemES {
 
     protected void addInformation(EntityPlayer player, ItemStack stack) {
         switch (stack.getItemDamage()) {
-        case 0:
-            addToBothLists("You got it for getting");
-            addToBothLists("a perfect pacman game.");
-            break;
-        case 1:
-            addToBothLists("Just an ordinary coin.");
-            break;
-        case 2:
-            addToBothLists("A carefully crafted, highly fragile glass lens.");
-            break;
-        case 3:
-            addToBothLists("A tough piece of metal, could be used for a frame.");
-            break;
-        case 4:
-            addToBothLists("A solid iron rod.");
-            break;
-        case 5:
-            addToBothLists("A very fragile crystal.");
-            break;
-        case 6:
-            infoList.add("A shiny drone for shiny things.");
-            shiftList.add("He shall be called Geoff.");
-            break;
+            case 0:
+                addToBothLists("You got it for getting");
+                addToBothLists("a perfect pacman game.");
+                break;
+            case 1:
+                addToBothLists("Just an ordinary coin.");
+                break;
+            case 2:
+                addToBothLists("A carefully crafted, highly fragile glass lens.");
+                break;
+            case 3:
+                addToBothLists("A tough piece of metal, could be used for a frame.");
+                break;
+            case 4:
+                addToBothLists("A solid iron rod.");
+                break;
+            case 5:
+                addToBothLists("A very fragile crystal.");
+                break;
+            case 6:
+                infoList.add("A shiny drone for shiny things.");
+                shiftList.add("He shall be called Geoff.");
+                break;
         }
+    }
+
+    public int getDamage(String name) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(name)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -83,6 +95,21 @@ public class ItemPlaceHolder extends ItemES {
             } else {
                 player.sendChatToPlayer(new ChatMessageComponent().addText("Server Side: " + tEH.getEnergyStored(null)));
             }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && world.getBlockId(x, y, z) == ModBlocks.atomicConstructor.blockID) {
+            EntityDrone drone = new EntityDrone(world);
+            
+            drone.posX = x + 0.5F;
+            drone.posY = y + 0.5F;
+            drone.posZ = z + 0.5F;
+            
+            world.spawnEntityInWorld(drone);
             return true;
         }
         return false;

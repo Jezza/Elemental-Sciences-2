@@ -2,8 +2,8 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.Vector3I;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -16,7 +16,7 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
     int tickCount = 0;
     int width = 2;
     int heightBonus;
-    CoordSet coordSet;
+    Vector3I coordSet;
 
     public TileSolarLens() {
         heightBonus = 1;
@@ -33,9 +33,9 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
         if (constructorList.isEmpty())
             return;
         if (coordSet == null)
-            coordSet = new CoordSet(xCoord, yCoord, zCoord);
+            coordSet = new Vector3I(xCoord, yCoord, zCoord);
         for (TileAtomicConstructor atomic : constructorList) {
-            int power = (int) (((float) (getPowerOutput() + heightBonus) / (float) constructorList.size()) / (coordSet.distanceFrom(new CoordSet(atomic.xCoord, yCoord, atomic.zCoord)) + 1.0F));
+            int power = (int) (((float) (getPowerOutput() + heightBonus) / (float) constructorList.size()) / (coordSet.distanceFrom(new Vector3I(atomic.xCoord, yCoord, atomic.zCoord)) + 1.0F));
             atomic.receiveEnergy(ForgeDirection.DOWN, power, false);
         }
 

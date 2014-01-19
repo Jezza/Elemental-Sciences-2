@@ -19,7 +19,7 @@ public class TextureMaps {
     public static final ResourceLocation HUD_INVENTORY = getResource("inventoryRender");
     public static final ResourceLocation HOVER_TEXTURE = getResource("hoverGlow");
     public static final ResourceLocation ATOMIC_CONSTRUCTOR = getResource("atomicConstructor");
-    public static final ResourceLocation CONSTRUCTOR_DRONE = getResource("droneTemplate");
+    public static final ResourceLocation CONSTRUCTOR_DRONE = getResource("constructorDrone");
     public static final ResourceLocation BLANK_PIXEL = getResource("blankPixel");
     public static final ResourceLocation SOLAR_LENS = getResource("solarLens");
     public static final ResourceLocation SOLAR_LOOP = getResource("solarLoop");

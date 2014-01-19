@@ -1,8 +1,13 @@
 package me.jezzadabomb.es2.common.blocks;
 
+import me.jezzadabomb.es2.client.drone.DroneState;
+import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -35,6 +40,26 @@ public class BlockConsole extends BlockES {
             tC.setOrientation(direction);
             tC.updateRenderCables();
         }
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectorX, float hitVectorY, float hitVectorZ) {
+        return false;
+    }
+
+    private TileConsole getNearbyMaster(World world, int x, int y, int z) {
+        for (int i = -1; i < 2; i++)
+            for (int j = -1; j < 2; j++)
+                for (int k = -1; k < 2; k++) {
+                    if (i == 0 && j == 0 && k == 0 || !world.blockHasTileEntity(x + i, y + j, z + k))
+                        continue;
+                    if (world.getBlockTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor) {
+                        TileAtomicConstructor atomic = ((TileAtomicConstructor) world.getBlockTileEntity(x + i, y + j, z + k));
+                        if (atomic.hasConsole())
+                            return atomic.getConsole();
+                    }
+                }
+        return null;
     }
 
     @Override

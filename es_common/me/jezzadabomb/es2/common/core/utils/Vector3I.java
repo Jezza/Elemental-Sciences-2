@@ -1,44 +1,35 @@
-package me.jezzadabomb.es2.client.utils;
+package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
-public class CoordSet {
+public class Vector3I {
 
     private int x, y, z;
 
-    public CoordSet(EntityPlayer player) {
-        x = (int) Math.floor(player.posX);
-        y = (int) Math.floor(player.posY);
-        z = (int) Math.floor(player.posZ);
-        ESLogger.info(this);
+    public Vector3I(EntityPlayer player) {
+        this((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ));
     }
 
-    public CoordSet(double x, double y, double z) {
-        this.x = (int) x;
-        this.y = (int) y;
-        this.z = (int) z;
+    public Vector3I(int[] array) {
+        x = array[0];
+        y = array[1];
+        z = array[2];
     }
 
-    public CoordSet(int x, int y, int z) {
+    public Vector3I(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public CoordSet(float x, float y, float z) {
-        this.x = (int) x;
-        this.y = (int) y;
-        this.z = (int) z;
-    }
-
     public boolean isPacket(InventoryPacket p) {
-        CoordSet tempSet = p.coordSet;
+        Vector3I tempSet = p.coordSet;
         return x == tempSet.getX() && y == tempSet.getY() && z == tempSet.getZ();
     }
 
@@ -64,18 +55,18 @@ public class CoordSet {
         out.writeInt(z);
     }
 
-    public static CoordSet readFromStream(ByteArrayDataInput in) {
+    public static Vector3I readFromStream(ByteArrayDataInput in) {
         int x = in.readInt();
         int y = in.readInt();
         int z = in.readInt();
-        return new CoordSet(x, y, z);
+        return new Vector3I(x, y, z);
     }
 
-    public int distanceFrom(CoordSet tempSet) {
+    public int distanceFrom(Vector3I tempSet) {
         return MathHelper.pythagoras(MathHelper.pythagoras(x - tempSet.x, y - tempSet.y), z - tempSet.z);
     }
 
-    public boolean isAdjacent(CoordSet tempSet) {
+    public boolean isAdjacent(Vector3I tempSet) {
         if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(y, tempSet.getY(), 1)) {
             return true;
         }
@@ -88,8 +79,16 @@ public class CoordSet {
         return false;
     }
 
-    public CoordSet subtractCoords(CoordSet tempSet) {
-        return new CoordSet(x - tempSet.getX(), y - tempSet.getY(), z - tempSet.getZ());
+    public Vector3I subtractCoords(Vector3I tempSet) {
+        return new Vector3I(x - tempSet.getX(), y - tempSet.getY(), z - tempSet.getZ());
+    }
+
+    public void writeToNBT(NBTTagCompound tag) {
+        tag.setIntArray("coords", new int[] { x, y, z });
+    }
+
+    public static Vector3I readFromNBT(NBTTagCompound tag) {
+        return new Vector3I(tag.getIntArray("coords"));
     }
 
     /*
@@ -103,14 +102,14 @@ public class CoordSet {
     public boolean equals(Object other) {
         if (other == null)
             return false;
-        if (!(other instanceof CoordSet))
+        if (!(other instanceof Vector3I))
             return false;
-        CoordSet coordSet = (CoordSet) other;
+        Vector3I coordSet = (Vector3I) other;
         return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
     }
 
     @Override
     public String toString() {
-        return "X: " + x + ", Y: " + y + ", Z: " + z;
+        return " @ X: " + x + ", Y: " + y + ", Z: " + z;
     }
 }

@@ -31,28 +31,6 @@ public class BlockAtomicConstructor extends BlockES {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectorX, float hitVectorY, float hitVectorZ) {
-        ItemStack heldStack = player.getCurrentEquippedItem();
-        if (UtilMethods.areItemStacksEqual(heldStack, ModItems.getPlaceHolderStack("constructorDrone"))) {
-            if (!world.blockHasTileEntity(x, y, z) || !(world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor))
-                return false;
-            TileAtomicConstructor aTC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-            aTC.addDrones(1);
-            if (!world.isRemote && !player.capabilities.isCreativeMode) {
-                player.inventory.decrStackSize(player.inventory.currentItem, 1);
-            }
-            return true;
-
-        } else if (UtilMethods.areItemStacksEqual(heldStack, ModItems.getPlaceHolderStack("selectiveEMPTrigger"))) {
-            if (!world.blockHasTileEntity(x, y, z) || !(world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor))
-                return false;
-            TileAtomicConstructor atomicConstructor = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-            atomicConstructor.removeRandomDrone();
-        }
-        return false;
-    }
-
-    @Override
     public void addCollisionBoxesToList(World world, int i, int j, int k, AxisAlignedBB aabb, List list, Entity ent) {
         TileEntity te = world.getBlockTileEntity(i, j, k);
         if (te instanceof TileAtomicConstructor) {
@@ -71,17 +49,17 @@ public class BlockAtomicConstructor extends BlockES {
                 this.setBlockBounds(0.0F, 1.0F - thickness, 0.0F, 1.0F, 1.0F, thickness);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);
             }
-            
+
             if (renderMatrix[6]) {
                 this.setBlockBounds(0.0F, 1.0F - thickness, 0.0F, thickness, 1.0F, 1.0F);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);
             }
-            
+
             if (renderMatrix[7]) {
                 this.setBlockBounds(1.0F - thickness, 1.0F - thickness, 0.0F, 1.0F, 1.0F, 1.0F);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);
             }
-            
+
             if (renderMatrix[8]) {
                 this.setBlockBounds(0.0F, 1.0F - thickness, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);
@@ -96,7 +74,7 @@ public class BlockAtomicConstructor extends BlockES {
                 this.setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, thickness);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);
             }
-            
+
             if (renderMatrix[11]) {
                 this.setBlockBounds(0.0F, 0.0F, 1.0F - thickness, thickness, 1.0F, 1.0F);
                 super.addCollisionBoxesToList(world, i, j, k, aabb, list, ent);

@@ -4,16 +4,17 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.drone.DroneState;
-import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Vector3I;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,7 +36,7 @@ public class ItemDebugTool extends ItemES {
 
     public int debugMode;
     public boolean canFlood;
-    private CoordSet hitBlock;
+    private Vector3I hitBlock;
     private ArrayList<TileAtomicConstructor> solarList;
 
     public ItemDebugTool(int id, String name) {
@@ -61,6 +62,7 @@ public class ItemDebugTool extends ItemES {
             add("Constructor - Get Nearby Count"); // 13
             add("Solar Lens - Set List"); // 11
             add("Solar Lens - Get List"); // 12
+            add("Console - Locate Master"); // 13
         }
     };
 
@@ -85,29 +87,29 @@ public class ItemDebugTool extends ItemES {
                 player.addChatMessage(getDebugString());
             } else {
                 switch (debugMode) {
-                case 0:
-                    break;
-                case 1:
-                    canFlood = !canFlood;
-                    player.addChatMessage((canFlood ? "Enabled" : "Disabled") + " Debug Flooding.");
-                    break;
-                case 2:
-                    boolean temp = Reference.HUD_VERTICAL_ROTATION;
-                    Reference.HUD_VERTICAL_ROTATION = !temp;
-                    player.addChatMessage("HUD Rotation: " + !temp);
-                    break;
-                case 3:
-                    String playerString = ElementalSciences2.proxy.quantumBomb.getPlayer();
-                    if (playerString == null) {
-                        player.addChatMessage("Empty");
-                    } else {
-                        player.addChatMessage(playerString);
-                    }
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
+                    case 0:
+                        break;
+                    case 1:
+                        canFlood = !canFlood;
+                        player.addChatMessage((canFlood ? "Enabled" : "Disabled") + " Debug Flooding.");
+                        break;
+                    case 2:
+                        boolean temp = Reference.HUD_VERTICAL_ROTATION;
+                        Reference.HUD_VERTICAL_ROTATION = !temp;
+                        player.addChatMessage("HUD Rotation: " + !temp);
+                        break;
+                    case 3:
+                        String playerString = ElementalSciences2.proxy.quantumBomb.getPlayer();
+                        if (playerString == null) {
+                            player.addChatMessage("Empty");
+                        } else {
+                            player.addChatMessage(playerString);
+                        }
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
                 }
             }
         }
@@ -116,13 +118,8 @@ public class ItemDebugTool extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-        if (getDebugMode("Constructor - Set work") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
-            TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-            tAC.setHasWork(new ItemStack(ModItems.glasses));
-            return true;
-        }
 
-        if (getDebugMode("Constructor - Energy count") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IEnergyHandler) {
+        if (getDebugMode("Constructor - Energy count") && isIEnergyHandler(world, x, y, z)) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
             if (world.isRemote) {
                 player.addChatMessage("Client Side: " + tEH.getEnergyStored(null));
@@ -131,7 +128,19 @@ public class ItemDebugTool extends ItemES {
             }
         }
 
-        if (getDebugMode("Constructor - Energy add") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IEnergyHandler) {
+        if (getDebugMode("Console - Locate Master")) {
+            if (isConstructor(world, x, y, z)) {
+                TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
+                if (tAC.hasConsole()) {
+                    TileConsole tC = tAC.getConsole();
+                    player.addChatMessage("Found: " + new Vector3I(tC.xCoord, tC.yCoord, tC.zCoord));
+                } else {
+                    player.addChatMessage("No console found.");
+                }
+            }
+        }
+
+        if (getDebugMode("Constructor - Energy add") && isIEnergyHandler(world, x, y, z)) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
             int prevEnergy = tEH.getEnergyStored(null);
             tEH.receiveEnergy(null, 20, false);
@@ -142,25 +151,46 @@ public class ItemDebugTool extends ItemES {
             }
         }
 
+        if (getDebugMode("Constructor - Drone count")) {
+            if (isConsole(world, x, y, z)) {
+                TileConsole tAC = (TileConsole) world.getBlockTileEntity(x, y, z);
+                int droneSize = tAC.getDroneSize();
+                if (world.isRemote) {
+                    player.addChatMessage("ClientSide: " + droneSize);
+                } else {
+                    player.sendChatToPlayer(new ChatMessageComponent().addText("ServerSide: " + droneSize));
+                }
+            } else if (isConstructor(world, x, y, z)) {
+                TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
+                int droneSize = tAC.getConsole().getDroneSize();
+                if (world.isRemote) {
+                    player.addChatMessage("ClientSide: " + droneSize);
+                } else {
+                    player.sendChatToPlayer(new ChatMessageComponent().addText("ServerSide: " + droneSize));
+                }
+            }
+            return true;
+        }
+
         if (world.isRemote) {
-            if (getDebugMode("Constructor - Get Nearby Count") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
+            if (getDebugMode("Constructor - Get Nearby Count") && isConstructor(world, x, y, z)) {
                 ArrayList<TileAtomicConstructor> tempList = new ArrayList<TileAtomicConstructor>();
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)
                         for (int k = -1; k < 2; k++) {
-                            if (!(i == 0 && j == 0 && k == 0) && world.blockHasTileEntity(x + i, y + j, z + k) && world.getBlockTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor)
+                            if (!(i == 0 && j == 0 && k == 0) && isConstructor(world, x + i, y + j, z + k))
                                 tempList.add((TileAtomicConstructor) world.getBlockTileEntity(x + i, y + j, z + k));
                         }
                 player.addChatMessage("" + tempList.size());
             }
 
-            if (getDebugMode("Solar Lens - Set List") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileSolarLens) {
+            if (getDebugMode("Solar Lens - Set List") && isSolarLens(world, x, y, z)) {
                 TileSolarLens tSL = (TileSolarLens) world.getBlockTileEntity(x, y, z);
                 solarList = tSL.getConstructorList();
-                player.addChatMessage("Set list from Solar lens @ " + new CoordSet(tSL.xCoord, tSL.yCoord, tSL.zCoord));
+                player.addChatMessage("Set list from Solar lens @ " + new Vector3I(tSL.xCoord, tSL.yCoord, tSL.zCoord));
             }
 
-            if (getDebugMode("Solar Lens - Get List") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
+            if (getDebugMode("Solar Lens - Get List") && isConstructor(world, x, y, z)) {
                 if (solarList.isEmpty()) {
                     player.addChatMessage("List is empty");
                     return true;
@@ -169,8 +199,8 @@ public class ItemDebugTool extends ItemES {
                 player.addChatMessage("" + solarList.contains(tAC));
             }
 
-            if (getDebugMode("Constructor - Set pos") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
-                CoordSet tempBlock = new CoordSet(x, y, z);
+            if (getDebugMode("Constructor - Set pos") && isConstructor(world, x, y, z)) {
+                Vector3I tempBlock = new Vector3I(x, y, z);
                 if (hitBlock != null && hitBlock.equals(tempBlock)) {
                     player.addChatMessage("Already set to this block.");
                     return true;
@@ -179,10 +209,10 @@ public class ItemDebugTool extends ItemES {
                 player.addChatMessage("Set New Constructor @ " + hitBlock);
             }
 
-            if (getDebugMode("Constructor - Get pos") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
+            if (getDebugMode("Constructor - Get pos") && isConstructor(world, x, y, z)) {
                 if (hitBlock == null)
                     return true;
-                if (hitBlock.equals(new CoordSet(x, y, z))) {
+                if (hitBlock.equals(new Vector3I(x, y, z))) {
                     player.addChatMessage("Same block");
                     return true;
                 }
@@ -207,22 +237,6 @@ public class ItemDebugTool extends ItemES {
                 player.addChatMessage("Error");
             }
 
-            if (getDebugMode("Constructor - Drone count") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor) {
-                TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-                if (!tAC.isDroneListEmpty()) {
-                    ArrayList<DroneState> droneList = tAC.getDroneList();
-                    if (droneList.size() < 5) {
-                        for (DroneState drone : droneList) {
-                            player.addChatMessage(drone.toString());
-                        }
-                    } else {
-                        player.addChatMessage("" + droneList.size());
-                    }
-                } else {
-                    player.addChatMessage("No Drones found.");
-                }
-                return true;
-            }
             if (getDebugMode("Minor Packet Monitoring")) {
                 InventoryPacket packet = ElementalSciences2.proxy.hudRenderer.getPacket(x, y, z);
                 if (packet != null) {
@@ -246,7 +260,19 @@ public class ItemDebugTool extends ItemES {
         return false;
     }
 
-    private boolean isMatch(World world, int x, int y, int z) {
+    private boolean isIEnergyHandler(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IEnergyHandler;
+    }
+
+    private boolean isSolarLens(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileSolarLens;
+    }
+
+    private boolean isConsole(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileConsole;
+    }
+
+    private boolean isConstructor(World world, int x, int y, int z) {
         return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
     }
 

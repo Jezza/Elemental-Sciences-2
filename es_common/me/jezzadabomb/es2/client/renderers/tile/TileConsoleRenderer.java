@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.BitSet;
 
+import me.jezzadabomb.es2.client.drone.DroneState;
+import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.models.ModelPixel;
 import me.jezzadabomb.es2.client.models.ModelPlate;
@@ -12,6 +14,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import net.minecraft.client.model.ModelDragon;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -19,10 +22,12 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
     private ModelPlate modelPlate;
     private ModelPixel modelPixel;
+    private ModelConstructorDrone modelConstructorDrone;
 
     public TileConsoleRenderer() {
         modelPlate = new ModelPlate();
         modelPixel = new ModelPixel();
+        modelConstructorDrone = new ModelConstructorDrone();
     }
 
     public void renderConsole(TileConsole tileConsole, double x, double y, double z, float tick) {
@@ -77,22 +82,20 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
         BitSet check = tileConsole.getRenderCables();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
             for (int j = 0; j < 2; j++) {
-                // X NEG
                 if (check.get(0))
                     renderPixelAt(i, 1, 7 + j);
-                // X POS
                 if (check.get(1))
                     renderPixelAt(14 + i, 1, 7 + j);
-                // Z NEG
                 if (check.get(2))
                     renderPixelAt(7 + j, 1, i);
-                // Z POS
                 if (check.get(3))
                     renderPixelAt(7 + j, 1, 14 + i);
             }
-        }
+
+        for (DroneState drone : tileConsole.getDroneList())
+            drone.render(modelConstructorDrone);
 
         glEnable(GL_LIGHTING);
         glPopMatrix();

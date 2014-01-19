@@ -56,7 +56,7 @@ public class ConfigHandler {
         ItemIds.PLACEHOLDER = getID(Strings.PLACEHOLDER, ItemIds.PLACEHOLDER_DEFAULT);
 
         if (Reference.CAN_DEBUG)
-            ItemIds.DEBUG_TOOL = getID(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT);
+            ItemIds.DEBUG_TOOL = getID(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT, "This value isn't taken if this is a release.");
     }
 
     public static void getStrings() {
@@ -75,6 +75,9 @@ public class ConfigHandler {
 
     public static int getID(String path, int defaultID) {
         return config.get("IDs", path, defaultID).getInt();
+    }
+    public static int getID(String path, int defaultID, String comment) {
+        return config.get("IDs", path, defaultID, comment).getInt();
     }
 
     public static boolean getBoolean(String path, boolean defaultBoolean, String comment) {

@@ -10,6 +10,7 @@ import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.CapeRegistry;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.config.ConfigHandler;
+import me.jezzadabomb.es2.common.entities.Entities;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.handler.PacketHandler;
 import net.minecraft.block.Block;
@@ -58,6 +59,7 @@ public class ElementalSciences2 {
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
 		proxy.registerTileEntities();
+		Entities.init();
 	}
 
 	@EventHandler

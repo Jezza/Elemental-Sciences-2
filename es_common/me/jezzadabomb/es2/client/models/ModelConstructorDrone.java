@@ -12,7 +12,7 @@ public class ModelConstructorDrone {
 		constructorDrone = AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_MAIN);
 	}
 	
-	public void renderAll(){
+	public void render(){
 		constructorDrone.renderAll();
 	}
 }

@@ -2,10 +2,10 @@ package me.jezzadabomb.es2.common.items;
 
 import me.jezzadabomb.es2.CommonProxy;
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.Vector3I;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumBomb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public class ItemQuantumStateDisruptor extends ItemES {
 		if (side != 1 || !checkAround(world, x, y, z))
 			return false;
 		y += 1;
-		if (!world.isRemote && !(new CoordSet(player).isAtXYZ(x, y, z))) {
+		if (!world.isRemote && !(new Vector3I(player).isAtXYZ(x, y, z))) {
 			world.setBlock(x, y, z, ModBlocks.quantumStateDisrupter.blockID);
 			stack = player.inventory.decrStackSize(player.inventory.currentItem, 1);
 		}

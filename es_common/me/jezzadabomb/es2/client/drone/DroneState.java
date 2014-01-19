@@ -7,22 +7,22 @@ import java.util.Random;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
-import me.jezzadabomb.es2.client.utils.CoordSet;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Vector3F;
+import me.jezzadabomb.es2.common.core.utils.Vector3I;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.world.World;
 
 public class DroneState {
-    AtomicConstructorCoordSet coordSet, targetSet, workingSet;
+    Vector3F coordSet, targetSet, workingSet;
     TileAtomicConstructor tAC;
     float motionX, motionY, motionZ;
-    CoordSet mainCoordSet, targetTAC;
-    boolean movingOutside;
+    Vector3I mainCoordSet, targetTAC;
     float xMinMargin = 0.12F;
     float xMaxMargin = 0.89F;
     float yMinMargin = 0.12F;
@@ -35,62 +35,19 @@ public class DroneState {
     int mode = 1;
     int tickTiming = 0;
 
-    public DroneState(TileAtomicConstructor tAC) {
-        this.tAC = tAC;
-        this.mainCoordSet = new CoordSet(tAC.xCoord, tAC.yCoord, tAC.zCoord);
-        coordSet = new AtomicConstructorCoordSet(MathHelper.clipFloat((float) new Random().nextFloat(), xMinMargin, xMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), yMinMargin, yMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), zMinMargin, zMaxMargin));
-        targetSet = new AtomicConstructorCoordSet(MathHelper.clipFloat((float) new Random().nextFloat(), xMinMargin, xMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), yMinMargin, yMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), zMinMargin, zMaxMargin));
+    public DroneState() {
+        coordSet = new Vector3F(MathHelper.clipFloat((float) new Random().nextFloat(), xMinMargin, xMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), yMinMargin, yMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), zMinMargin, zMaxMargin));
+        targetSet = new Vector3F(MathHelper.clipFloat((float) new Random().nextFloat(), xMinMargin, xMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), yMinMargin, yMaxMargin), MathHelper.clipFloat((float) new Random().nextFloat(), zMinMargin, zMaxMargin));
         setMotion(0.01F);
         mode = 1;
-        movingOutside = false;
     }
 
-    public DroneState(AtomicConstructorCoordSet coordSet) {
-        this.coordSet = targetSet = coordSet;
-        setMotion(0.01F);
-    }
-
-    public DroneState(AtomicConstructorCoordSet coordSet, AtomicConstructorCoordSet targetSet) {
-        this.coordSet = coordSet;
-        this.targetSet = targetSet;
-        setMotion(0.01F);
-    }
-
-    public DroneState(AtomicConstructorCoordSet coordSet, float motion) {
-        this.coordSet = targetSet = coordSet;
-        setMotion(motion);
-    }
-
-    public DroneState(AtomicConstructorCoordSet coordSet, AtomicConstructorCoordSet targetSet, float motion) {
-        this.coordSet = coordSet;
-        this.targetSet = targetSet;
-        setMotion(motion);
-    }
-
-    public DroneState(float x, float y, float z) {
-        coordSet = new AtomicConstructorCoordSet(x, y, z);
-        targetSet = new AtomicConstructorCoordSet(x, y, z);
-        setMotion(0.01F);
-    }
-
-    public DroneState(float x, float y, float z, float motion) {
-        coordSet = new AtomicConstructorCoordSet(x, y, z);
-        targetSet = new AtomicConstructorCoordSet(x, y, z);
-        setMotion(motion);
-    }
-
-    public void setMainCoordSet(CoordSet mainCoordSet) {
+    public void setMainCoordSet(Vector3I mainCoordSet) {
         this.mainCoordSet = mainCoordSet;
     }
 
     public void setMotion(float motion) {
         motionX = motionY = motionZ = motion;
-    }
-
-    public void setMotion(float motionX, float motionY, float motionZ) {
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
     }
 
     public void setIdle() {
@@ -101,7 +58,11 @@ public class DroneState {
         mode = 2;
     }
 
-    public void setWorking(AtomicConstructorCoordSet workingSet) {
+    public void setMovingWork() {
+        mode = 3;
+    }
+
+    public void setWorking(Vector3F workingSet) {
         this.workingSet = workingSet;
         mode = 2;
     }
@@ -119,9 +80,9 @@ public class DroneState {
             }
         }
 
-        targetSet.setX(MathHelper.clipFloat(targetSet.getX(), xMinMargin, xMaxMargin));
-        targetSet.setY(MathHelper.clipFloat(targetSet.getY(), yMinMargin, yMaxMargin));
-        targetSet.setZ(MathHelper.clipFloat(targetSet.getZ(), zMinMargin, zMaxMargin));
+//        targetSet.setX(MathHelper.clipFloat(targetSet.getX(), xMinMargin, xMaxMargin));
+//        targetSet.setY(MathHelper.clipFloat(targetSet.getY(), yMinMargin, yMaxMargin));
+//        targetSet.setZ(MathHelper.clipFloat(targetSet.getZ(), zMinMargin, zMaxMargin));
 
         if (!MathHelper.withinRange(coordSet.getX(), targetSet.getX(), motionX)) {
             if (coordSet.getX() < targetSet.getX()) {
@@ -154,7 +115,7 @@ public class DroneState {
         return mode == 2;
     }
 
-    public void setNewTargetCoords(AtomicConstructorCoordSet targetSet) {
+    public void setNewTargetCoords(Vector3F targetSet) {
         this.targetSet = targetSet;
     }
 
@@ -168,10 +129,11 @@ public class DroneState {
     }
 
     private boolean isMatch(int x, int y, int z) {
-        return tAC.worldObj.blockHasTileEntity(x, y, z) && tAC.worldObj.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
+        World world = tAC.worldObj;
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
     }
 
-    public void moveToNewMainCoordSystem(CoordSet tempSet) {
+    public void moveToNewMainCoordSystem(Vector3I tempSet) {
         if (canMoveIntoCoordSet(tempSet)) {
 
         }
@@ -184,27 +146,27 @@ public class DroneState {
 
         int replacingNum = new Random().nextInt(3);
         switch (replacingNum) {
-        case 0:
-            tempX = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
-        case 1:
-            tempY = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
-        case 2:
-            tempZ = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
+            case 0:
+                tempX = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
+            case 1:
+                tempY = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
+            case 2:
+                tempZ = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
         }
         replacingNum = new Random().nextInt(3);
         switch (replacingNum) {
-        case 0:
-            tempX = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
-        case 1:
-            tempY = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
-        case 2:
-            tempZ = new Random().nextBoolean() ? 0.1F : 0.9F;
-            break;
+            case 0:
+                tempX = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
+            case 1:
+                tempY = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
+            case 2:
+                tempZ = new Random().nextBoolean() ? 0.1F : 0.9F;
+                break;
         }
 
         targetSet.setX(tempX);
@@ -217,7 +179,7 @@ public class DroneState {
         glTranslated(coordSet.getX(), coordSet.getY(), coordSet.getZ());
         glScaled(0.1D, 0.1D, 0.1D);
         RenderUtils.bindTexture(TextureMaps.CONSTRUCTOR_DRONE);
-        modelConstructorDrone.renderAll();
+        modelConstructorDrone.render();
         glPopMatrix();
         if (isWorking()) {
             RenderUtils.drawLineFrom(coordSet.getX(), coordSet.getY(), coordSet.getZ(), workingSet.getX(), workingSet.getY(), workingSet.getZ());
@@ -228,7 +190,7 @@ public class DroneState {
         }
     }
 
-    public boolean canMoveIntoCoordSet(CoordSet movingSet) {
+    public boolean canMoveIntoCoordSet(Vector3I movingSet) {
         return mainCoordSet.isAdjacent(movingSet);
     }
 

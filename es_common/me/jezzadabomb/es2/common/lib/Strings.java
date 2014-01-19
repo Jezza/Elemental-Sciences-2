@@ -29,4 +29,7 @@ public class Strings {
     public static final String HUD_PITCH = "Enable hud pitch";
     public static final String DRAW_TEXTURED_SLOTS = "Enable slot texture";
     public static final String CAN_DEBUG = "Enable debug mode";
+    
+    //Entity Constants
+    public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
 }
