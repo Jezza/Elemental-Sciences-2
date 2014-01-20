@@ -22,7 +22,7 @@ import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -46,7 +46,7 @@ public class HUDRenderer {
     // TODO On/Off animations
     private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
     private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
-    private ArrayList<Vector3I> ignoreList = new ArrayList<Vector3I>();
+    private ArrayList<CoordSet> ignoreList = new ArrayList<CoordSet>();
 
     private final RenderItem customItemRenderer;
 
@@ -95,8 +95,8 @@ public class HUDRenderer {
 
     private boolean ignorePacket(InventoryPacket p) {
         boolean found = false;
-        Vector3I tempSet = null;
-        for (Vector3I set : ignoreList) {
+        CoordSet tempSet = null;
+        for (CoordSet set : ignoreList) {
             if (set.isPacket(p)) {
                 found = true;
                 tempSet = set;
@@ -300,6 +300,6 @@ public class HUDRenderer {
             return;
         debugPacketMode(p);
         removeList.add(p);
-        ignoreList.add(new Vector3I(x, y, z));
+        ignoreList.add(new CoordSet(x, y, z));
     }
 }

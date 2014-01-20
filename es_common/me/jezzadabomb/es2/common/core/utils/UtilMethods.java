@@ -33,6 +33,10 @@ public class UtilMethods {
         return itemStack1;
     }
     
+    public static ItemStack decrCurrentItem(EntityPlayer player){
+        return player.inventory.decrStackSize(player.inventory.currentItem, 1);
+    }
+    
     public static boolean isConsole(World world, int x, int y, int z) {
         return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileConsole;
     }

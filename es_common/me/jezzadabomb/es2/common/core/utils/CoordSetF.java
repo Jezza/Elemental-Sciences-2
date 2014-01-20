@@ -2,11 +2,11 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-public class Vector3F {
+public class CoordSetF {
 
     private float x, y, z;
 
-    public Vector3F(float x, float y, float z) {
+    public CoordSetF(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -64,7 +64,7 @@ public class Vector3F {
 
     }
 
-    public static Vector3F readFromNBT(NBTTagCompound tag) {
+    public static CoordSetF readFromNBT(NBTTagCompound tag) {
         return null;
     }
 

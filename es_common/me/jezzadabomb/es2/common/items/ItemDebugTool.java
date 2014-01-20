@@ -10,7 +10,7 @@ import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -36,7 +36,7 @@ public class ItemDebugTool extends ItemES {
 
     public int debugMode;
     public boolean canFlood;
-    private Vector3I hitBlock;
+    private CoordSet hitBlock;
     private ArrayList<TileAtomicConstructor> solarList;
 
     public ItemDebugTool(int id, String name) {
@@ -133,7 +133,7 @@ public class ItemDebugTool extends ItemES {
                 TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
                 if (tAC.hasConsole()) {
                     TileConsole tC = tAC.getConsole();
-                    player.addChatMessage("Found: " + new Vector3I(tC.xCoord, tC.yCoord, tC.zCoord));
+                    player.addChatMessage("Found: " + new CoordSet(tC.xCoord, tC.yCoord, tC.zCoord));
                 } else {
                     player.addChatMessage("No console found.");
                 }
@@ -187,7 +187,7 @@ public class ItemDebugTool extends ItemES {
             if (getDebugMode("Solar Lens - Set List") && isSolarLens(world, x, y, z)) {
                 TileSolarLens tSL = (TileSolarLens) world.getBlockTileEntity(x, y, z);
                 solarList = tSL.getConstructorList();
-                player.addChatMessage("Set list from Solar lens @ " + new Vector3I(tSL.xCoord, tSL.yCoord, tSL.zCoord));
+                player.addChatMessage("Set list from Solar lens @ " + new CoordSet(tSL.xCoord, tSL.yCoord, tSL.zCoord));
             }
 
             if (getDebugMode("Solar Lens - Get List") && isConstructor(world, x, y, z)) {
@@ -200,7 +200,7 @@ public class ItemDebugTool extends ItemES {
             }
 
             if (getDebugMode("Constructor - Set pos") && isConstructor(world, x, y, z)) {
-                Vector3I tempBlock = new Vector3I(x, y, z);
+                CoordSet tempBlock = new CoordSet(x, y, z);
                 if (hitBlock != null && hitBlock.equals(tempBlock)) {
                     player.addChatMessage("Already set to this block.");
                     return true;
@@ -212,7 +212,7 @@ public class ItemDebugTool extends ItemES {
             if (getDebugMode("Constructor - Get pos") && isConstructor(world, x, y, z)) {
                 if (hitBlock == null)
                     return true;
-                if (hitBlock.equals(new Vector3I(x, y, z))) {
+                if (hitBlock.equals(new CoordSet(x, y, z))) {
                     player.addChatMessage("Same block");
                     return true;
                 }

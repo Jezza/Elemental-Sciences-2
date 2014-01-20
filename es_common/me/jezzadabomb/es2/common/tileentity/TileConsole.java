@@ -9,7 +9,7 @@ import cofh.api.energy.IEnergyHandler;
 
 import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
@@ -42,8 +42,8 @@ public class TileConsole extends TileES implements IEnergyHandler {
         updateRenderCables();
     }
 
-    public Vector3I getCoordSet() {
-        return new Vector3I(xCoord, yCoord, zCoord);
+    public CoordSet getCoordSet() {
+        return new CoordSet(xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
     }
 
     @Override
-    public void onNeighbourBlockChange(Vector3I coordSet) {
+    public void onNeighbourBlockChange(CoordSet coordSet) {
         updateRenderCables();
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)

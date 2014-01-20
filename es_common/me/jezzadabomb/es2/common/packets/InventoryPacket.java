@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -26,7 +26,7 @@ public class InventoryPacket extends CentralPacket {
 	private int x;
 	private int y;
 	private int z;
-	public Vector3I coordSet;
+	public CoordSet coordSet;
 	public int tickTiming;
 
 	public InventoryPacket(TileEntity tileEntity, String loc) {
@@ -98,7 +98,7 @@ public class InventoryPacket extends CentralPacket {
 			int[] coord = UtilMethods.getArrayFromString(loc);
 			if (coord == null)
 				return;
-			coordSet = new Vector3I(coord[0], coord[1], coord[2]);
+			coordSet = new CoordSet(coord[0], coord[1], coord[2]);
 			ElementalSciences2.proxy.hudRenderer.addPacketToList(this);
 			tickTiming = 0;
 		} else {

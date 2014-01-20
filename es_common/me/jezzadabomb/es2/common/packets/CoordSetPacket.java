@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.common.packets;
 
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public abstract class CoordSetPacket extends CentralPacket {
 
-	public CoordSetPacket(Vector3I coordSet) {
+	public CoordSetPacket(CoordSet coordSet) {
 		
 	}
 

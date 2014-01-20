@@ -8,15 +8,15 @@ import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.relauncher.Side;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 
 public class NeighbourChangedPacket extends CentralPacket{
 
-    public Vector3I coordSet;
+    public CoordSet coordSet;
     
-    public NeighbourChangedPacket(Vector3I coordSet) {
+    public NeighbourChangedPacket(CoordSet coordSet) {
         this.coordSet = coordSet;
     }
     
@@ -30,7 +30,7 @@ public class NeighbourChangedPacket extends CentralPacket{
 
     @Override
     public void read(ByteArrayDataInput in) throws ProtocolException {
-        coordSet = Vector3I.readFromStream(in);
+        coordSet = CoordSet.readFromStream(in);
     }
 
     @Override
