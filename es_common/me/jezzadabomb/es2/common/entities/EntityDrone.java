@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class EntityDrone extends EntityLiving {
+public class EntityDrone extends Entity {
 
     // 1 - idle
     // 2 - working
@@ -23,20 +23,12 @@ public class EntityDrone extends EntityLiving {
         super(world);
         timer = 0;
         withinConstructor = true;
-        pathed = false;
-        setAIMoveSpeed(0.5F);
-        setSize(0.05F, 0.05F);
+        setSize(0.5F, 0.5F);
     }
 
     @Override
     protected void entityInit() {
-        super.entityInit();
 
-    }
-
-    @Override
-    protected boolean isAIEnabled() {
-        return true;
     }
 
     public boolean isIdle() {

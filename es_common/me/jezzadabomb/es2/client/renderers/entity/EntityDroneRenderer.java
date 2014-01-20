@@ -22,12 +22,10 @@ public class EntityDroneRenderer extends Render {
         glPushMatrix();
 
         glTranslated(x, y, z);
-        glRotatef(180F - yaw, 0.0F, 1.0F, 0.0F);
         glScalef(0.1F, 0.1F, 0.1F);
         bindEntityTexture(drone);
-        glDisable(GL_CULL_FACE);
+
         modelConstructorDrone.render();
-        glEnable(GL_CULL_FACE);
 
         glPopMatrix();
     }
@@ -39,8 +37,7 @@ public class EntityDroneRenderer extends Render {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTickTime) {
-        if (entity instanceof EntityDrone) {
+        if (entity instanceof EntityDrone)
             renderDrone((EntityDrone) entity, x, y, z, yaw, partialTickTime);
-        }
     }
 }

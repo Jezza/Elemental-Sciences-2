@@ -90,23 +90,23 @@ public class ItemDebugTool extends ItemES {
                     case 0:
                         break;
                     case 1:
+                        break;
+                    case 2:
                         canFlood = !canFlood;
                         player.addChatMessage((canFlood ? "Enabled" : "Disabled") + " Debug Flooding.");
                         break;
-                    case 2:
+                    case 3:
                         boolean temp = Reference.HUD_VERTICAL_ROTATION;
                         Reference.HUD_VERTICAL_ROTATION = !temp;
                         player.addChatMessage("HUD Rotation: " + !temp);
                         break;
-                    case 3:
+                    case 4:
                         String playerString = ElementalSciences2.proxy.quantumBomb.getPlayer();
                         if (playerString == null) {
                             player.addChatMessage("Empty");
                         } else {
                             player.addChatMessage(playerString);
                         }
-                        break;
-                    case 4:
                         break;
                     case 5:
                         break;

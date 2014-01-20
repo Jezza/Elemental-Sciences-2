@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.items;
 
 import java.util.List;
+import java.util.Random;
 
 import cofh.api.energy.IEnergyHandler;
 
@@ -105,10 +106,12 @@ public class ItemPlaceHolder extends ItemES {
         if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && world.getBlockId(x, y, z) == ModBlocks.atomicConstructor.blockID) {
             TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
             EntityDrone drone = new EntityDrone(world);
+           
+            Random rand = new Random();
             
-            drone.posX = x + 0.5F;
-            drone.posY = y + 0.5F;
-            drone.posZ = z + 0.5F;
+            drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+            drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+            drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
             
             world.spawnEntityInWorld(drone);
             tAC.registerDrone(drone);

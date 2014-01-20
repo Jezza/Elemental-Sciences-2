@@ -181,8 +181,13 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     }
 
     public void registerDrone(EntityDrone drone) {
-        if (hasConsole())
+        if (hasConsole()){
+            ESLogger.info("Registering");
             getConsole().registerDrone(drone);
+            ESLogger.info("Registered");            
+        }else{
+            ESLogger.info("Not found");
+        }
     }
 
     public boolean removeDrone() {

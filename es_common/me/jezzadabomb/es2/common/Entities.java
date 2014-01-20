@@ -1,6 +1,7 @@
-package me.jezzadabomb.es2.common.entities;
+package me.jezzadabomb.es2.common;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.lib.Strings;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
