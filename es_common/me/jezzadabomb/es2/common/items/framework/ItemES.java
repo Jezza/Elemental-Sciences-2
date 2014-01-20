@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.items;
+package me.jezzadabomb.es2.common.items.framework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemES extends Item {
 
-	ArrayList<String> infoList = new ArrayList<String>();
-	ArrayList<String> shiftList = new ArrayList<String>();
+    protected ArrayList<String> infoList = new ArrayList<String>();
+	protected ArrayList<String> shiftList = new ArrayList<String>();
 
 	public ItemES(int id, String name) {
 		super(id);

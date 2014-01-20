@@ -11,6 +11,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -152,22 +153,19 @@ public class ItemDebugTool extends ItemES {
         }
 
         if (getDebugMode("Constructor - Drone count")) {
+            int droneSize = 0;
             if (isConsole(world, x, y, z)) {
                 TileConsole tAC = (TileConsole) world.getBlockTileEntity(x, y, z);
-                int droneSize = tAC.getDroneSize();
-                if (world.isRemote) {
-                    player.addChatMessage("ClientSide: " + droneSize);
-                } else {
-                    player.sendChatToPlayer(new ChatMessageComponent().addText("ServerSide: " + droneSize));
-                }
+                droneSize = tAC.getDroneSize();
             } else if (isConstructor(world, x, y, z)) {
                 TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-                int droneSize = tAC.getConsole().getDroneSize();
-                if (world.isRemote) {
-                    player.addChatMessage("ClientSide: " + droneSize);
-                } else {
-                    player.sendChatToPlayer(new ChatMessageComponent().addText("ServerSide: " + droneSize));
-                }
+                if (tAC.hasConsole())
+                    droneSize = tAC.getConsole().getDroneSize();
+            }
+            if (world.isRemote) {
+                player.addChatMessage("ClientSide: " + (droneSize == 0 ? "Empty" : droneSize));
+            } else {
+                player.sendChatToPlayer(new ChatMessageComponent().addText("ServerSide: " + (droneSize == 0 ? "Empty" : droneSize)));
             }
             return true;
         }

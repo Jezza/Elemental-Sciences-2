@@ -41,8 +41,20 @@ public abstract class EntityES extends Entity {
         this.friction = friction;
     }
 
+    @Override
+    protected void entityInit() {
+        if (canAddDataToWatcher())
+            addDataToWatcher();
+    }
+
+    protected void addDataToWatcher(){
+        
+    }
+    
     protected abstract boolean canApplyFriction();
 
     protected abstract void updateEntity();
+
+    protected abstract boolean canAddDataToWatcher();
 
 }

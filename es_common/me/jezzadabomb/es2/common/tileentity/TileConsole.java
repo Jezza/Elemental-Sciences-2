@@ -11,6 +11,7 @@ import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -52,19 +53,10 @@ public class TileConsole extends TileES implements IEnergyHandler {
             updateRenderCables();
 
         droneMaintenance();
-        if (workingList.size() != prevWorkingSize || droneList.size() != prevDroneSize)
+        if (droneList.size() != prevDroneSize)
             markForUpdate();
 
-        for (TileAtomicConstructor atomic : constructorList)
-            if (atomic.isInvalid())
-                utilList.add(atomic);
-
-        if (utilList.size() > 0) {
-            constructorList.removeAll(utilList);
-            disconnectAll(false);
-            utilList.clear();
-        }
-
+        atomicMaintenance();
         prevDroneSize = droneList.size();
         prevWorkingSize = droneList.size();
 
@@ -85,6 +77,29 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
         workingList.removeAll(removeList);
         removeList.clear();
+
+        if (!worldObj.isRemote)
+            for (EntityDrone drone : droneList) {
+                if (drone.isIdle() && (!drone.isWithinConstructor() || drone.getReachedTarget())) {
+                    drone.pathToNewConstructor(getRandomConstructor());
+                }
+            }
+    }
+
+    private void atomicMaintenance() {
+        for (TileAtomicConstructor atomic : constructorList)
+            if (atomic.isInvalid())
+                utilList.add(atomic);
+
+        if (utilList.size() > 0) {
+            constructorList.removeAll(utilList);
+            disconnectAll(false);
+            utilList.clear();
+        }
+    }
+
+    public TileAtomicConstructor getRandomConstructor() {
+        return constructorList.get(new Random().nextInt(constructorList.size()));
     }
 
     public void disconnectAll(boolean resetMaster) {
@@ -128,7 +143,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
     public boolean removeDroneFromList() {
         EntityDrone drone = getRandomDrone();
-        if (droneList.contains(drone) && !removeList.contains(drone)){
+        if (droneList.contains(drone) && !removeList.contains(drone)) {
             removeList.add(drone);
             drone.setDead();
         }
@@ -165,8 +180,13 @@ public class TileConsole extends TileES implements IEnergyHandler {
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         tag.setInteger("direction", direction);
-        tag.setInteger("droneSize", droneList.size());
-        tag.setInteger("workingSize", workingList.size());
+
+        int[] idArray = new int[droneList.size()];
+        int i = 0;
+        for (EntityDrone drone : droneList)
+            idArray[i++] = drone.entityId;
+
+        tag.setIntArray("droneList", idArray);
     }
 
     @Override
@@ -175,48 +195,45 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
         direction = tag.getInteger("direction");
 
-        processDroneNBT(tag.getInteger("droneSize"), tag.getInteger("workingSize"));
+        processDroneNBT(tag.getIntArray("droneList"));
         updateRenderCables();
     }
 
-    private void processDroneNBT(int droneSize, int workingSize) {
-        if (droneList.size() == droneSize && workingList.size() == workingSize)
+    private void processDroneNBT(int[] idArray) {
+        if (idArray == null || worldObj == null)
             return;
 
-        if (droneList.size() < droneSize) {
-            // addDrones(droneSize - droneList.size());
-        } else if (droneList.size() > droneSize) {
-            int numberToRemove = droneList.size() - droneSize;
-            while (removeList.size() < numberToRemove)
-                removeDroneFromList();
-        }
-
-        if (workingList.size() < workingSize) {
-            int needed = workingSize - workingList.size();
-            int index = 0;
-            for (EntityDrone drone : droneList) {
-                if (index == needed)
-                    break;
-                drone.setWorking();
-                index++;
-            }
-        } else if (workingList.size() > workingSize) {
-            int needed = workingList.size() - workingSize;
-            int index = 0;
-            for (EntityDrone drone : droneList) {
-                if (index == needed)
-                    break;
-                drone.setIdle();
-                index++;
+        droneList.clear();
+        for (Object object : worldObj.loadedEntityList) {
+            if (object instanceof EntityDrone) {
+                EntityDrone drone = (EntityDrone) object;
+                for (int i : idArray)
+                    if (drone.entityId == i)
+                        addDrone(drone);
             }
         }
-
     }
 
     public boolean registerDrone(EntityDrone drone) {
         if (!droneList.contains(drone))
             droneList.add(drone);
         return droneList.contains(drone);
+    }
+
+    private void registerDrones(ArrayList<EntityDrone> allDrones) {
+        boolean add = true;
+        for (EntityDrone drone : allDrones) {
+            for (EntityDrone temp : droneList) {
+                if (drone.entityId == temp.entityId) {
+                    add = false;
+                    break;
+                }
+            }
+
+            if (add)
+                droneList.add(drone);
+            add = true;
+        }
     }
 
     private boolean isConstructor(int x, int y, int z) {
@@ -239,10 +256,10 @@ public class TileConsole extends TileES implements IEnergyHandler {
         return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, tag);
     }
 
-    public boolean registerAtomicConstructor(TileAtomicConstructor atomic, ArrayList<EntityDrone> droneList) {
+    public boolean registerAtomicConstructor(TileAtomicConstructor atomic) {
         if (!constructorList.contains(atomic))
             constructorList.add(atomic);
-        this.droneList.addAll(droneList);
+        registerDrones(atomic.getAllDrones());
         return constructorList.contains(atomic);
     }
 

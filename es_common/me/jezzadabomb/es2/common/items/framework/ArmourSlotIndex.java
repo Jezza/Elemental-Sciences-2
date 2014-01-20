@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.items;
+package me.jezzadabomb.es2.common.items.framework;
 
 public enum ArmourSlotIndex {
 	HEAD(0),

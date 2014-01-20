@@ -4,6 +4,7 @@ import java.util.Random;
 
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.WorldTicker;
 import net.minecraft.block.Block;

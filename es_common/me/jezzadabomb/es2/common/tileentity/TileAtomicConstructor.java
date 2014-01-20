@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import me.jezzadabomb.es2.client.drone.DroneState;
@@ -27,6 +28,9 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     TileConsole tileConsole;
     boolean registered = false;
 
+    public TileAtomicConstructor() {
+    }
+
     @Override
     public void updateEntity() {
         if (renderMatrix == null)
@@ -38,11 +42,15 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
             return;
         }
         if (!registered && !tileConsole.isInvalid()) {
-            ArrayList<EntityDrone> droneList = new ArrayList<EntityDrone>();
-            droneList.addAll(worldObj.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F)));
-            registered = tileConsole.registerAtomicConstructor(this, droneList);
+            registered = tileConsole.registerAtomicConstructor(this);
         }
+    }
 
+    public ArrayList<EntityDrone> getAllDrones() {
+        ArrayList<EntityDrone> droneList = new ArrayList<EntityDrone>();
+        droneList.addAll(worldObj.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 1.0F, zCoord + 1.0F)));
+
+        return droneList;
     }
 
     public void resetState() {
@@ -168,20 +176,20 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     public boolean[] constructRenderMatrix() {
         Boolean[] localArray = new Boolean[26];
         int index = 0;
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
+        for (int i = -1; i < 2; i++)
+            for (int j = -1; j < 2; j++)
                 for (int k = -1; k < 2; k++) {
                     if (i == 0 && j == 0 && k == 0)
                         continue;
                     localArray[index++] = worldObj.getBlockId(xCoord + i, yCoord + j, zCoord + k) == ModBlocks.atomicConstructor.blockID;
                 }
-            }
-        }
         return renderMatrix = new boolean[] { (!(localArray[10])), (!(localArray[0] && localArray[1] && localArray[3] && localArray[4] && localArray[9] && localArray[10] && localArray[12])), (!(localArray[9] && localArray[10] && localArray[12] && localArray[17] && localArray[18] && localArray[20] && localArray[21])), (!(localArray[11] && localArray[13] && localArray[22] && localArray[19] && localArray[21] && localArray[18] && localArray[10])), (!(localArray[10] && localArray[11] && localArray[13] && localArray[2] && localArray[5] && localArray[1] && localArray[4])), (!(localArray[12] && localArray[14] && localArray[15])), (!(localArray[4] && localArray[7] && localArray[15])), (!(localArray[15] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[16] && localArray[13])), (!(localArray[21] && localArray[22] && localArray[13])), (!(localArray[12] && localArray[4] && localArray[3])), (!(localArray[4] && localArray[5] && localArray[13])), (!(localArray[12] && localArray[21] && localArray[20])), (!(localArray[15] && localArray[7] && localArray[4] && localArray[5] && localArray[13] && localArray[16] && localArray[8])), (!(localArray[4] && localArray[7] && localArray[15] && localArray[12] && localArray[3] && localArray[6] && localArray[14])), (!(localArray[15] && localArray[16] && localArray[13] && localArray[22] && localArray[25] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[14] && localArray[12] && localArray[21] && localArray[20] && localArray[23] && localArray[24])), (!(localArray[10] && localArray[9] && localArray[12])), (!(localArray[10] && localArray[21] && localArray[18])), (!(localArray[10] && localArray[11] && localArray[13])), (!(localArray[10] && localArray[1] && localArray[4])) };
     }
 
     public boolean registerDrone(EntityDrone drone) {
-        return hasConsole() && (getConsole().registerDrone(drone)); 
+        if (hasConsole())
+            return getConsole().registerDrone(drone);
+        return false;
     }
 
     public boolean removeDrone() {

@@ -11,6 +11,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -29,7 +30,7 @@ public class ItemPlaceHolder extends ItemES {
 
     @SideOnly(Side.CLIENT)
     private Icon[] icons;
-    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "energyMaintenance", "empTrigger" };
+    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "empTrigger" };
 
     public ItemPlaceHolder(int id, String name) {
         super(id, name);
@@ -66,11 +67,9 @@ public class ItemPlaceHolder extends ItemES {
     }
 
     public int getDamage(String name) {
-        for (int i = 0; i < names.length; i++) {
-            if (names[i].equals(name)) {
+        for (int i = 0; i < names.length; i++)
+            if (names[i].equals(name))
                 return i;
-            }
-        }
         return -1;
     }
 
@@ -87,20 +86,6 @@ public class ItemPlaceHolder extends ItemES {
         icons = new Icon[names.length];
         for (int i = 0; i < icons.length; i++)
             icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-        if (itemStack.getItemDamage() == getDamage("energyMaintenance") && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IEnergyHandler) {
-            IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
-            if (world.isRemote) {
-                player.addChatMessage("Client Side: " + tEH.getEnergyStored(null));
-            } else {
-                player.sendChatToPlayer(new ChatMessageComponent().addText("Server Side: " + tEH.getEnergyStored(null)));
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -131,14 +116,14 @@ public class ItemPlaceHolder extends ItemES {
         if (!world.isRemote && stack.getItemDamage() == getDamage("empTrigger")) {
             float range = 5.0F;
             List<Object> droneList = world.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
-            ESLogger.info(droneList);
             for (Object object : droneList) {
                 if (object instanceof EntityDrone) {
                     EntityDrone drone = (EntityDrone) object;
                     drone.setDead();
                     ItemStack droneStack = ModItems.getPlaceHolderStack("constructorDrone");
-                    if (!player.inventory.addItemStackToInventory(droneStack))
-                        world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
+                    if (!player.capabilities.isCreativeMode)
+                        if (!player.inventory.addItemStackToInventory(droneStack))
+                            world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
                 }
             }
             return player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1);
@@ -148,11 +133,12 @@ public class ItemPlaceHolder extends ItemES {
 
     @Override
     public Icon getIconFromDamage(int damage) {
+        damage = MathHelper.clipInt(damage, names.length - 1);
         return icons[damage];
     }
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length)];
+        return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length - 1)];
     }
 }

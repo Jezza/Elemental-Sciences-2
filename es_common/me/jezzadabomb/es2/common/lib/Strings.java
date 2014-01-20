@@ -15,7 +15,6 @@ public class Strings {
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
     public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
     public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
-    public static final String RUNNING_WHEEL = "runningWheel";
     public static final String SOLAR_LENS = "solarLens";
     public static final String CONSOLE = "console";
 

@@ -1,12 +1,12 @@
 package me.jezzadabomb.es2.common;
 
-import me.jezzadabomb.es2.common.items.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.items.ItemGlasses;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.items.framework.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.lib.ItemIds;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;

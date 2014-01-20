@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.items;
 
+import me.jezzadabomb.es2.common.items.framework.ArmourSlotIndex;
+import me.jezzadabomb.es2.common.items.framework.ItemArmourES;
 import net.minecraft.item.EnumArmorMaterial;
 
 public class ItemGlasses extends ItemArmourES {

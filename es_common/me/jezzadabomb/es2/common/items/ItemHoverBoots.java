@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.common.items;
 
 import org.lwjgl.input.Keyboard;
 
+import me.jezzadabomb.es2.common.items.framework.ArmourSlotIndex;
+import me.jezzadabomb.es2.common.items.framework.ItemArmourES;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumArmorMaterial;
