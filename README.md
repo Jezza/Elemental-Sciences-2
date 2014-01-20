@@ -7,7 +7,7 @@ This mod is under the [LGPLv3](http://www.tldrlegal.com/license/gnu-lesser-gener
 
 **Credits**  
 ***
-Credit for the power system goes to the CoFH team. Thanks a lot gents. :)  
+Credit for the power system goes to the [CoFH](https://github.com/KingLemming/CoFHLib) team. Thanks a lot gents. :)  
 Thanks to all the people that could put up with my presence in #minecraftforge.
 
 **Compiling the mod**  
