@@ -94,9 +94,6 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
                     renderPixelAt(7 + j, 1, 14 + i);
             }
 
-        for (DroneState drone : tileConsole.getDroneList())
-            drone.render(modelConstructorDrone);
-
         glEnable(GL_LIGHTING);
         glPopMatrix();
     }

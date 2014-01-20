@@ -10,6 +10,7 @@ import cofh.api.energy.IEnergyHandler;
 import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -20,7 +21,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
     protected EnergyStorage storage = new EnergyStorage(1000000);
     ArrayList<TileAtomicConstructor> constructorList, utilList;
-    ArrayList<DroneState> droneList, workingList, removeList;
+    ArrayList<EntityDrone> droneList, workingList, removeList;
     int direction, prevDroneSize, prevWorkingSize;
     BitSet renderCables;
 
@@ -31,9 +32,9 @@ public class TileConsole extends TileES implements IEnergyHandler {
     public TileConsole(TileConsole master) {
         constructorList = new ArrayList<TileAtomicConstructor>();
         utilList = new ArrayList<TileAtomicConstructor>();
-        droneList = new ArrayList<DroneState>();
-        workingList = new ArrayList<DroneState>();
-        removeList = new ArrayList<DroneState>();
+        droneList = new ArrayList<EntityDrone>();
+        workingList = new ArrayList<EntityDrone>();
+        removeList = new ArrayList<EntityDrone>();
         prevDroneSize = 0;
         prevWorkingSize = 0;
         direction = 0;
@@ -78,7 +79,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
             return;
         }
 
-        for (DroneState drone : workingList)
+        for (EntityDrone drone : workingList)
             if (drone.isIdle())
                 removeList.add(drone);
 
@@ -90,9 +91,10 @@ public class TileConsole extends TileES implements IEnergyHandler {
         for (TileAtomicConstructor atomic : constructorList)
             atomic.resetState();
         constructorList.clear();
+        droneList.clear();
     }
 
-    public ArrayList<DroneState> getDroneList() {
+    public ArrayList<EntityDrone> getDroneList() {
         return droneList;
     }
 
@@ -113,38 +115,27 @@ public class TileConsole extends TileES implements IEnergyHandler {
         return droneList.size();
     }
 
-    public boolean addDroneToList(DroneState drone) {
-        ESLogger.info("Added Drone");
-        if (!droneList.contains(drone))
-            droneList.add(drone);
-        return droneList.contains(drone);
-    }
-
-    public boolean addDrone() {
-        DroneState drone = new DroneState();
+    public boolean addDrone(EntityDrone drone) {
         droneList.add(drone);
         return droneList.contains(drone);
     }
 
-    public void addDrones(int size) {
-        for (int i = 0; i < size; i++)
-            droneList.add(new DroneState());
-    }
-
-    public boolean removeDroneFromList(DroneState drone) {
+    public boolean removeDroneFromList(EntityDrone drone) {
         if (!removeList.contains(drone))
             removeList.add(drone);
         return removeList.contains(drone);
     }
 
     public boolean removeDroneFromList() {
-        DroneState drone = getRandomDrone();
-        if (droneList.contains(drone) && !removeList.contains(drone))
+        EntityDrone drone = getRandomDrone();
+        if (droneList.contains(drone) && !removeList.contains(drone)){
             removeList.add(drone);
+            drone.setDead();
+        }
         return removeList.contains(drone);
     }
 
-    public DroneState getRandomDrone() {
+    public EntityDrone getRandomDrone() {
         return droneList.get(new Random().nextInt(droneList.size()));
     }
 
@@ -193,7 +184,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
             return;
 
         if (droneList.size() < droneSize) {
-            addDrones(droneSize - droneList.size());
+            // addDrones(droneSize - droneList.size());
         } else if (droneList.size() > droneSize) {
             int numberToRemove = droneList.size() - droneSize;
             while (removeList.size() < numberToRemove)
@@ -203,7 +194,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
         if (workingList.size() < workingSize) {
             int needed = workingSize - workingList.size();
             int index = 0;
-            for (DroneState drone : droneList) {
+            for (EntityDrone drone : droneList) {
                 if (index == needed)
                     break;
                 drone.setWorking();
@@ -212,7 +203,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
         } else if (workingList.size() > workingSize) {
             int needed = workingList.size() - workingSize;
             int index = 0;
-            for (DroneState drone : droneList) {
+            for (EntityDrone drone : droneList) {
                 if (index == needed)
                     break;
                 drone.setIdle();
@@ -220,6 +211,12 @@ public class TileConsole extends TileES implements IEnergyHandler {
             }
         }
 
+    }
+
+    public boolean registerDrone(EntityDrone drone) {
+        if (!droneList.contains(drone))
+            droneList.add(drone);
+        return droneList.contains(drone);
     }
 
     private boolean isConstructor(int x, int y, int z) {
@@ -242,9 +239,10 @@ public class TileConsole extends TileES implements IEnergyHandler {
         return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, tag);
     }
 
-    public boolean registerAtomicConstructor(TileAtomicConstructor atomic) {
+    public boolean registerAtomicConstructor(TileAtomicConstructor atomic, ArrayList<EntityDrone> droneList) {
         if (!constructorList.contains(atomic))
             constructorList.add(atomic);
+        this.droneList.addAll(droneList);
         return constructorList.contains(atomic);
     }
 

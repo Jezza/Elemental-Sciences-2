@@ -9,12 +9,14 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.Vector3F;
 import me.jezzadabomb.es2.common.core.utils.Vector3I;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
@@ -35,8 +37,11 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
             resetState();
             return;
         }
-        if (!registered && !tileConsole.isInvalid())
-            registered = tileConsole.registerAtomicConstructor(this);
+        if (!registered && !tileConsole.isInvalid()) {
+            ArrayList<EntityDrone> droneList = new ArrayList<EntityDrone>();
+            droneList.addAll(worldObj.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F)));
+            registered = tileConsole.registerAtomicConstructor(this, droneList);
+        }
 
     }
 
@@ -175,16 +180,9 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         return renderMatrix = new boolean[] { (!(localArray[10])), (!(localArray[0] && localArray[1] && localArray[3] && localArray[4] && localArray[9] && localArray[10] && localArray[12])), (!(localArray[9] && localArray[10] && localArray[12] && localArray[17] && localArray[18] && localArray[20] && localArray[21])), (!(localArray[11] && localArray[13] && localArray[22] && localArray[19] && localArray[21] && localArray[18] && localArray[10])), (!(localArray[10] && localArray[11] && localArray[13] && localArray[2] && localArray[5] && localArray[1] && localArray[4])), (!(localArray[12] && localArray[14] && localArray[15])), (!(localArray[4] && localArray[7] && localArray[15])), (!(localArray[15] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[16] && localArray[13])), (!(localArray[21] && localArray[22] && localArray[13])), (!(localArray[12] && localArray[4] && localArray[3])), (!(localArray[4] && localArray[5] && localArray[13])), (!(localArray[12] && localArray[21] && localArray[20])), (!(localArray[15] && localArray[7] && localArray[4] && localArray[5] && localArray[13] && localArray[16] && localArray[8])), (!(localArray[4] && localArray[7] && localArray[15] && localArray[12] && localArray[3] && localArray[6] && localArray[14])), (!(localArray[15] && localArray[16] && localArray[13] && localArray[22] && localArray[25] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[14] && localArray[12] && localArray[21] && localArray[20] && localArray[23] && localArray[24])), (!(localArray[10] && localArray[9] && localArray[12])), (!(localArray[10] && localArray[21] && localArray[18])), (!(localArray[10] && localArray[11] && localArray[13])), (!(localArray[10] && localArray[1] && localArray[4])) };
     }
 
-    public boolean addDrone() {
-        if (tileConsole != null)
-            return tileConsole.addDroneToList(new DroneState());
-        return false;
-    }
-
-    public boolean removeDrone(DroneState drone) {
-        if (tileConsole != null)
-            return tileConsole.removeDroneFromList(drone);
-        return false;
+    public void registerDrone(EntityDrone drone) {
+        if (hasConsole())
+            getConsole().registerDrone(drone);
     }
 
     public boolean removeDrone() {
@@ -194,9 +192,8 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     }
 
     public boolean isPartRendering(int pos) {
-        if (renderMatrix != null) {
+        if (renderMatrix != null)
             return renderMatrix[pos];
-        }
         return false;
     }
 

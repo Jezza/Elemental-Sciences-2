@@ -103,6 +103,7 @@ public class ItemPlaceHolder extends ItemES {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && world.getBlockId(x, y, z) == ModBlocks.atomicConstructor.blockID) {
+            TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
             EntityDrone drone = new EntityDrone(world);
             
             drone.posX = x + 0.5F;
@@ -110,6 +111,7 @@ public class ItemPlaceHolder extends ItemES {
             drone.posZ = z + 0.5F;
             
             world.spawnEntityInWorld(drone);
+            tAC.registerDrone(drone);
             return true;
         }
         return false;
