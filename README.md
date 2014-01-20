@@ -15,6 +15,10 @@ Thanks to all the people that could put up with my presence in #minecraftforge.
 Because this mod is really early stage, I can't blame you for wanting to compile this code, rather then the released versions. The released versions for now are behind because I want to establish a proper foothold in things. EG, code base, and build server up and running, etc.  
 But note that I take no responsibility for the outcome of the compile, as noted in the license.  
 If you need to ask how to compile it, because it's in the early stages I'd recommend not to.
+But if you're REALLY persistant and what to try it out...  
+[Just download the latest 1.6.x](https://files.minecraftnet.com)  
+Follow this [install guide](http://www.minecraftforge.net/wiki/Installation/Source#Installation), written by me.  
+And then throw all this code into the src/main/java and src/main/resources for each folder, eg, stuff in common goes into src/main/java, and stuff in resources go in src/main/resources.  
 
 **About the Mod**
 ***
