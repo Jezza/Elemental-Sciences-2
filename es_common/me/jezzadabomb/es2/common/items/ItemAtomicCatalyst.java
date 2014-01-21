@@ -52,7 +52,7 @@ public class ItemAtomicCatalyst extends ItemES {
 
     public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase target) {
         if (!player.worldObj.isRemote && !(target instanceof EntityPlayerMP && ((EntityPlayerMP) target).capabilities.isCreativeMode)) {
-            itemStack.damageItem(40, player);
+            itemStack.damageItem(80, player);
             String name = DamageSource.outOfWorld.damageType;
             DamageSource.outOfWorld.damageType = "atomicWave" + (new Random().nextInt(3));
             target.attackEntityFrom(DamageSource.outOfWorld, 20.0F);

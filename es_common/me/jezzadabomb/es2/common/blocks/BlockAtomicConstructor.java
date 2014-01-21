@@ -34,7 +34,7 @@ public class BlockAtomicConstructor extends BlockES {
     public boolean isBlockNormalCube(World world, int x, int y, int z) {
         return false;
     }
-    
+
     @Override
     public void addCollisionBoxesToList(World world, int i, int j, int k, AxisAlignedBB aabb, List list, Entity ent) {
         TileEntity te = world.getBlockTileEntity(i, j, k);

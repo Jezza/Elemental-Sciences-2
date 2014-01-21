@@ -64,6 +64,7 @@ public class ItemDebugTool extends ItemES {
             add("Solar Lens - Set List"); // 11
             add("Solar Lens - Get List"); // 12
             add("Console - Locate Master"); // 13
+            add("Remove hunger"); // 14
         }
     };
 
@@ -88,10 +89,6 @@ public class ItemDebugTool extends ItemES {
                 player.addChatMessage(getDebugString());
             } else {
                 switch (debugMode) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
                     case 2:
                         canFlood = !canFlood;
                         player.addChatMessage((canFlood ? "Enabled" : "Disabled") + " Debug Flooding.");
@@ -111,6 +108,10 @@ public class ItemDebugTool extends ItemES {
                         break;
                     case 5:
                         break;
+                    case 15:
+                        player.getFoodStats().setFoodLevel(0);
+                        player.getFoodStats().setFoodSaturationLevel(0);
+                        break;
                 }
             }
         }
@@ -119,7 +120,6 @@ public class ItemDebugTool extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-
         if (getDebugMode("Constructor - Energy count") && isIEnergyHandler(world, x, y, z)) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
             if (world.isRemote) {

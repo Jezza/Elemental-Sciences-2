@@ -29,6 +29,10 @@ public class MathHelper {
         return net.minecraft.util.MathHelper.truncateDoubleToInt((Math.sqrt(a * a + b * b)));
     }
 
+    public static boolean withinRange(double value, double target, double tolerance) {
+        return value >= (target - tolerance) && value <= (target + tolerance);
+    }
+
     public static boolean withinRange(float value, float target, float tolerance) {
         return value >= (target - tolerance) && value <= (target + tolerance);
     }

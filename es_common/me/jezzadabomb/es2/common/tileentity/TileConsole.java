@@ -10,6 +10,7 @@ import cofh.api.energy.IEnergyHandler;
 import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,14 +53,13 @@ public class TileConsole extends TileES implements IEnergyHandler {
         if (renderCables == null)
             updateRenderCables();
 
+        atomicMaintenance();
         droneMaintenance();
         if (droneList.size() != prevDroneSize)
             markForUpdate();
 
-        atomicMaintenance();
         prevDroneSize = droneList.size();
         prevWorkingSize = droneList.size();
-
     }
 
     private void droneMaintenance() {
@@ -80,8 +80,23 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
         if (!worldObj.isRemote)
             for (EntityDrone drone : droneList) {
-                if (drone.isIdle() && (!drone.isWithinConstructor() || drone.getReachedTarget())) {
+                drone.receiveEnergy(null, storage.extractEnergy(1, false), false);
+                if (!drone.isWithinConstructor()) {
                     drone.pathToNewConstructor(getRandomConstructor());
+                } else {
+                    if (drone.hasReachedTarget()) {
+                        if (new Random().nextInt(10) > 7) {
+                            drone.pathToNewConstructor(getRandomConstructor());
+                        } else {
+                            CoordSetF targetSet = drone.getCurrentBlock();
+                            Random rand = new Random();
+
+                            targetSet.addX((rand.nextFloat() - 1) / 2);
+                            targetSet.addY((rand.nextFloat() - 1) / 2);
+                            targetSet.addZ((rand.nextFloat() - 1) / 2);
+                            drone.setTargetCoords(targetSet);
+                        }
+                    }
                 }
             }
     }
@@ -179,6 +194,8 @@ public class TileConsole extends TileES implements IEnergyHandler {
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
+        storage.writeToNBT(tag);
+
         tag.setInteger("direction", direction);
 
         int[] idArray = new int[droneList.size()];
@@ -192,6 +209,8 @@ public class TileConsole extends TileES implements IEnergyHandler {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
+
+        storage.readFromNBT(tag);
 
         direction = tag.getInteger("direction");
 

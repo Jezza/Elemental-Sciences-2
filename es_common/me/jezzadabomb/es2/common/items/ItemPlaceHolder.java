@@ -104,8 +104,8 @@ public class ItemPlaceHolder extends ItemES {
                 world.spawnEntityInWorld(drone);
                 if (!player.capabilities.isCreativeMode)
                     UtilMethods.decrCurrentItem(player);
+                player.swingItem();
             }
-
             return true;
         }
         return false;
@@ -113,7 +113,7 @@ public class ItemPlaceHolder extends ItemES {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!world.isRemote && stack.getItemDamage() == getDamage("empTrigger")) {
+        if (stack.getItemDamage() == getDamage("empTrigger")) {
             float range = 5.0F;
             List<Object> droneList = world.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
             for (Object object : droneList) {
@@ -121,11 +121,11 @@ public class ItemPlaceHolder extends ItemES {
                     EntityDrone drone = (EntityDrone) object;
                     drone.setDead();
                     ItemStack droneStack = ModItems.getPlaceHolderStack("constructorDrone");
-                    if (!player.capabilities.isCreativeMode)
-                        if (!player.inventory.addItemStackToInventory(droneStack))
-                            world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
+                    if (!player.capabilities.isCreativeMode && !player.inventory.addItemStackToInventory(droneStack))
+                        world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
                 }
             }
+            player.swingItem();
             return player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1);
         }
         return stack;

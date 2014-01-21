@@ -65,16 +65,16 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
         glPushMatrix();
 
+        RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
         if (tileConsole.worldObj.isAirBlock(tileConsole.xCoord, tileConsole.yCoord + 1, tileConsole.zCoord)) {
             glTranslatef(0.5F, 0.5F, 0.5F);
             glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
 
             glTranslatef(0.0F, (float) ((0.4 * (Math.sin((24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL)))) / 8), -0.6F);
             glRotatef(90F / 2F, 1.0F, 0.0F, 0.0F);
-            RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
         } else {
             glTranslatef(0.5F, 0.125F, 0.5F);
-            RenderUtils.bindTexture(TextureMaps.BLANK_SCREEN);
+            glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
         }
 
         modelPlate.render();

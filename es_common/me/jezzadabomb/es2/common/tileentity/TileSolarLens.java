@@ -42,7 +42,7 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
     }
 
     private int getPowerOutput() {
-        return 50;
+        return 10;
     }
 
     private void searchForTileEntity() {

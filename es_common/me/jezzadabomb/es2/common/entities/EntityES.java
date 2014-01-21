@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.common.entities;
 
+import cofh.api.energy.IEnergyHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -17,14 +18,24 @@ public abstract class EntityES extends Entity {
         super.onUpdate();
 
         updateEntity();
+    }
+
+    @Override
+    public void onEntityUpdate() {
+        super.onEntityUpdate();
+
+        updateTick();
 
         moveEntity();
     }
 
+    protected abstract void updateTick();
+
     protected void moveEntity() {
         if (canApplyFriction())
             applyFriction();
-        setPosition(posX + motionX, posY + motionY, posZ + motionZ);
+        moveEntity(motionX, motionY, motionZ);
+//         setPosition(posX + motionX, posY + motionY, posZ + motionZ);
     }
 
     protected void applyFriction() {
@@ -47,10 +58,10 @@ public abstract class EntityES extends Entity {
             addDataToWatcher();
     }
 
-    protected void addDataToWatcher(){
-        
+    protected void addDataToWatcher() {
+
     }
-    
+
     protected abstract boolean canApplyFriction();
 
     protected abstract void updateEntity();

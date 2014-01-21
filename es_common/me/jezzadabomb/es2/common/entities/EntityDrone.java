@@ -2,11 +2,17 @@ package me.jezzadabomb.es2.common.entities;
 
 import java.util.ArrayList;
 
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.TimeTracker;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -18,65 +24,59 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
-public class EntityDrone extends EntityES {
+public class EntityDrone extends EntityES implements IEnergyHandler {
 
     // 1 - idle
     // 2 - working
-    // 3 - pathing to new
-    // 4 - cooling
+    // 4 - moving
     int mode;
     boolean withinConstructor, reachedTarget, marked;
     TimeTracker timeTracker;
     CoordSetF targetSet;
+    double xSpeed, ySpeed, zSpeed;
+    private EnergyStorage storage = new EnergyStorage(10000);
 
     public EntityDrone(World world) {
         super(world);
-        withinConstructor = true;
-        reachedTarget = marked = false;
+        reachedTarget = withinConstructor = true;
+        marked = false;
         setSize(2F / 16F, 2F / 16F);
         timeTracker = new TimeTracker();
+        noClip = true;
         setIdle();
     }
 
     @Override
     protected void updateEntity() {
+    }
+
+    @Override
+    protected void updateTick() {
         withinConstructor = isWithinBlockID(ModBlocks.atomicConstructor.blockID);
-        if (isWorking() && !withinConstructor)
-            setIdle();
+
+        if (storage.getEnergyStored() == 0)
+            return;
+        ESLogger.info("Moving");
         moveDrone();
-        if (isCooling()) {
-            if (!marked) {
-                timeTracker.markTime(worldObj);
-                marked = true;
-            }
-            if (timeTracker.hasDelayPassed(worldObj, 450)) {
-                setIdle();
-                marked = false;
-            }
-        }
+        storage.modifyEnergyStored(-1);
     }
 
     public void moveDrone() {
-        if (targetSet != null) {
-            moveTo(targetSet.getX(), targetSet.getY(), targetSet.getZ());
-        }
-    }
-
-    public void moveTo(double xCoord, double yCoord, double zCoord) {
-        float xDisplace = (float) (xCoord - posX);
-        float yDisplace = (float) (yCoord - posY);
-        float zDisplace = (float) (zCoord - posZ);
-        float xSpeed = 0.1F;
-        float ySpeed = 0.1F;
-        float zSpeed = 0.1F;
+        if (targetSet == null)
+            return;
+        if (!isMoving())
+            setMoving();
+        double xDisplace = targetSet.getX() - posX;
+        double yDisplace = targetSet.getY() - posY;
+        double zDisplace = targetSet.getZ() - posZ;
         boolean moved = false;
         motionX = motionY = motionZ = 0.0F;
 
-        if (!me.jezzadabomb.es2.common.core.utils.MathHelper.withinRange(xDisplace, 0.0F, xSpeed)) {
+        if (!MathHelper.withinRange(xDisplace, 0.0F, xSpeed)) {
             if (xDisplace < 0) {
                 motionX = -xSpeed;
             } else if (xDisplace > 0) {
@@ -84,7 +84,7 @@ public class EntityDrone extends EntityES {
             }
             moved = true;
         }
-        if (!me.jezzadabomb.es2.common.core.utils.MathHelper.withinRange(yDisplace, 0.0F, ySpeed)) {
+        if (!MathHelper.withinRange(yDisplace, 0.0F, ySpeed)) {
             if (yDisplace < 0) {
                 motionY = -ySpeed;
             } else if (yDisplace > 0) {
@@ -92,7 +92,7 @@ public class EntityDrone extends EntityES {
             }
             moved = true;
         }
-        if (!me.jezzadabomb.es2.common.core.utils.MathHelper.withinRange(zDisplace, 0.0F, zSpeed)) {
+        if (!MathHelper.withinRange(zDisplace, 0.0F, zSpeed)) {
             if (zDisplace < 0) {
                 motionZ = -zSpeed;
             } else if (zDisplace > 0) {
@@ -100,17 +100,28 @@ public class EntityDrone extends EntityES {
             }
             moved = true;
         }
-        if (!moved)
-            setIdle();
         reachedTarget = !moved;
+        if (reachedTarget) {
+            targetSet = null;
+            setIdle();
+        }
     }
 
-    public boolean getReachedTarget() {
+    public boolean hasReachedTarget() {
         return reachedTarget;
     }
 
-    public void moveTo(int x, int y, int z) {
-        moveTo((double) x + 0.5F, (double) y + 0.5F, (double) z + 0.5F);
+    public CoordSetF getTargetCoords() {
+        return targetSet;
+    }
+
+    public CoordSetF getCurrentBlock() {
+        return new CoordSetF((float) posX, (float) posY, (float) posZ);
+    }
+
+    public void setTargetCoords(CoordSetF targetSet) {
+        reachedTarget = false;
+        this.targetSet = targetSet;
     }
 
     public void pathToNewConstructor(TileAtomicConstructor atomic) {
@@ -118,7 +129,7 @@ public class EntityDrone extends EntityES {
     }
 
     public void pathToXYZ(int x, int y, int z) {
-        targetSet = new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F);
+        setTargetCoords(new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F));
     }
 
     public boolean isWithinConstructor() {
@@ -133,27 +144,22 @@ public class EntityDrone extends EntityES {
         return mode == 2;
     }
 
-    public boolean isPathing() {
-        return mode == 3;
-    }
-
-    public boolean isCooling() {
+    public boolean isMoving() {
         return mode == 4;
     }
 
     public void setIdle() {
+        setSpeed(0.0F);
         mode = 1;
     }
 
     public void setWorking() {
+        setSpeed(0.03F);
         mode = 2;
     }
 
-    public void setPathing() {
-        mode = 3;
-    }
-
-    public void setCooling() {
+    public void setMoving() {
+        setSpeed(0.008F);
         mode = 4;
     }
 
@@ -162,7 +168,17 @@ public class EntityDrone extends EntityES {
     }
 
     private boolean hitGround() {
-        return worldObj.getBlockId((int) Math.floor(posX), (int) (Math.floor(posY - 0.15F)), (int) Math.floor(posZ)) != 0;
+        return worldObj.getBlockId((int) Math.floor(posX), (int) (Math.floor(posY - (height / 2))), (int) Math.floor(posZ)) != 0;
+    }
+
+    public void setSpeed(float speed) {
+        xSpeed = ySpeed = zSpeed = speed;
+    }
+
+    public void setSpeed(float xSpeed, float ySpeed, float zSpeed) {
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+        this.zSpeed = zSpeed;
     }
 
     @Override
@@ -184,4 +200,30 @@ public class EntityDrone extends EntityES {
     protected boolean canAddDataToWatcher() {
         return false;
     }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+        return storage.receiveEnergy(maxReceive, simulate);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+        return storage.extractEnergy(maxExtract, simulate);
+    }
+
+    @Override
+    public boolean canInterface(ForgeDirection from) {
+        return true;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from) {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from) {
+        return storage.getMaxEnergyStored();
+    }
+
 }
