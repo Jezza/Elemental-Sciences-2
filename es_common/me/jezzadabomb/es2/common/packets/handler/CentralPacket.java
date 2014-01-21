@@ -12,6 +12,7 @@ import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
 import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
 import me.jezzadabomb.es2.common.packets.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.packets.PlayerBombPacket;
+import me.jezzadabomb.es2.common.packets.SetBlockChunkPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -42,6 +43,7 @@ public abstract class CentralPacket {
 		builder.put(Integer.valueOf(i++), PlayerBombPacket.class);
 		builder.put(Integer.valueOf(i++), NeighbourChangedPacket.class);
 		builder.put(Integer.valueOf(i++), HoverHandlerPacket.class);
+		builder.put(Integer.valueOf(i++), SetBlockChunkPacket.class);
 		
 		idMap = builder.build();
 	}

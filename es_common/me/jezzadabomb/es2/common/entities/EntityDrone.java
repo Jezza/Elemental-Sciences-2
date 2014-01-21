@@ -203,6 +203,7 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
 
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+        ESLogger.info(maxReceive);
         return storage.receiveEnergy(maxReceive, simulate);
     }
 

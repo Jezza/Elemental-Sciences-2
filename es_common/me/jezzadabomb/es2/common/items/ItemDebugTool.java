@@ -14,6 +14,7 @@ import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.packets.SetBlockChunkPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
@@ -30,6 +31,7 @@ import org.lwjgl.input.Keyboard;
 import cofh.api.energy.IEnergyHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -64,7 +66,7 @@ public class ItemDebugTool extends ItemES {
             add("Solar Lens - Set List"); // 11
             add("Solar Lens - Get List"); // 12
             add("Console - Locate Master"); // 13
-            add("Remove hunger"); // 14
+            add("Constructor - 3x3");
         }
     };
 
@@ -106,11 +108,8 @@ public class ItemDebugTool extends ItemES {
                             player.addChatMessage(playerString);
                         }
                         break;
-                    case 5:
-                        break;
                     case 15:
-                        player.getFoodStats().setFoodLevel(0);
-                        player.getFoodStats().setFoodSaturationLevel(0);
+                        PacketDispatcher.sendPacketToServer(new SetBlockChunkPacket(new CoordSet((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)), ModBlocks.atomicConstructor.blockID).makePacket());
                         break;
                 }
             }
@@ -120,6 +119,7 @@ public class ItemDebugTool extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
+
         if (getDebugMode("Constructor - Energy count") && isIEnergyHandler(world, x, y, z)) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
             if (world.isRemote) {
