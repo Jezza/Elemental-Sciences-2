@@ -10,8 +10,8 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
+import me.jezzadabomb.es2.common.tickers.HoverHandler;
 
 public class HoverHandlerPacket extends CentralPacket {
 
@@ -46,10 +46,10 @@ public class HoverHandlerPacket extends CentralPacket {
     @Override
     public void execute(EntityPlayer player, Side side) throws ProtocolException {
         if (side.isServer()) {
-            ElementalSciences2.proxy.hoverHandler.addPlayer(player.worldObj.getPlayerEntityByName(name), beginning);
+//            ElementalSciences2.proxy.hoverHandler.addPlayer(player.worldObj.getPlayerEntityByName(name), beginning);
             PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 64, player.dimension, new HoverHandlerPacket(name, beginning).makePacket());
         } else {
-            ElementalSciences2.proxy.hoverHandler.addPlayer(player.worldObj.getPlayerEntityByName(name), beginning);
+//            ElementalSciences2.proxy.hoverHandler.addPlayer(player.worldObj.getPlayerEntityByName(name), beginning);
         }
     }
 

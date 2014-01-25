@@ -109,7 +109,7 @@ public class ItemDebugTool extends ItemES {
                         }
                         break;
                     case 15:
-                        PacketDispatcher.sendPacketToServer(new SetBlockChunkPacket(new CoordSet((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)), ModBlocks.atomicConstructor.blockID).makePacket());
+                        PacketDispatcher.sendPacketToServer(new SetBlockChunkPacket(new CoordSet((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)), ModBlocks.atomicConstructor.blockID, 20).makePacket());
                         break;
                 }
             }

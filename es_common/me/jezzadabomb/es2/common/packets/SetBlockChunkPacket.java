@@ -13,11 +13,12 @@ import cpw.mods.fml.relauncher.Side;
 public class SetBlockChunkPacket extends CentralPacket {
 
     CoordSet coordSet;
-    int blockID;
+    int blockID, range;
 
-    public SetBlockChunkPacket(CoordSet coordSet, int blockID) {
+    public SetBlockChunkPacket(CoordSet coordSet, int blockID, int range) {
         this.coordSet = coordSet;
         this.blockID = blockID;
+        this.range = range;
     }
 
     public SetBlockChunkPacket() {
@@ -25,14 +26,20 @@ public class SetBlockChunkPacket extends CentralPacket {
 
     @Override
     public void write(ByteArrayDataOutput out) {
+        if (range <= 0)
+            range = 1;
         coordSet.writeToStream(out);
         out.writeInt(blockID);
+        out.writeInt(range);
     }
 
     @Override
     public void read(ByteArrayDataInput in) throws ProtocolException {
         coordSet = CoordSet.readFromStream(in);
         blockID = in.readInt();
+        range = in.readInt();
+        if (range < 0)
+            range = 0;
     }
 
     @Override
@@ -43,9 +50,11 @@ public class SetBlockChunkPacket extends CentralPacket {
             int y = coordSet.getY();
             int z = coordSet.getZ();
 
-            for (int i = -1; i < 2; i++)
-                for (int j = -1; j < 2; j++)
-                    for (int k = -1; k < 2; k++)
+            int tempRange = (int) Math.floor(range / 2);
+
+            for (int i = -tempRange; i < tempRange + 1; i++)
+                for (int j = -tempRange; j < tempRange + 1; j++)
+                    for (int k = -tempRange; k < tempRange + 1; k++)
                         world.setBlock(x + i, y + j, z + k, blockID, 0, 3);
         } else {
             throw new ProtocolException("Cannot send packet to client!");

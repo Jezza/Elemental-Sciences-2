@@ -32,11 +32,37 @@ public class UtilMethods {
         }
         return itemStack1;
     }
-    
-    public static ItemStack decrCurrentItem(EntityPlayer player){
+
+    public static boolean isPlayerWearing(EntityPlayer player, Item item) {
+        if (player == null || item == null || !(item instanceof ItemArmor))
+            return false;
+
+        int index = getSlotFromIndex(((ItemArmor) item).armorType);
+        if (index == -1)
+            return false;
+        ItemStack tempStack = player.inventory.armorItemInSlot(index);
+        if (tempStack != null)
+            return item.equals(tempStack.getItem());
+
+        return false;
+    }
+
+    public static boolean isPlayerWearing(EntityPlayer player, ItemStack itemStack) {
+        return isPlayerWearing(player, itemStack.getItem());
+    }
+
+    public static boolean isWearingItem(Item item) {
+        return isPlayerWearing(Minecraft.getMinecraft().thePlayer, item);
+    }
+
+    public static boolean isWearingItemStack(ItemStack itemStack) {
+        return isWearingItem(itemStack.getItem());
+    }
+
+    public static ItemStack decrCurrentItem(EntityPlayer player) {
         return player.inventory.decrStackSize(player.inventory.currentItem, 1);
     }
-    
+
     public static boolean isConsole(World world, int x, int y, int z) {
         return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileConsole;
     }
@@ -44,8 +70,8 @@ public class UtilMethods {
     public static boolean isConstructor(World world, int x, int y, int z) {
         return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
     }
-    
-    public static boolean hasPressedShift(){
+
+    public static boolean hasPressedShift() {
         return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
     }
 
@@ -96,7 +122,9 @@ public class UtilMethods {
     }
 
     public static boolean canShowDebugHUD() {
-        return isHoldingItem(ModItems.debugItem) && Reference.CAN_DEBUG;
+        if (!Reference.CAN_DEBUG)
+            return false;
+        return isHoldingItem(ModItems.debugItem);
     }
 
     public static boolean isRenderType(TileEntity tileEntity, int type) {
@@ -151,37 +179,19 @@ public class UtilMethods {
         return false;
     }
 
-    public static boolean isWearingItem(Item item) {
-        return isWearingItemStack(new ItemStack(item));
-    }
-
     public static int getSlotFromIndex(int index) {
         switch (index) {
-        case 0:
-            return 3;
-        case 1:
-            return 2;
-        case 2:
-            return 1;
-        case 3:
-            return 0;
-        default:
-            return -1;
+            case 0:
+                return 3;
+            case 1:
+                return 2;
+            case 2:
+                return 1;
+            case 3:
+                return 0;
+            default:
+                return -1;
         }
-    }
-
-    public static boolean isWearingItemStack(ItemStack itemStack) {
-        if (!(itemStack.getItem() instanceof ItemArmor)) {
-            return false;
-        }
-        int index = getSlotFromIndex(((ItemArmor) itemStack.getItem()).armorType);
-        if (index == -1)
-            return false;
-        ItemStack tempStack = Minecraft.getMinecraft().thePlayer.inventory.armorItemInSlot(index);
-        if (tempStack != null) {
-            return tempStack.getItem().equals(itemStack.getItem());
-        }
-        return false;
     }
 
     public static String getLocFromArray(int[] coords) {

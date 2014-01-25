@@ -1,10 +1,9 @@
 package me.jezzadabomb.es2;
 
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
+import me.jezzadabomb.es2.common.tickers.HoverHandler;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tickers.WorldTicker;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -31,6 +30,7 @@ public class CommonProxy {
     public void registerTickHandlers() {
         TickRegistry.registerTickHandler(quantumBomb, Side.SERVER);
         TickRegistry.registerTickHandler(new WorldTicker(), Side.SERVER);
+        TickRegistry.registerTickHandler(hoverHandler, Side.SERVER);
     }
 
     public void registerTileEntities() {

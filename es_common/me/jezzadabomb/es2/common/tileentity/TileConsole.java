@@ -54,6 +54,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
             updateRenderCables();
 
         atomicMaintenance();
+        ESLogger.info(constructorList.size());
         droneMaintenance();
         if (droneList.size() != prevDroneSize)
             markForUpdate();

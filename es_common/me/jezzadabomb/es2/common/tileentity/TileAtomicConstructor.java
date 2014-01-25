@@ -7,6 +7,7 @@ import java.util.Random;
 import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.TimeTracker;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
@@ -27,16 +28,29 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     boolean[] renderMatrix;
     TileConsole tileConsole;
     boolean registered = false;
+    TimeTracker timeTracker;
+    boolean marked;
 
     public TileAtomicConstructor() {
+        timeTracker = new TimeTracker();
+        marked = false;
     }
 
     @Override
     public void updateEntity() {
         if (renderMatrix == null)
             constructRenderMatrix();
-        if (tileConsole == null && !findNewConsole())
+        if (!marked) {
+            marked = true;
+            timeTracker.markTime(worldObj);
+        }
+        if (tileConsole == null) {
+            if (timeTracker.hasDelayPassed(worldObj, 50 + new Random().nextInt(100))) {
+                findNewConsole();
+                marked = false;
+            }
             return;
+        }
         if (tileConsole.isInvalid()) {
             resetState();
             return;

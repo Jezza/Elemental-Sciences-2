@@ -44,7 +44,7 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
         super(world);
         reachedTarget = withinConstructor = true;
         marked = false;
-        setSize(2F / 16F, 2F / 16F);
+        setSize(8F / 16F, 8F / 16F);
         timeTracker = new TimeTracker();
         noClip = true;
         setIdle();

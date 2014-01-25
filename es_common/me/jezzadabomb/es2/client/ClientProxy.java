@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
-import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.QuantumBombRenderer;
 import me.jezzadabomb.es2.client.renderers.entity.EntityDroneRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
@@ -16,8 +15,6 @@ import me.jezzadabomb.es2.client.sound.SoundHandler;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.handlers.HoverBootsHandler;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
@@ -56,14 +53,14 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
         // TODO Make an item render.
         ClientRegistry.bindTileEntitySpecialRenderer(TileSolarLens.class, new TileSolarLensRenderer());
-        // TODO Make an item render.
         ClientRegistry.bindTileEntitySpecialRenderer(TileConsole.class, new TileConsoleRenderer());
     }
 
     private void initItemRenderer() {
         MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst.itemID, new ItemAtomicCatalystRenderer());
         MinecraftForgeClient.registerItemRenderer(ModBlocks.inventoryScanner.blockID, new ItemInventoryScannerRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.atomicConstructor.blockID, new ItemAtomicConstructorRenderer());
+        ItemAtomicConstructorRenderer atomic = new ItemAtomicConstructorRenderer();
+        MinecraftForgeClient.registerItemRenderer(ModBlocks.atomicConstructor.blockID, atomic);
         MinecraftForgeClient.registerItemRenderer(ModBlocks.console.blockID, new ItemConsoleRenderer());
     }
 
@@ -73,7 +70,6 @@ public class ClientProxy extends CommonProxy {
 
     public void initEventHandlers() {
         MinecraftForge.EVENT_BUS.register(hudRenderer);
-        MinecraftForge.EVENT_BUS.register(new HoverBootsHandler());
         MinecraftForge.EVENT_BUS.register(new QuantumBombRenderer());
     }
 

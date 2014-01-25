@@ -14,4 +14,9 @@ public class ItemHoverBoots extends ItemArmourES {
     public ItemHoverBoots(int id, EnumArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
         super(id, armorMaterial, renderIndex, armourIndex, name, textureLocation);
     }
+    
+    @Override
+    protected void addInformation() { 
+        addToBothLists("Very much a WIP");
+    }
 }

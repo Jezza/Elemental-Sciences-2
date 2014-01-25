@@ -76,6 +76,11 @@ public abstract class ItemArmourES extends ItemArmor {
         }
     }
 
+	protected void addToBothLists(String string){
+        shiftList.add(string);
+        infoList.add(string);
+    }
+	
     protected void defaultInfoList(){
         infoList.add("Press shift for more info.");
     }
