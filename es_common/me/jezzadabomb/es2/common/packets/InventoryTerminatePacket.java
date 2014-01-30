@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.packets;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -36,7 +37,7 @@ public class InventoryTerminatePacket extends CentralPacket {
 			if(loc == "null"){
 				return;
 			}
-			ElementalSciences2.proxy.hudRenderer.addToRemoveList(this);
+			ClientProxy.getHUDRenderer().addToRemoveList(this);
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");
 		}

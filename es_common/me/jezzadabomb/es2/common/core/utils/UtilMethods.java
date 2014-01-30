@@ -2,8 +2,6 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import java.util.Arrays;
 
-import org.lwjgl.input.Keyboard;
-
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -11,7 +9,6 @@ import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -19,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import org.lwjgl.input.Keyboard;
 
 public class UtilMethods {
 

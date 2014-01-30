@@ -18,7 +18,7 @@ public class Reference {
     
     //Timing constants
     public static int GLASSES_WAIT_TIMER_DEFAULT = 10;
-    public static int QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT = UtilMethods.getTicksFromSeconds(320);
+    public static int QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT = 320 * 20;
 
     public static int GLASSES_WAIT_TIMER;
     public static int QUANTUM_STATE_DISRUPTER_WAIT_TIMER;

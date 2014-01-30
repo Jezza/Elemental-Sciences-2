@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.packets.handler;
 
 import java.util.logging.Logger;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket.ProtocolException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,7 +35,7 @@ public class PacketHandler implements IPacketHandler {
         } catch (ProtocolException e) {
             if (player instanceof EntityPlayerMP) {
                 ((EntityPlayerMP) player).playerNetServerHandler.kickPlayerFromServer("Protocol Exception!");
-                Logger.getLogger("ElementalSciences2").warning("Player " + ((EntityPlayer) player).username + " caused a Protocol Exception!");
+                ESLogger.severe("Player " + ((EntityPlayer) player).username + " caused a Protocol Exception!");
             }
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Unexpected Reflection exception during Packet construction!", e);

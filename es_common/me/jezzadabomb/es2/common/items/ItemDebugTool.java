@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.items;
 import java.util.ArrayList;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
@@ -236,7 +237,7 @@ public class ItemDebugTool extends ItemES {
             }
 
             if (getDebugMode("Minor Packet Monitoring")) {
-                InventoryPacket packet = ElementalSciences2.proxy.hudRenderer.getPacket(x, y, z);
+                InventoryPacket packet = ClientProxy.getHUDRenderer().getPacket(x, y, z);
                 if (packet != null) {
                     player.addChatMessage("");
                     player.addChatMessage("Inventory Name: " + packet.inventoryTitle);

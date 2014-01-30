@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
@@ -99,7 +100,7 @@ public class InventoryPacket extends CentralPacket {
 			if (coord == null)
 				return;
 			coordSet = new CoordSet(coord[0], coord[1], coord[2]);
-			ElementalSciences2.proxy.hudRenderer.addPacketToList(this);
+			ClientProxy.getHUDRenderer().addPacketToList(this);
 			tickTiming = 0;
 		} else {
 			throw new ProtocolException("Cannot send this packet to the server!");

@@ -34,7 +34,7 @@ public class BlockInventoryScanner extends BlockES {
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
         if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner && world.isRemote && !UtilMethods.isWearingItem(ModItems.glasses)) {
-            ElementalSciences2.proxy.hudRenderer.addToRemoveList(x, y - 1, z);
+            ClientProxy.getHUDRenderer().addToRemoveList(x, y - 1, z);
         }
         return super.removeBlockByPlayer(world, player, x, y, z);
     }

@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
+import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.QuantumBombRenderer;
 import me.jezzadabomb.es2.client.renderers.entity.EntityDroneRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
@@ -30,6 +31,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+
+    public static HUDRenderer hudRenderer = new HUDRenderer();
+
+    public static HUDRenderer getHUDRenderer() {
+        return hudRenderer;
+    }
+
     @Override
     public void runClientSide() {
         initTickHandlers();
@@ -40,10 +48,10 @@ public class ClientProxy extends CommonProxy {
         initEntityHandler();
     }
 
-    public void initEntityHandler(){
+    public void initEntityHandler() {
         RenderingRegistry.registerEntityRenderingHandler(EntityDrone.class, new EntityDroneRenderer());
     }
-    
+
     public void initSoundHandler() {
         MinecraftForge.EVENT_BUS.register(new SoundHandler());
     }

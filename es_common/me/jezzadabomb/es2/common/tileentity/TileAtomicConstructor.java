@@ -30,6 +30,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     boolean registered = false;
     TimeTracker timeTracker;
     boolean marked;
+    int timeTicked = 0;
 
     public TileAtomicConstructor() {
         timeTracker = new TimeTracker();
@@ -38,14 +39,16 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
 
     @Override
     public void updateEntity() {
-        if (renderMatrix == null)
+        if (renderMatrix == null || ++timeTicked >= 100) {
             constructRenderMatrix();
+            timeTicked = 0;
+        }
         if (!marked) {
             marked = true;
             timeTracker.markTime(worldObj);
         }
         if (tileConsole == null) {
-            if (timeTracker.hasDelayPassed(worldObj, 50 + new Random().nextInt(100))) {
+            if (timeTracker.hasDelayPassed(worldObj, 50 + new Random().nextInt(50))) {
                 findNewConsole();
                 marked = false;
             }
