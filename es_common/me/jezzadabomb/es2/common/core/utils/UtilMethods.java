@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.core.utils;
 import java.util.Arrays;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -35,7 +36,6 @@ public class UtilMethods {
     public static boolean isPlayerWearing(EntityPlayer player, Item item) {
         if (player == null || item == null || !(item instanceof ItemArmor))
             return false;
-
         int index = getSlotFromIndex(((ItemArmor) item).armorType);
         if (index == -1)
             return false;
