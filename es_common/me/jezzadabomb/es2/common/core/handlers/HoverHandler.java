@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.events.PlayerArmourEvent;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
@@ -36,6 +37,14 @@ public class HoverHandler {
     }
 
     @ForgeSubscribe
+    public void onArmourChange(PlayerArmourEvent event){
+        ESLogger.info("Hello");
+        if(event.isBootsChanged()){
+            
+        }
+    }
+    
+    @ForgeSubscribe
     public void onLivingUpdate(LivingUpdateEvent event) {
         if (event.entity == null || !(event.entity instanceof EntityPlayer))
             return;
@@ -54,13 +63,6 @@ public class HoverHandler {
         // Get the hovering instance of the player.
         HoveringPlayer hoveringPlayer = getHoveringPlayer(player);
 
-        if (player.capabilities.isFlying || player.isSneaking()) {
-            hoveringPlayer.timeLeft = 0;
-            hoveringPlayer.setWaiting(true);
-            hoveringPlayer.setHovering(false);
-            sendPacket(hoveringPlayer);
-        }
-
         if (player.onGround) {
             if (player.isCollidedVertically || player.onGround || player.isDead || !player.isAirBorne) {
                 playerList.remove(getHoveringPlayer(player));
@@ -69,6 +71,13 @@ public class HoverHandler {
         }
         if (hoveringPlayer.isWaiting())
             return;
+
+        if (player.capabilities.isFlying || player.isSneaking()) {
+            hoveringPlayer.timeLeft = 0;
+            hoveringPlayer.setWaiting(true);
+            hoveringPlayer.setHovering(false);
+            sendPacket(hoveringPlayer);
+        }
 
         // Check if should be hovering.
 
@@ -109,57 +118,45 @@ public class HoverHandler {
             return;
         tempList.addAll(playerList);
         for (HoveringPlayer player : tempList) {
-            if (!player.isHovering())
-                continue;
-            if (player.equals(renderView.username)) {
+            if (player != null && player.isHovering()) {
                 glPushMatrix();
-                // RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
-
-                glRotated(90, 1.0D, 0.0D, 0.0D);
-                glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
-
-                glTranslated(-1.291D, -1.281D, 0.0D);
-
-                glScaled(0.01D, 0.01D, 0.01D);
-                
-                glColor4f(1.0F, 1.0F, 1.0F, ((float)player.timeLeft / ((float)player.MAX_HOVER_TIME * 2)) + 0.1F);
-                // if (--timeHovering == 0)
-                // timeHovering = WAIT_TIME;
-
                 glDisable(GL_LIGHTING);
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glDisable(GL_CULL_FACE);
+                //TODO Fix the reused methods.
+                if (player.equals(renderView.username)) {
+                    glRotated(90, 1.0D, 0.0D, 0.0D);
+                    glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
 
-                // RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
-                RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
+                    glTranslated(-1.291D, -1.281D, 0.0D);
+
+                    glScaled(0.01D, 0.01D, 0.01D);
+
+                    glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
+
+                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
+                } else {
+                    RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
+
+                    glTranslated(0.0D, 1.55D, 0.0D);
+
+                    glRotated(90, 1.0D, 0.0D, 0.0D);
+                    glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
+
+                    glTranslated(-1.3D, -1.3D, 0.0D);
+
+                    glScaled(0.01D, 0.01D, 0.01D);
+
+                    glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
+
+                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
+
+                }
+                glEnable(GL_CULL_FACE);
+                glDisable(GL_BLEND);
                 glPopMatrix();
-                continue;
             }
-            glPushMatrix();
-            RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
-
-            glTranslated(0.0D, 1.55D, 0.0D);
-
-            glRotated(90, 1.0D, 0.0D, 0.0D);
-            glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
-
-            glTranslated(-1.3D, -1.3D, 0.0D);
-
-            glScaled(0.01D, 0.01D, 0.01D);
-
-            glColor4f(1.0F, 1.0F, 1.0F, ((float)player.timeLeft / ((float)player.MAX_HOVER_TIME * 2)) + 0.1F);
-            
-            glDisable(GL_LIGHTING);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glDisable(GL_CULL_FACE);
-
-            RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
-
-            glPopMatrix();
-            glEnable(GL_CULL_FACE);
-            glDisable(GL_BLEND);
         }
     }
 

@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.common.core.handlers;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.events.PlayerArmourEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -15,5 +17,4 @@ public class MiscEventHandler {
 			ElementalSciences2.proxy.quantumBomb.addItemEntityToList(event.entityItem);
 		}
 	}
-
 }

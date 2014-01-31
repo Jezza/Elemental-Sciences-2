@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.core.utils;
 import java.util.Arrays;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -139,7 +140,7 @@ public class UtilMethods {
 
     public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume) {
         for (ItemStack tempStack : player.inventory.mainInventory) {
-            if (tempStack != null && areItemStacksEqual(itemStack, tempStack)) {
+            if (tempStack != null && ItemStack.areItemStacksEqual(itemStack, tempStack)) {
                 if (shouldConsume) {
                     tempStack.setItemDamage(1);
                 }
