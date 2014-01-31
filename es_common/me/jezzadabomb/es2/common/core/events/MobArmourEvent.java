@@ -8,7 +8,7 @@ import net.minecraftforge.event.Event;
 
 public class MobArmourEvent extends Event {
 
-    EntityLiving entityLiving;
+    public EntityLiving entityLiving;
     BitSet updateChunk;
 
     public MobArmourEvent(EntityLiving entityLiving, BitSet updateChunk) {

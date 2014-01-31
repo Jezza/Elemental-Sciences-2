@@ -1,44 +1,56 @@
 package me.jezzadabomb.es2.client.utils;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import cpw.mods.fml.client.FMLClientHandler;
-
-import me.jezzadabomb.es2.common.ModItems;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_LINES;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glPopAttrib;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushAttrib;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.glVertex3d;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderUtils {
 
     static RenderBlocks renderBlocksInstance = new RenderBlocks();
@@ -47,11 +59,11 @@ public class RenderUtils {
         Minecraft.getMinecraft().renderEngine.bindTexture(rl);
     }
 
-    public static void translateToOtherPlayer(EntityPlayer player, double partialTicks){
+    public static void translateToOtherPlayer(EntityPlayer player, double partialTicks) {
         EntityPlayer renderView = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
         translateToWorldCoordsShifted(renderView, partialTicks, player.posX, player.posY, player.posZ);
     }
-    
+
     public static void drawTexturedQuadAtPlayer(ResourceLocation rl, int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
         bindTexture(rl);
         drawTexturedQuad(x, y, u, v, uLength, vLength, zLevel);
@@ -112,53 +124,53 @@ public class RenderUtils {
     private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
         if (itemBlock) {
             switch (indexNum) {
-            case 0:
-                glTranslated(2.0D, 0.0D, 0.0D);
-                break;
-            case 1:
-                break;
-            case 2:
-                glTranslated(-2.0D, 0.0D, 0.0D);
-                break;
-            default:
-                return;
+                case 0:
+                    glTranslated(2.0D, 0.0D, 0.0D);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    glTranslated(-2.0D, 0.0D, 0.0D);
+                    break;
+                default:
+                    return;
             }
 
             switch (rowNum) {
-            case 0:
-                glTranslated(0.0D, 3.0D, 0.0D);
-                break;
-            case 1:
-                glTranslated(0.0D, 2.0D, 0.0D);
-                break;
-            case 2:
-                break;
-            default:
-                return;
+                case 0:
+                    glTranslated(0.0D, 3.0D, 0.0D);
+                    break;
+                case 1:
+                    glTranslated(0.0D, 2.0D, 0.0D);
+                    break;
+                case 2:
+                    break;
+                default:
+                    return;
             }
         } else {
             switch (indexNum) {
-            case 0:
-                glTranslated(1.0D, 0.0D, 0.0D);
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            default:
-                return;
+                case 0:
+                    glTranslated(1.0D, 0.0D, 0.0D);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    return;
             }
 
             switch (rowNum) {
-            case 0:
-                break;
-            case 1:
-                // glTranslated(0.0D, -2.0D, 0.0D);
-                break;
-            case 2:
-                break;
-            default:
-                return;
+                case 0:
+                    break;
+                case 1:
+                    // glTranslated(0.0D, -2.0D, 0.0D);
+                    break;
+                case 2:
+                    break;
+                default:
+                    return;
             }
         }
 
@@ -167,24 +179,24 @@ public class RenderUtils {
     private static void translateSpecialRender(int indexRow, int rowNum, boolean neg) {
         int tempNeg = neg ? 1 : -1;
         switch (rowNum) {
-        case 0:
-            glTranslated(0.0D, -1.0D * tempNeg, 0.0D);
-            break;
-        case 2:
-            glTranslated(0.0D, 1.0D * tempNeg, 0.0D);
-            break;
-        default:
-            return;
+            case 0:
+                glTranslated(0.0D, -1.0D * tempNeg, 0.0D);
+                break;
+            case 2:
+                glTranslated(0.0D, 1.0D * tempNeg, 0.0D);
+                break;
+            default:
+                return;
         }
         switch (indexRow) {
-        case 0:
-            glTranslated(-1.0D * tempNeg, 0.0D, 0.0D);
-            break;
-        case 2:
-            glTranslated(0.0D, 0.0D, 1.0D * tempNeg);
-            break;
-        default:
-            return;
+            case 0:
+                glTranslated(-1.0D * tempNeg, 0.0D, 0.0D);
+                break;
+            case 2:
+                glTranslated(0.0D, 0.0D, 1.0D * tempNeg);
+                break;
+            default:
+                return;
         }
     }
 

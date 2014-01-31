@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,7 +46,7 @@ public class EntityArmourListener {
         if (curInventory == null || prevInventory == null)
             return;
 
-        if (detectPlayerChange(player, curInventory, prevInventory)) {
+        if (detectChanges(player, curInventory, prevInventory)) {
             playerInventoryMap.remove(username);
             playerInventoryMap.put(username, curInventory);
         }
@@ -68,42 +69,31 @@ public class EntityArmourListener {
         if (curInventory == null || prevInventory == null)
             return;
 
-        if (detectMobChange(mob, curInventory, prevInventory)) {
+        if (detectChanges(mob, curInventory, prevInventory)) {
             mobInventoryMap.remove(ID);
             mobInventoryMap.put(ID, curInventory);
         }
 
     }
 
-    private boolean detectPlayerChange(EntityPlayer player, ArrayList<ItemStack> curInventory, ArrayList<ItemStack> prevInventory) {
+    private boolean detectChanges(EntityLivingBase entity, ArrayList<ItemStack> curInventory, ArrayList<ItemStack> prevInventory) {
         boolean changed = false;
+        boolean isMob = entity instanceof EntityPlayer;
         BitSet updateChunk = new BitSet(4);
 
-        for (int index = 0; index < curInventory.size(); index++)
+        for (int index = (isMob ? 1 : 0); index < curInventory.size(); index++)
             if (hasChanged(curInventory.get(index), prevInventory.get(index))) {
                 updateChunk.set(index);
                 changed = true;
             }
 
-        if (changed)
-            MinecraftForge.EVENT_BUS.post(new PlayerArmourEvent(player, updateChunk));
-
-        return changed;
-    }
-
-    private boolean detectMobChange(EntityLiving mob, ArrayList<ItemStack> curInventory, ArrayList<ItemStack> prevInventory) {
-        boolean changed = false;
-        BitSet updateChunk = new BitSet(4);
-
-        // Start at one, because we don't want to check against the item in hand.
-        for (int index = 1; index < curInventory.size(); index++)
-            if (hasChanged(curInventory.get(index), prevInventory.get(index))) {
-                updateChunk.set(index);
-                changed = true;
+        if (changed) {
+            if (isMob) {
+                MinecraftForge.EVENT_BUS.post(new MobArmourEvent((EntityLiving) entity, updateChunk));
+            } else {
+                MinecraftForge.EVENT_BUS.post(new PlayerArmourEvent((EntityPlayer) entity, updateChunk));
             }
-
-        if (changed)
-            MinecraftForge.EVENT_BUS.post(new MobArmourEvent(mob, updateChunk));
+        }
 
         return changed;
     }

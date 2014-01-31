@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class HoverHandler {
-    // List containing players wearing the boots.
+
     ArrayList<HoveringPlayer> playerList;
 
     static HoverHandler INSTANCE;
@@ -37,20 +37,11 @@ public class HoverHandler {
     }
 
     @ForgeSubscribe
-    public void onArmourChange(PlayerArmourEvent event){
-        ESLogger.info("Hello");
-        if(event.isBootsChanged()){
-            
-        }
-    }
-    
-    @ForgeSubscribe
     public void onLivingUpdate(LivingUpdateEvent event) {
         if (event.entity == null || !(event.entity instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) event.entity;
 
-        // Check for boots.
         if (!UtilMethods.isPlayerWearing(player, ModItems.hoverBoots)) {
             if (isInList(player))
                 playerList.remove(getHoveringPlayer(player));
@@ -60,15 +51,16 @@ public class HoverHandler {
         if (!isInList(player))
             playerList.add(new HoveringPlayer(player));
 
-        // Get the hovering instance of the player.
         HoveringPlayer hoveringPlayer = getHoveringPlayer(player);
 
-        if (player.onGround) {
-            if (player.isCollidedVertically || player.onGround || player.isDead || !player.isAirBorne) {
-                playerList.remove(getHoveringPlayer(player));
-            }
+        if (hoveringPlayer == null)
+            return;
+
+        if (player.isCollidedVertically || player.onGround || player.isDead) {
+            playerList.remove(getHoveringPlayer(player));
             return;
         }
+
         if (hoveringPlayer.isWaiting())
             return;
 
@@ -79,17 +71,15 @@ public class HoverHandler {
             sendPacket(hoveringPlayer);
         }
 
-        // Check if should be hovering.
-
-        if (!hoveringPlayer.isHovering())
+        if (!hoveringPlayer.isHovering()) {
             if (player.fallDistance > 0.0F || player.isAirBorne || !player.onGround || !player.isCollidedVertically) {
                 hoveringPlayer.setHovering(true);
                 sendPacket(hoveringPlayer);
             }
-        // Make them hover.
-        hoveringPlayer.hoverTick();
+        } else {
+            hoveringPlayer.hoverTick();
+        }
 
-        // Decrement the time, so when we finish hovering, drop them.
         if (hoveringPlayer.tickPlayer() <= 0) {
             hoveringPlayer.setWaiting(true);
             hoveringPlayer.setHovering(false);
@@ -124,7 +114,7 @@ public class HoverHandler {
                 glEnable(GL_BLEND);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glDisable(GL_CULL_FACE);
-                //TODO Fix the reused methods.
+                // TODO Fix the reused methods.
                 if (player.equals(renderView.username)) {
                     glRotated(90, 1.0D, 0.0D, 0.0D);
                     glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
@@ -240,6 +230,12 @@ public class HoverHandler {
 
         public EntityPlayer getPlayer() {
             return player;
+        }
+
+        public void resetState() {
+            timeLeft = MAX_HOVER_TIME;
+            waiting = false;
+            justStarted = true;
         }
 
         public void hoverTick() {

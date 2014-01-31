@@ -9,7 +9,7 @@ import net.minecraftforge.event.IEventListener;
 
 public class PlayerArmourEvent extends Event {
 
-    EntityPlayer player;
+    public EntityPlayer player;
     BitSet updateChunk;
 
     public PlayerArmourEvent(EntityPlayer player, BitSet updateChunk) {
