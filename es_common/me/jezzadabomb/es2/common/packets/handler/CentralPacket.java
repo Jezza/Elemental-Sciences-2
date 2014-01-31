@@ -5,6 +5,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
 import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
@@ -41,6 +42,7 @@ public abstract class CentralPacket {
 		builder.put(Integer.valueOf(i++), PlayerBombPacket.class);
 		builder.put(Integer.valueOf(i++), NeighbourChangedPacket.class);
 		builder.put(Integer.valueOf(i++), SetBlockChunkPacket.class);
+		builder.put(Integer.valueOf(i++), HoverHandlerPacket.class);
 		
 		idMap = builder.build();
 	}

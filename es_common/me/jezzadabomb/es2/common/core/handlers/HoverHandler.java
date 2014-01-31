@@ -1,33 +1,38 @@
 package me.jezzadabomb.es2.common.core.handlers;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
+import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class HoverHandler {
-
-    private boolean hovering = false;
-    private boolean hitGround = false;
-    private boolean sentPacket = false;
-
     // List containing players wearing the boots.
     ArrayList<HoveringPlayer> playerList;
 
+    static HoverHandler INSTANCE;
+
     public HoverHandler() {
         playerList = new ArrayList<HoveringPlayer>();
+        INSTANCE = this;
+    }
+
+    public static HoverHandler getInstance() {
+        return INSTANCE;
     }
 
     @ForgeSubscribe
@@ -49,10 +54,11 @@ public class HoverHandler {
         // Get the hovering instance of the player.
         HoveringPlayer hoveringPlayer = getHoveringPlayer(player);
 
-        if (player.capabilities.isFlying) {
+        if (player.capabilities.isFlying || player.isSneaking()) {
             hoveringPlayer.timeLeft = 0;
             hoveringPlayer.setWaiting(true);
             hoveringPlayer.setHovering(false);
+            sendPacket(hoveringPlayer);
         }
 
         if (player.onGround) {
@@ -67,8 +73,10 @@ public class HoverHandler {
         // Check if should be hovering.
 
         if (!hoveringPlayer.isHovering())
-            if (player.fallDistance > 0.0F || player.isAirBorne || !player.onGround || !player.isCollidedVertically)
+            if (player.fallDistance > 0.0F || player.isAirBorne || !player.onGround || !player.isCollidedVertically) {
                 hoveringPlayer.setHovering(true);
+                sendPacket(hoveringPlayer);
+            }
         // Make them hover.
         hoveringPlayer.hoverTick();
 
@@ -76,12 +84,18 @@ public class HoverHandler {
         if (hoveringPlayer.tickPlayer() <= 0) {
             hoveringPlayer.setWaiting(true);
             hoveringPlayer.setHovering(false);
+            sendPacket(hoveringPlayer);
         }
+
     }
 
-    private void startHovering(HoveringPlayer hoveringPlayer) {
+    private void sendPacket(HoveringPlayer hoveringPlayer) {
+        EntityPlayer player = hoveringPlayer.getPlayer();
+        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 64, player.dimension, getPacket(hoveringPlayer));
+    }
 
-        // player.moveFlying((float) player.motionX, 0.0F, (float) player.motionZ);
+    private Packet getPacket(HoveringPlayer hoveringPlayer) {
+        return new HoverHandlerPacket(hoveringPlayer).makePacket();
     }
 
     @ForgeSubscribe
@@ -91,13 +105,15 @@ public class HoverHandler {
         if (renderView == null || playerList.isEmpty())
             return;
         ArrayList<HoveringPlayer> tempList = new ArrayList<HoveringPlayer>();
+        if (playerList.size() < 0)
+            return;
         tempList.addAll(playerList);
         for (HoveringPlayer player : tempList) {
             if (!player.isHovering())
                 continue;
             if (player.equals(renderView.username)) {
                 glPushMatrix();
-                RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
+                // RenderUtils.bindTexture(TextureMaps.HOVER_TEXTURE);
 
                 glRotated(90, 1.0D, 0.0D, 0.0D);
                 glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
@@ -105,8 +121,8 @@ public class HoverHandler {
                 glTranslated(-1.291D, -1.281D, 0.0D);
 
                 glScaled(0.01D, 0.01D, 0.01D);
-
-                glColor4f(1.0F, 1.0F, 1.0F, (player.timeLeft / (player.MAX_HOVER_TIME * 2)) + 0.068F);
+                
+                glColor4f(1.0F, 1.0F, 1.0F, ((float)player.timeLeft / ((float)player.MAX_HOVER_TIME * 2)) + 0.1F);
                 // if (--timeHovering == 0)
                 // timeHovering = WAIT_TIME;
 
@@ -115,7 +131,8 @@ public class HoverHandler {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glDisable(GL_CULL_FACE);
 
-                RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
+                // RenderUtils.drawTexturedQuad(0, 0, 0, 0, 256, 256, 161);
+                RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
                 glPopMatrix();
                 continue;
             }
@@ -131,6 +148,8 @@ public class HoverHandler {
 
             glScaled(0.01D, 0.01D, 0.01D);
 
+            glColor4f(1.0F, 1.0F, 1.0F, ((float)player.timeLeft / ((float)player.MAX_HOVER_TIME * 2)) + 0.1F);
+            
             glDisable(GL_LIGHTING);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -144,10 +163,16 @@ public class HoverHandler {
         }
     }
 
-    public void updatePlayer(EntityPlayer player, boolean waiting) {
+    public void updatePlayer(EntityPlayer player, int time, boolean hovering, boolean waiting) {
+        if (player == null)
+            return;
         HoveringPlayer hoveringPlayer = getHoveringPlayer(player);
-        if (hoveringPlayer != null)
+        if (hoveringPlayer != null) {
+            hoveringPlayer.setTimeLeft(time);
+            hoveringPlayer.setHovering(hovering);
             hoveringPlayer.setWaiting(waiting);
+
+        }
     }
 
     private HoveringPlayer getHoveringPlayer(EntityPlayer player) {
@@ -178,6 +203,14 @@ public class HoverHandler {
 
         public int tickPlayer() {
             return hovering ? --timeLeft : timeLeft;
+        }
+
+        public int tickCount() {
+            return timeLeft;
+        }
+
+        public void setTimeLeft(int timeLeft) {
+            this.timeLeft = timeLeft;
         }
 
         public void setJustStarted(boolean justStarted) {

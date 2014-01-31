@@ -18,11 +18,11 @@ import cpw.mods.fml.relauncher.Side;
 public class CommonProxy {
 
     public QuantumBombTicker quantumBomb = new QuantumBombTicker();
-    public HoverHandler hoverHandler = new HoverHandler();
+//    public HoverHandler hoverHandler = new HoverHandler();
 
     public void runServerSide() {
         MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
-        MinecraftForge.EVENT_BUS.register(hoverHandler);
+        MinecraftForge.EVENT_BUS.register(new HoverHandler());
     }
 
     public void registerTickHandlers() {

@@ -3,7 +3,6 @@ package me.jezzadabomb.es2.common.core.utils;
 import java.util.Arrays;
 
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -19,6 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class UtilMethods {
 
@@ -50,10 +52,12 @@ public class UtilMethods {
         return isPlayerWearing(player, itemStack.getItem());
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean isWearingItem(Item item) {
         return isPlayerWearing(Minecraft.getMinecraft().thePlayer, item);
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean isWearingItemStack(ItemStack itemStack) {
         return isWearingItem(itemStack.getItem());
     }
@@ -149,6 +153,7 @@ public class UtilMethods {
         return itemStack1 != null && itemStack2 != null && itemStack1.getItemDamage() == itemStack2.getItemDamage() && itemStack1.getItem().equals(itemStack2.getItem());
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean canFlood() {
         if (canShowDebugHUD()) {
             ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
@@ -157,6 +162,7 @@ public class UtilMethods {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean correctMode(int mode) {
         if (canShowDebugHUD()) {
             ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
@@ -165,10 +171,12 @@ public class UtilMethods {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean isHoldingItem(Item item) {
         return isHoldingItemStack(new ItemStack(item));
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean isHoldingItemStack(ItemStack itemStack) {
         if (Minecraft.getMinecraft().thePlayer == null)
             return false;

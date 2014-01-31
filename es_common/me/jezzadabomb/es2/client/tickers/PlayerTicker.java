@@ -52,8 +52,8 @@ public class PlayerTicker implements ITickHandler {
                             int tempZ = playerZ + z;
                             if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
                                 TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
-                                if(HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType())){
-                                	break;
+                                if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType())) {
+                                    break;
                                 }
                                 if (tileEntity instanceof IInventory) {
                                     String name = ((IInventory) tileEntity).getInvName();
@@ -65,8 +65,8 @@ public class PlayerTicker implements ITickHandler {
                                             StoredQueues.instance().putInventory(name, tileEntity, tempX, tempY, tempZ);
                                         }
                                     }
-                                }else if(tileEntity instanceof ISidedInventory){
-                                	String name = ((ISidedInventory) tileEntity).getInvName();
+                                } else if (tileEntity instanceof ISidedInventory) {
+                                    String name = ((ISidedInventory) tileEntity).getInvName();
                                     StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
                                     if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
                                         if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
