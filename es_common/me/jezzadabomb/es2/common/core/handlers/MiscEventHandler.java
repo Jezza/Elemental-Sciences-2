@@ -17,4 +17,9 @@ public class MiscEventHandler {
 			ElementalSciences2.proxy.quantumBomb.addItemEntityToList(event.entityItem);
 		}
 	}
+	
+	@ForgeSubscribe
+	public void onArmourChange(PlayerArmourEvent event){
+	    ESLogger.info("HELLO");
+	}
 }

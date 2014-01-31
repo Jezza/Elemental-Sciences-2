@@ -14,71 +14,46 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 public class EntityArmourListener {
-
-    HashMap<String, ArrayList<ItemStack>> playerInventoryMap = new HashMap<String, ArrayList<ItemStack>>();
-    HashMap<Integer, ArrayList<ItemStack>> mobInventoryMap = new HashMap<Integer, ArrayList<ItemStack>>();
+    HashMap<Integer, ArrayList<ItemStack>> inventoryMap = new HashMap<Integer, ArrayList<ItemStack>>();
 
     @ForgeSubscribe
     public void onLivingUpdate(LivingUpdateEvent event) {
         if (event.entity == null)
             return;
-        if (event.entity instanceof EntityPlayer) {
-            handlePlayerUpdate(event);
-        } else if (event.entity instanceof EntityLiving) {
-            handleMobUpdate(event);
+
+        EntityLivingBase entity = event.entityLiving;
+
+
+        ArrayList<ItemStack> curInventory = null;
+        if (entity instanceof EntityPlayer) {
+            curInventory = new ArrayList<ItemStack>(Arrays.asList(((EntityPlayer) entity).inventory.armorInventory));
+        } else if (entity instanceof EntityLiving) {
+            curInventory = new ArrayList<ItemStack>(Arrays.asList(((EntityLiving) entity).getLastActiveItems()));
         }
-    }
 
-    private void handlePlayerUpdate(LivingUpdateEvent event) {
-        EntityPlayer player = (EntityPlayer) event.entity;
+        if (curInventory == null)
+            return;
 
-        String username = player.username;
-
-        ArrayList<ItemStack> curInventory = new ArrayList<ItemStack>(Arrays.asList(player.inventory.armorInventory));
-
-        if (!playerInventoryMap.containsKey(username)) {
-            playerInventoryMap.put(username, curInventory);
+        int ID = entity.entityId;
+        if (!inventoryMap.containsKey(ID)) {
+            inventoryMap.put(ID, curInventory);
             return;
         }
 
-        ArrayList<ItemStack> prevInventory = playerInventoryMap.get(username);
+        ArrayList<ItemStack> prevInventory = inventoryMap.get(ID);
 
-        if (curInventory == null || prevInventory == null)
+        if (prevInventory == null)
             return;
 
-        if (detectChanges(player, curInventory, prevInventory)) {
-            playerInventoryMap.remove(username);
-            playerInventoryMap.put(username, curInventory);
+        if (detectChanges(entity, curInventory, prevInventory)) {
+            inventoryMap.remove(ID);
+            inventoryMap.put(ID, curInventory);
         }
-    }
-
-    private void handleMobUpdate(LivingUpdateEvent event) {
-        EntityLiving mob = (EntityLiving) event.entity;
-
-        int ID = mob.entityId;
-
-        ArrayList<ItemStack> curInventory = new ArrayList<ItemStack>(Arrays.asList(mob.getLastActiveItems()));
-
-        if (!mobInventoryMap.containsKey(ID)) {
-            mobInventoryMap.put(ID, curInventory);
-            return;
-        }
-
-        ArrayList<ItemStack> prevInventory = mobInventoryMap.get(ID);
-
-        if (curInventory == null || prevInventory == null)
-            return;
-
-        if (detectChanges(mob, curInventory, prevInventory)) {
-            mobInventoryMap.remove(ID);
-            mobInventoryMap.put(ID, curInventory);
-        }
-
     }
 
     private boolean detectChanges(EntityLivingBase entity, ArrayList<ItemStack> curInventory, ArrayList<ItemStack> prevInventory) {
         boolean changed = false;
-        boolean isMob = entity instanceof EntityPlayer;
+        boolean isMob = entity instanceof EntityLiving;
         BitSet updateChunk = new BitSet(4);
 
         for (int index = (isMob ? 1 : 0); index < curInventory.size(); index++)
@@ -87,13 +62,12 @@ public class EntityArmourListener {
                 changed = true;
             }
 
-        if (changed) {
+        if (changed)
             if (isMob) {
                 MinecraftForge.EVENT_BUS.post(new MobArmourEvent((EntityLiving) entity, updateChunk));
             } else {
                 MinecraftForge.EVENT_BUS.post(new PlayerArmourEvent((EntityPlayer) entity, updateChunk));
             }
-        }
 
         return changed;
     }
