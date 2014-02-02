@@ -65,12 +65,9 @@ public class PlayerTicker implements ITickHandler {
                                 InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInvName(), tempX, tempY, tempZ);
 
                                 storedQueues.putTempInventory(tempInstance);
+                                
                                 if (!storedQueues.isAlreadyInQueue(tempInstance))
-                                    if (storedQueues.isAtXYZ(tempX, tempY, tempZ)) {
-                                        storedQueues.replaceAtXYZ(tempX, tempY, tempZ, tempInstance);
-                                    } else {
                                         storedQueues.putInventory(tempInstance);
-                                    }
                             }
                         }
 

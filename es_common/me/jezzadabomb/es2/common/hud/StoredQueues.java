@@ -53,8 +53,10 @@ public class StoredQueues {
 
     public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
         InventoryInstance tempInstance = getAtXYZ(x, y, z);
-        if (tempInstance == null)
+        if (tempInstance == null){
+            inventories.add(inventory);
             return;
+        }
         inventories.set(inventories.indexOf(tempInstance), inventory);
     }
 
