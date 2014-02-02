@@ -1,21 +1,10 @@
 package me.jezzadabomb.es2.client.renderers;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
@@ -23,7 +12,6 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
@@ -43,7 +31,7 @@ public class HUDRenderer {
 
     // TODO On/Off animations
     private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
-    private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
+    private ArrayList<PacketTimeout> ignoreList = new ArrayList<PacketTimeout>();
 
     private final RenderItem customItemRenderer;
 
@@ -74,7 +62,7 @@ public class HUDRenderer {
         }
 
         CoordSet packetSet = p.coordSet;
-        if (!UtilMethods.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ())) {
+        if (!UtilMethods.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ()) || isIgnoring(p)) {
             debugPacketMode("Ignored Packet: " + p);
             return;
         }
@@ -119,36 +107,56 @@ public class HUDRenderer {
         return -1;
     }
 
-    public void removeAtXYZ(int x, int y, int z) {
+    // This removes a packet, and sets a timeout for it.
+    public void removePacketAtXYZ(int x, int y, int z) {
         InventoryPacket packet = getPacketAtXYZ(x, y, z);
-        if (packet == null)
-            return;
-        packet.tickTiming = 121;
-        ESLogger.info(packet.tickTiming);
+        if (packet != null) {
+            packetList.remove(packet);
+            ignoreList.add(new PacketTimeout(x, y, z));
+        }
+    }
+
+    public boolean isIgnoring(InventoryPacket packet) {
+        for (PacketTimeout timeout : ignoreList) {
+            if (timeout.isAtXYZ(packet))
+                return true;
+        }
+        return false;
     }
 
     @ForgeSubscribe
     public void onRenderWorldLast(RenderWorldLastEvent event) {
+        ArrayList<PacketTimeout> utilList = new ArrayList<PacketTimeout>();
+        utilList.addAll(ignoreList);
+        
+        for (PacketTimeout packet : utilList)
+            if (packet.tickTimeout())
+                ignoreList.remove(packet);
+        
         if (packetList.isEmpty()) {
             ESLogger.debugFlood("PacketList is empty");
             return;
         }
+        
         ESLogger.debugFlood(packetList);
 
-        for (InventoryPacket packet : packetList) {
+        ArrayList<InventoryPacket> packetUtilList = new ArrayList<InventoryPacket>();
+        packetUtilList.addAll(packetList);
+
+        for (InventoryPacket packet : packetUtilList) {
             if (UtilMethods.isWearingItem(ModItems.glasses)) {
                 if (!StoredQueues.getInstance().isAtXYZ(packet.coordSet))
-                    removeList.add(packet);
+                    packetList.remove(packet);
             } else {
                 if (packet.tickTiming > 120)
-                    removeList.add(packet);
+                    packetList.remove(packet);
             }
         }
 
-        packetList.removeAll(removeList);
-        removeList.clear();
-
-        for (InventoryPacket p : packetList) {
+        packetUtilList.clear();
+        packetUtilList.addAll(packetList);
+        
+        for (InventoryPacket p : packetUtilList) {
             boolean underBlock = renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
             if (UtilMethods.canShowDebugHUD())
                 RenderUtils.renderColouredBox(event, p, underBlock);
@@ -243,11 +251,10 @@ public class HUDRenderer {
             }
             utilList.clear();
 
-            for (ItemStack tempStack : sortedList) {
-                if (HUDBlackLists.renderBlackListContains(tempStack)) {
+            for (ItemStack tempStack : sortedList)
+                if (HUDBlackLists.renderBlackListContains(tempStack))
                     utilList.add(tempStack);
-                }
-            }
+
             sortedList.removeAll(utilList);
 
             for (ItemStack itemStack : sortedList) {
@@ -268,6 +275,26 @@ public class HUDRenderer {
             glPopMatrix();
         }
         return underBlock;
+    }
+
+    private static class PacketTimeout {
+        public int x, y, z, timeout;
+
+        public PacketTimeout(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            timeout = 30;
+        }
+
+        public boolean isAtXYZ(InventoryPacket packet) {
+            CoordSet packetSet = packet.coordSet;
+            return this.x == packetSet.getX() && this.y == packetSet.getY() && this.z == packetSet.getZ();
+        }
+
+        public boolean tickTimeout() {
+            return --timeout <= 0;
+        }
     }
 
 }

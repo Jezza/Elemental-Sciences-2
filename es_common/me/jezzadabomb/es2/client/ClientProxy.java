@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    public static HUDRenderer hudRenderer = new HUDRenderer();
+    private static HUDRenderer hudRenderer = new HUDRenderer();
 
     public static HUDRenderer getHUDRenderer() {
         return hudRenderer;
@@ -67,8 +67,7 @@ public class ClientProxy extends CommonProxy {
     private void initItemRenderer() {
         MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst.itemID, new ItemAtomicCatalystRenderer());
         MinecraftForgeClient.registerItemRenderer(ModBlocks.inventoryScanner.blockID, new ItemInventoryScannerRenderer());
-        ItemAtomicConstructorRenderer atomic = new ItemAtomicConstructorRenderer();
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.atomicConstructor.blockID, atomic);
+        MinecraftForgeClient.registerItemRenderer(ModBlocks.atomicConstructor.blockID, new ItemAtomicConstructorRenderer());
         MinecraftForgeClient.registerItemRenderer(ModBlocks.console.blockID, new ItemConsoleRenderer());
     }
 

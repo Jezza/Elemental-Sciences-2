@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.hud;
+package me.jezzadabomb.es2.client.hud;
 
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import net.minecraft.tileentity.TileEntity;

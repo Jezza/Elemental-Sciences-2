@@ -1,9 +1,9 @@
 package me.jezzadabomb.es2.common.packets;
 
+import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;

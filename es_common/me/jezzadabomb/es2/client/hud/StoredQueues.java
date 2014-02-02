@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.hud;
+package me.jezzadabomb.es2.client.hud;
 
 import java.util.ArrayList;
 
@@ -36,12 +36,12 @@ public class StoredQueues {
         return inventories.contains(inventory);
     }
 
+    public boolean isAtXYZ(CoordSet coordSet) {
+        return isAtXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+    }
+
     public boolean isAtXYZ(int x, int y, int z) {
         return getAtXYZ(x, y, z) != null;
-    }
-    
-    public boolean isAtXYZ(CoordSet coordSet){
-        return isAtXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
     }
 
     public InventoryInstance getAtXYZ(int x, int y, int z) {
@@ -52,8 +52,10 @@ public class StoredQueues {
     }
 
     public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
+        if (inventory == null)
+            return;
         InventoryInstance tempInstance = getAtXYZ(x, y, z);
-        if (tempInstance == null){
+        if (tempInstance == null) {
             inventories.add(inventory);
             return;
         }

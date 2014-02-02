@@ -2,13 +2,13 @@ package me.jezzadabomb.es2.client.tickers;
 
 import java.util.EnumSet;
 
+import me.jezzadabomb.es2.client.hud.InventoryInstance;
+import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.hud.InventoryInstance;
-import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
 import net.minecraft.client.Minecraft;
@@ -26,7 +26,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PlayerTicker implements ITickHandler {
 
-    // private int ticked = 0;
     private int dis;
     private int oldX, oldY, oldZ, notMoveTick;
     StoredQueues storedQueues;
@@ -49,7 +48,7 @@ public class PlayerTicker implements ITickHandler {
             int playerY = (int) Math.round(player.posY);
             int playerZ = (int) Math.round(player.posZ);
 
-            if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
+            if (playerMoved(playerX, playerY, playerZ) || notMoveTick++ == Reference.GLASSES_WAIT_TIMER) {
                 notMoveTick = 0;
                 for (int x = -dis; x < dis; x++)
                     for (int y = -dis; y < dis; y++)
@@ -65,9 +64,9 @@ public class PlayerTicker implements ITickHandler {
                                 InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInvName(), tempX, tempY, tempZ);
 
                                 storedQueues.putTempInventory(tempInstance);
-                                
+
                                 if (!storedQueues.isAlreadyInQueue(tempInstance))
-                                        storedQueues.putInventory(tempInstance);
+                                    storedQueues.putInventory(tempInstance);
                             }
                         }
 
@@ -80,8 +79,7 @@ public class PlayerTicker implements ITickHandler {
                 // TODO Make a packet method to send more than one InventoryInstance at once.
                 for (InventoryInstance i : storedQueues.getRequestList())
                     PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
-            } else {
-                notMoveTick++;
+
             }
         }
     }

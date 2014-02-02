@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.items;
 import java.util.List;
 import java.util.Random;
 
+import cofh.api.block.IDismantleable;
 import cofh.api.energy.IEnergyHandler;
 
 import me.jezzadabomb.es2.common.ModBlocks;
@@ -14,6 +15,7 @@ import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -30,7 +32,7 @@ public class ItemPlaceHolder extends ItemES {
 
     @SideOnly(Side.CLIENT)
     private Icon[] icons;
-    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "empTrigger" };
+    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "empTrigger", "wrenchThing" };
 
     public ItemPlaceHolder(int id, String name) {
         super(id, name);
@@ -63,34 +65,15 @@ public class ItemPlaceHolder extends ItemES {
                 infoList.add("A shiny drone for shiny things.");
                 shiftList.add("He shall be called Geoff.");
                 break;
+            case 9:
+                addToBothLists("Fancy tool to dismantle stuff quickly.");
+                break;
         }
-    }
-
-    public int getDamage(String name) {
-        for (int i = 0; i < names.length; i++)
-            if (names[i].equals(name))
-                return i;
-        return -1;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < names.length; i++)
-            list.add(new ItemStack(this, 1, i));
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister iconRegister) {
-        icons = new Icon[names.length];
-        for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && world.getBlockId(x, y, z) == ModBlocks.atomicConstructor.blockID) {
+        if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && UtilMethods.isConstructor(world, x, y, z)) {
             TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
             EntityDrone drone = new EntityDrone(world);
 
@@ -105,6 +88,15 @@ public class ItemPlaceHolder extends ItemES {
                 if (!player.capabilities.isCreativeMode)
                     UtilMethods.decrCurrentItem(player);
                 player.swingItem();
+            }
+            return true;
+        }
+        if (stack.getItemDamage() == getDamage("wrenchThing") && UtilMethods.isDismantable(world, x, y, z)) {
+            IDismantleable dismantle = (IDismantleable) world.getBlockTileEntity(x, y, z);
+            if (dismantle.canDismantle(player, world, x, y, z)) {
+                ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, true);
+                if (tempStack != null)
+                    player.inventory.addItemStackToInventory(tempStack);
             }
             return true;
         }
@@ -129,6 +121,28 @@ public class ItemPlaceHolder extends ItemES {
             return player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1);
         }
         return stack;
+    }
+
+    public int getDamage(String name) {
+        for (int i = 0; i < names.length; i++)
+            if (names[i].equals(name))
+                return i;
+        return -1;
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
+        for (int i = 0; i < names.length; i++)
+            list.add(new ItemStack(this, 1, i));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IconRegister iconRegister) {
+        icons = new Icon[names.length];
+        for (int i = 0; i < icons.length; i++)
+            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
     }
 
     @Override

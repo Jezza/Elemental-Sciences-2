@@ -112,7 +112,6 @@ public class InventoryPacket extends CentralPacket {
     @Override
     public String toString() {
         return loc + " " + getItemStacksInfo();
-
     }
 
     @Override

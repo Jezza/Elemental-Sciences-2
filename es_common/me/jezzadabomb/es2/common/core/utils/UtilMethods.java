@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
+import cofh.api.block.IDismantleable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -79,6 +80,10 @@ public class UtilMethods {
 
     public static boolean isScanner(World world, int x, int y, int z) {
         return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner;
+    }
+    
+    public static boolean isDismantable(World world, int x, int y, int z) {
+        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IDismantleable;
     }
 
     public static boolean isIInventory(World world, int x, int y, int z) {

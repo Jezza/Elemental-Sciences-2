@@ -1,12 +1,16 @@
 package me.jezzadabomb.es2.common.blocks;
 
+import cofh.api.block.IDismantleable;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.sound.Sounds;
+import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -17,15 +21,8 @@ public class BlockInventoryScanner extends BlockES {
 
     public BlockInventoryScanner(int par1, Material par2Material, String name) {
         super(par1, par2Material, name);
-        setHardness(2.5F);
+        setBlockUnbreakable();
         setBlockBounds(0F, 0F, 0F, 1F, 1F / 16F, 1F);
-    }
-
-    @Override
-    public void onBlockHarvested(World world, int x, int y, int z, int par5, EntityPlayer player) {
-        if (UtilMethods.isScanner(world, x, y, z))
-            ((TileInventoryScanner) world.getBlockTileEntity(x, y, z)).notifyPacketList();
-        super.onBlockHarvested(world, x, y, z, par5, player);
     }
 
     @Override
@@ -35,7 +32,7 @@ public class BlockInventoryScanner extends BlockES {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return world.blockHasTileEntity(x, y - 1, z) ? (world.getBlockTileEntity(x, y - 1, z) instanceof IInventory) : false;
+        return UtilMethods.isIInventory(world, x, y - 1, z);
     }
 
     @Override
