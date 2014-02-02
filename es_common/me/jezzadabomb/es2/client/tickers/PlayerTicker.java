@@ -4,6 +4,8 @@ import java.util.EnumSet;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
@@ -25,8 +27,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PlayerTicker implements ITickHandler {
 
     // private int ticked = 0;
-    private int dis = Reference.HUD_BLOCK_RANGE;
+    private int dis;
     private int oldX, oldY, oldZ, notMoveTick;
+    StoredQueues storedQueues;
+
+    public PlayerTicker() {
+        dis = Reference.HUD_BLOCK_RANGE;
+        storedQueues = new StoredQueues();
+    }
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -34,65 +42,47 @@ public class PlayerTicker implements ITickHandler {
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        if (UtilMethods.isWearingItem(ModItems.glasses)) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (UtilMethods.isPlayerWearing(player, ModItems.glasses)) {
+            World world = player.worldObj;
             int playerX = (int) Math.round(player.posX);
             int playerY = (int) Math.round(player.posY);
             int playerZ = (int) Math.round(player.posZ);
-            World world = player.worldObj;
 
             if (playerMoved(playerX, playerY, playerZ) || notMoveTick == Reference.GLASSES_WAIT_TIMER) {
                 notMoveTick = 0;
-                for (int x = -dis; x < dis; x++) {
-                    for (int y = -dis; y < dis; y++) {
+                for (int x = -dis; x < dis; x++)
+                    for (int y = -dis; y < dis; y++)
                         for (int z = -dis; z < dis; z++) {
                             int tempX = playerX + x;
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;
-                            if (!world.isAirBlock(tempX, tempY, tempZ) && world.blockHasTileEntity(tempX, tempY, tempZ)) {
+                            if (UtilMethods.isIInventory(world, tempX, tempY, tempZ)) {
                                 TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
-                                if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType())) {
+                                if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType()))
                                     break;
-                                }
-                                if (tileEntity instanceof IInventory) {
-                                    String name = ((IInventory) tileEntity).getInvName();
-                                    StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
-                                    if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
-                                        if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
-                                            StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
-                                        } else {
-                                            StoredQueues.instance().putInventory(name, tileEntity, tempX, tempY, tempZ);
-                                        }
+
+                                InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInvName(), tempX, tempY, tempZ);
+
+                                storedQueues.putTempInventory(tempInstance);
+                                if (!storedQueues.isAlreadyInQueue(tempInstance))
+                                    if (storedQueues.isAtXYZ(tempX, tempY, tempZ)) {
+                                        storedQueues.replaceAtXYZ(tempX, tempY, tempZ, tempInstance);
+                                    } else {
+                                        storedQueues.putInventory(tempInstance);
                                     }
-                                } else if (tileEntity instanceof ISidedInventory) {
-                                    String name = ((ISidedInventory) tileEntity).getInvName();
-                                    StoredQueues.instance().putTempInventory(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
-                                    if (!StoredQueues.instance().isAlreadyInQueue(new InventoryInstance(name, tileEntity, tempX, tempY, tempZ))) {
-                                        if (StoredQueues.instance().isAtXYZ(tempX, tempY, tempZ)) {
-                                            StoredQueues.instance().replaceAtXYZ(x, y, z, new InventoryInstance(name, tileEntity, tempX, tempY, tempZ));
-                                        } else {
-                                            StoredQueues.instance().putInventory(name, tileEntity, tempX, tempY, tempZ);
-                                        }
-                                    }
-                                }
                             }
                         }
-                    }
-                }
-                this.oldX = playerX;
-                this.oldY = playerY;
-                this.oldZ = playerZ;
 
-                StoredQueues.instance().retainInventories(StoredQueues.instance().getTempInv());
-                StoredQueues.instance().removeTemp();
-                StoredQueues.instance().setLists();
-                if (UtilMethods.isWearingItem(ModItems.glasses)) {
-                    for (InventoryInstance i : StoredQueues.instance().getRequestList()) {
-                        PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
-                    }
-                }
-                StoredQueues.instance().clearTempInv();
+                oldX = playerX;
+                oldY = playerY;
+                oldZ = playerZ;
+
+                storedQueues.setLists();
+
+                // TODO Make a packet method to send more than one InventoryInstance at once.
+                for (InventoryInstance i : storedQueues.getRequestList())
+                    PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
             } else {
                 notMoveTick++;
             }
@@ -100,12 +90,14 @@ public class PlayerTicker implements ITickHandler {
     }
 
     public boolean playerMoved(int x, int y, int z) {
-        return (oldX != x || oldY != y || oldZ != z);
+        // return (oldX != x || oldY != y || oldZ != z);
+        int range = 2;
+        return (!MathHelper.withinRange(x, oldX, range) || !MathHelper.withinRange(y, oldY, range) || !MathHelper.withinRange(z, oldZ, range));
     }
 
     @Override
     public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER);
+        return EnumSet.of(TickType.CLIENT);
     }
 
     @Override

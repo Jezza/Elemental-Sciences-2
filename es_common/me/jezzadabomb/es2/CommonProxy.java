@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2;
 
-import me.jezzadabomb.es2.common.core.events.EntityArmourListener;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -19,13 +18,13 @@ import cpw.mods.fml.relauncher.Side;
 public class CommonProxy {
 
     public QuantumBombTicker quantumBomb = new QuantumBombTicker();
-//    public HoverHandler hoverHandler = new HoverHandler();
 
-    public void runServerSide() {        
+    // public HoverHandler hoverHandler = new HoverHandler();
+
+    public void runServerSide() {
         MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
         MinecraftForge.EVENT_BUS.register(new HoverHandler());
-        MinecraftForge.EVENT_BUS.register(new EntityArmourListener());
-        
+
     }
 
     public void registerTickHandlers() {

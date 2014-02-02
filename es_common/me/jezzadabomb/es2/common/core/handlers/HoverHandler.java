@@ -1,13 +1,11 @@
 package me.jezzadabomb.es2.common.core.handlers;
 
-import java.util.ArrayList;
-
 import static org.lwjgl.opengl.GL11.*;
+
+import java.util.ArrayList;
 
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.events.PlayerArmourEvent;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;

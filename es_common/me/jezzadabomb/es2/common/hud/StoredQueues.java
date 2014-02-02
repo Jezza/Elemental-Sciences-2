@@ -1,130 +1,81 @@
 package me.jezzadabomb.es2.common.hud;
 
 import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import net.minecraft.tileentity.TileEntity;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 
 public class StoredQueues {
 
-	private static final StoredQueues instance = new StoredQueues();
+    private static StoredQueues INSTANCE;
 
-	private LinkedBlockingQueue<InventoryInstance> inventories = new LinkedBlockingQueue<InventoryInstance>();
-	private ArrayList<InventoryInstance> tempInv = new ArrayList<InventoryInstance>(0);
-	private ArrayList<InventoryInstance> requestedList = new ArrayList<InventoryInstance>(0);
+    // Previously stored blocks from the last tick. Used with tempInv.
+    private ArrayList<InventoryInstance> inventories;
 
-	public StoredQueues() {
-	}
+    // The current set of inventories from this tick, used to flush all old inventories.
+    private ArrayList<InventoryInstance> tempInv;
 
-	public static StoredQueues instance() {
-		return instance;
-	}
+    // This is the list that contains all inventories to have their inventories requested.
+    private ArrayList<InventoryInstance> requestedList;
 
-	public LinkedBlockingQueue<InventoryInstance> getPlayer() {
-		return inventories;
-	}
+    public StoredQueues() {
+        inventories = new ArrayList<InventoryInstance>();
+        tempInv = new ArrayList<InventoryInstance>();
+        requestedList = new ArrayList<InventoryInstance>();
+        INSTANCE = this;
+    }
 
-	public void putInventory(String name, TileEntity inventory, int x, int y, int z) {
-		inventories.add(new InventoryInstance(name, inventory, x, y, z));
-	}
+    public static StoredQueues getInstance() {
+        return INSTANCE;
+    }
 
-	public void retainInventories(ArrayList<InventoryInstance> map) {
-		inventories.retainAll(map);
-	}
+    public void putInventory(InventoryInstance inventory) {
+        inventories.add(inventory);
+    }
 
-	public void putInventory(InventoryInstance inventory) {
-		inventories.add(inventory);
-	}
+    public boolean isAlreadyInQueue(InventoryInstance inventory) {
+        return inventories.contains(inventory);
+    }
 
-	public boolean isAlreadyInQueue(InventoryInstance inventory) {
-		return inventories.contains(inventory);
-	}
+    public boolean isAtXYZ(int x, int y, int z) {
+        return getAtXYZ(x, y, z) != null;
+    }
+    
+    public boolean isAtXYZ(CoordSet coordSet){
+        return isAtXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+    }
 
-	public boolean isXYZInventory(int x, int y, int z) {
-		for (InventoryInstance i : inventories) {
-			if (i.getX() == x && i.getY() == y && i.getZ() == z) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public InventoryInstance getAtXYZ(int x, int y, int z) {
+        for (InventoryInstance i : inventories)
+            if (i.isAtXYZ(x, y, z))
+                return i;
+        return null;
+    }
 
-	public boolean isAtXYZ(int x, int y, int z) {
-		for (InventoryInstance i : inventories) {
-			if (i.getX() == x && i.getY() == y && i.getZ() == z) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
+        InventoryInstance tempInstance = getAtXYZ(x, y, z);
+        if (tempInstance == null)
+            return;
+        inventories.set(inventories.indexOf(tempInstance), inventory);
+    }
 
-	public InventoryInstance getAtXYZ(int x, int y, int z) {
-		for (InventoryInstance i : inventories) {
-			if (i.getX() == x && i.getY() == y && i.getZ() == z) {
-				return i;
-			}
-		}
-		return null;
-	}
+    public void putTempInventory(InventoryInstance inventory) {
+        tempInv.add(inventory);
+    }
 
-	public boolean getStrXYZ(String name, int x, int y, int z) {
-		for (InventoryInstance i : inventories) {
-			if (i.isName(name) && i.getX() == x && i.getY() == y && i.getZ() == z) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public ArrayList<InventoryInstance> getRequestList() {
+        return requestedList;
+    }
 
-	public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
-		if (isXYZInventory(x, y, z)) {
-			for (InventoryInstance i : inventories) {
-				if (i.getX() == x && i.getY() == y && i.getZ() == z) {
-					inventories.remove(i);
-					inventories.add(i);
-				}
-			}
-		}
-	}
-
-	public void removeXYZInventory(String player, int x, int y, int z) {
-		for (InventoryInstance i : inventories) {
-			if (i.getX() == x && i.getY() == y && i.getZ() == z) {
-				inventories.remove(i);
-			}
-		}
-	}
-
-	public void clearTempInv() {
-		tempInv.clear();
-	}
-
-	public ArrayList<InventoryInstance> getTempInv() {
-		return tempInv;
-	}
-
-	public void putTempInventory(InventoryInstance inventory) {
-		tempInv.add(inventory);
-	}
-
-	public void clearPacketInv() {
-		requestedList.clear();
-	}
-
-	public ArrayList<InventoryInstance> getRequestList() {
-		return requestedList;
-	}
-
-	public void putRequestedInv(InventoryInstance inventory) {
-		requestedList.add(inventory);
-	}
-
-	public void setLists() {
-		requestedList.clear();
-		requestedList.addAll(tempInv);
-	}
-
-	public void removeTemp() {
-		tempInv.removeAll(requestedList);
-	}
+    /**
+     * The inventories list is flushed with the current inventory list, so all that remains is the ones still around this scan process. All packets we sent last tick, we'll remove from this round, because no point sending them so quickly. NOTE: That this means it's once a second by default.
+     * 
+     * We clear the packetRequest list, so we can begin anew. Add all the inventories we want to view. Clear the temp list, because we have no need of it, until next tick.
+     */
+    public void setLists() {
+        inventories.retainAll(tempInv);
+        tempInv.removeAll(requestedList);
+        requestedList.clear();
+        requestedList.addAll(tempInv);
+        tempInv.clear();
+    }
 }

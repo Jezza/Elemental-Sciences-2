@@ -20,19 +20,17 @@ import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.hud.StoredQueues;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
-import me.jezzadabomb.es2.common.packets.InventoryTerminatePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -46,12 +44,8 @@ public class HUDRenderer {
     // TODO On/Off animations
     private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
     private ArrayList<InventoryPacket> removeList = new ArrayList<InventoryPacket>();
-    private ArrayList<CoordSet> ignoreList = new ArrayList<CoordSet>();
 
     private final RenderItem customItemRenderer;
-
-    private boolean underBlock = false;
-    private int tickTiming = 0;
 
     public HUDRenderer() {
         customItemRenderer = new RenderItem();
@@ -67,23 +61,25 @@ public class HUDRenderer {
         return null;
     }
 
-    public void printPacketList() {
-        for (InventoryPacket packet : packetList) {
-            System.out.println(packet);
-        }
-    }
-
     private void debugPacketMode(Object object) {
         ESLogger.debug(object.toString(), UtilMethods.getDebugString("Extreme Packet Monitoring"));
     }
 
     public void addPacketToList(InventoryPacket p) {
-        debugPacketMode("Started method to add: " + p);
-        if (ignorePacket(p)) {
+        World world = Minecraft.getMinecraft().theWorld;
+
+        if (world == null) {
+            ESLogger.severe("World has not loaded yet.");
+            return;
+        }
+
+        CoordSet packetSet = p.coordSet;
+        if (!UtilMethods.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ())) {
             debugPacketMode("Ignored Packet: " + p);
             return;
         }
-        if (doesPacketAlreadyExistAtXYZ(p)) {
+
+        if (isPacketAtXYZ(p)) {
             debugPacketMode("Setting packet in list " + p);
             packetList.set(getPosInList(p), p);
         } else {
@@ -93,51 +89,42 @@ public class HUDRenderer {
         debugPacketMode("Added packet: " + p);
     }
 
-    private boolean ignorePacket(InventoryPacket p) {
-        boolean found = false;
-        CoordSet tempSet = null;
-        for (CoordSet set : ignoreList) {
-            if (set.isPacket(p)) {
-                found = true;
-                tempSet = set;
-                break;
-            }
-        }
-        if (found && tempSet != null) {
-            ignoreList.remove(tempSet);
-        }
-        return found;
+    public boolean isPacketAtXYZ(InventoryPacket packet) {
+        CoordSet packetSet = packet.coordSet;
+        return isPacketAtXYZ(packetSet.getX(), packetSet.getY(), packetSet.getZ());
     }
 
-    private boolean doesPacketAlreadyExistAtXYZ(InventoryPacket p) {
-        debugPacketMode("Testing for previous packet.");
-        for (InventoryPacket packet : packetList) {
-            if (p.equals(packet)) {
-                debugPacketMode("Found previous packet.");
-                return true;
-            }
-        }
-        debugPacketMode("No previous packet found.");
-        return false;
+    public boolean isPacketAtXYZ(int x, int y, int z) {
+        return getPacketAtXYZ(x, y, z) != null;
     }
 
-    public int getPosInList(InventoryPacket p) {
-        for (InventoryPacket packet : packetList) {
-            if (p.equals(packet)) {
-                return packetList.indexOf(packet);
-            }
-        }
-        return -1;
+    public InventoryPacket getPacketAtXYZ(int x, int y, int z) {
+        for (InventoryPacket packet : packetList)
+            if (packet.coordSet.isAtXYZ(x, y, z))
+                return packet;
+        return null;
     }
 
     public InventoryPacket getPacketAtXYZ(String loc) {
         int[] coord = UtilMethods.getArrayFromString(loc);
-        for (InventoryPacket p : packetList) {
-            if (p.coordSet.isAtXYZ(coord[0], coord[1], coord[2])) {
-                return p;
-            }
-        }
-        return null;
+        if (coord == null)
+            return null;
+        return getPacketAtXYZ(coord[0], coord[1], coord[2]);
+    }
+
+    public int getPosInList(InventoryPacket p) {
+        for (InventoryPacket packet : packetList)
+            if (p.equals(packet))
+                return packetList.indexOf(packet);
+        return -1;
+    }
+
+    public void removeAtXYZ(int x, int y, int z) {
+        InventoryPacket packet = getPacketAtXYZ(x, y, z);
+        if (packet == null)
+            return;
+        packet.tickTiming = 121;
+        ESLogger.info(packet.tickTiming);
     }
 
     @ForgeSubscribe
@@ -147,17 +134,14 @@ public class HUDRenderer {
             return;
         }
         ESLogger.debugFlood(packetList);
-        tickTiming++;
 
         for (InventoryPacket packet : packetList) {
             if (UtilMethods.isWearingItem(ModItems.glasses)) {
-                if (!StoredQueues.instance().getStrXYZ(packet.inventoryTitle, packet.coordSet.getX(), packet.coordSet.getY(), packet.coordSet.getZ())) {
+                if (!StoredQueues.getInstance().isAtXYZ(packet.coordSet))
                     removeList.add(packet);
-                }
             } else {
-                if (packet.tickTiming > 120) {
+                if (packet.tickTiming > 120)
                     removeList.add(packet);
-                }
             }
         }
 
@@ -165,18 +149,15 @@ public class HUDRenderer {
         removeList.clear();
 
         for (InventoryPacket p : packetList) {
-            renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
-            if (UtilMethods.canShowDebugHUD()) {
+            boolean underBlock = renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
+            if (UtilMethods.canShowDebugHUD())
                 RenderUtils.renderColouredBox(event, p, underBlock);
-                if (!underBlock)
-                    RenderUtils.drawTextInAir(p.coordSet.getX(), p.coordSet.getY() + 0.63F, p.coordSet.getZ(), event.partialTicks, p.inventoryTitle);
-                underBlock = false;
-            }
             p.tickTiming++;
         }
     }
 
-    private void renderInfoScreen(double x, double y, double z, double partialTicks, InventoryPacket p) {
+    private boolean renderInfoScreen(double x, double y, double z, double partialTicks, InventoryPacket p) {
+        boolean underBlock = false;
         if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
             EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
             World world = player.worldObj;
@@ -192,7 +173,7 @@ public class HUDRenderer {
             glTranslated(0.5D, 1.5D, 0.5D);
 
             if (num == null)
-                return;
+                return underBlock;
 
             float xd = num[0];
             float zd = num[1];
@@ -215,7 +196,7 @@ public class HUDRenderer {
                 glDisable(GL_BLEND);
                 glPopMatrix();
                 underBlock = true;
-                return;
+                return underBlock;
             }
 
             float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
@@ -286,20 +267,7 @@ public class HUDRenderer {
             glDisable(GL_BLEND);
             glPopMatrix();
         }
+        return underBlock;
     }
 
-    public void addToRemoveList(InventoryTerminatePacket inventoryTerminatePacket) {
-        packetList.clear();
-        removeList.add(getPacketAtXYZ(inventoryTerminatePacket.loc));
-    }
-
-    public void addToRemoveList(int x, int y, int z) {
-        debugPacketMode("Found");
-        InventoryPacket p = getPacket(x, y, z);
-        if (p == null)
-            return;
-        debugPacketMode(p);
-        removeList.add(p);
-        ignoreList.add(new CoordSet(x, y, z));
-    }
 }

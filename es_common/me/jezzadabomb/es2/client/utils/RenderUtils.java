@@ -299,8 +299,12 @@ public class RenderUtils {
         }
     }
 
+    public static void renderColouredBox(RenderWorldLastEvent event, InventoryPacket p, boolean underBlock){
+        renderColouredBox(event, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), underBlock);
+    }
+    
     // Thanks to Player for this. :D
-    public static void renderColouredBox(RenderWorldLastEvent event, InventoryPacket p, boolean underBlock) {
+    public static void renderColouredBox(RenderWorldLastEvent event, int posX, int posY, int posZ, boolean underBlock) {
         double partialTicks = event.partialTicks;
 
         EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
@@ -311,9 +315,9 @@ public class RenderUtils {
         double offset = 0.02;
         double delta = 1 + 2 * offset;
 
-        double x = p.coordSet.getX() - px - offset;
-        double y = p.coordSet.getY() - py - offset;
-        double z = p.coordSet.getZ() - pz - offset;
+        double x = posX - px - offset;
+        double y = posY - py - offset;
+        double z = posZ - pz - offset;
         glPushMatrix();
         glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

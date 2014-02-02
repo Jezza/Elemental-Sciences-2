@@ -22,11 +22,10 @@ public class BlockInventoryScanner extends BlockES {
     }
 
     @Override
-    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-        if (world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner && world.isRemote && !UtilMethods.isWearingItem(ModItems.glasses)) {
-            ClientProxy.getHUDRenderer().addToRemoveList(x, y - 1, z);
-        }
-        return super.removeBlockByPlayer(world, player, x, y, z);
+    public void onBlockHarvested(World world, int x, int y, int z, int par5, EntityPlayer player) {
+        if (UtilMethods.isScanner(world, x, y, z))
+            ((TileInventoryScanner) world.getBlockTileEntity(x, y, z)).notifyPacketList();
+        super.onBlockHarvested(world, x, y, z, par5, player);
     }
 
     @Override

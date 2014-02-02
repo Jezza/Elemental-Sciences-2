@@ -23,11 +23,7 @@ public class PacketHandler implements IPacketHandler {
         try {
             EntityPlayer entityPlayer = (EntityPlayer) player;
             ByteArrayDataInput in = ByteStreams.newDataInput(packet.data);
-            int packetId = in.readUnsignedByte(); // Assuming your packetId is
-                                                  // between 0 (inclusive) and
-                                                  // 256 (exclusive). If you
-                                                  // need more you need to
-                                                  // change this
+            int packetId = in.readUnsignedByte();
 
             CentralPacket centralPacket = CentralPacket.constructPacket(packetId);
             centralPacket.read(in);
@@ -41,5 +37,4 @@ public class PacketHandler implements IPacketHandler {
             throw new RuntimeException("Unexpected Reflection exception during Packet construction!", e);
         }
     }
-
 }

@@ -240,7 +240,6 @@ public class ItemDebugTool extends ItemES {
                 InventoryPacket packet = ClientProxy.getHUDRenderer().getPacket(x, y, z);
                 if (packet != null) {
                     player.addChatMessage("");
-                    player.addChatMessage("Inventory Name: " + packet.inventoryTitle);
                     player.addChatMessage("Contents: ");
                     String tempString = packet.getItemStacksInfo();
                     if (tempString == null)

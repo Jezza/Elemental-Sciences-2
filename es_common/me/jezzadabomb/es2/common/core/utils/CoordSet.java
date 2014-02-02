@@ -108,8 +108,12 @@ public class CoordSet {
         return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
     }
 
+    public String toPacketString(){
+        return x + ":" + y + ":" + z;
+    }
+    
     @Override
     public String toString() {
-        return " @ X: " + x + ", Y: " + y + ", Z: " + z;
+        return " @ " + toPacketString();
     }
 }
