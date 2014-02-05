@@ -126,7 +126,7 @@ public class InventoryPacket extends CentralPacket {
         InventoryPacket tempPacket = (InventoryPacket) other;
         if (!includeItemStacks)
             return coordSet.equals(tempPacket.coordSet);
-        return coordSet.equals(tempPacket.coordSet) && this.itemStacks.equals(itemStacks);
+        return coordSet.equals(tempPacket.coordSet) && this.itemStacks.equals(tempPacket.itemStacks);
     }
 
     public boolean isCloserThan(InventoryPacket tempP, EntityPlayer player) {

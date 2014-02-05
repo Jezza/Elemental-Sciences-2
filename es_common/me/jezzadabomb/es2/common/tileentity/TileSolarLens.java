@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -28,15 +29,14 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
         if (worldObj.isRemote || !worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord)) {
             return;
         }
-        searchForTileEntity();
-
-        if (constructorList.isEmpty())
+        if (searchForTileEntity())
             return;
+
         if (coordSet == null)
             coordSet = new CoordSet(xCoord, yCoord, zCoord);
         for (TileAtomicConstructor atomic : constructorList) {
             int power = (int) (((float) (getPowerOutput() + heightBonus) / (float) constructorList.size()) / (coordSet.distanceFrom(new CoordSet(atomic.xCoord, yCoord, atomic.zCoord)) + 1.0F));
-            atomic.receiveEnergy(ForgeDirection.DOWN, power, false);
+            // atomic.receiveEnergy(ForgeDirection.DOWN, power, false);
         }
 
     }
@@ -45,48 +45,43 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
         return 10;
     }
 
-    private void searchForTileEntity() {
+    private boolean searchForTileEntity() {
         constructorList.clear();
         int y = loopDownUntilLastAirBlock(xCoord, yCoord, zCoord) - 1;
-        heightBonus = (int) Math.floor(y / 2);
-        if(heightBonus < 1)
+        heightBonus = (int) Math.floor((yCoord - y) / 2);
+        if (heightBonus < 1)
             heightBonus = 1;
-        if (isMatch(xCoord, y, zCoord)) {
+        if (UtilMethods.isConstructor(worldObj, xCoord, y, zCoord)) {
             constructorList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, y, zCoord));
             searchForOthers(y);
         } else {
             searchForOthers(y + 1);
         }
-    }
-
-    private boolean isMatch(int x, int y, int z) {
-        return worldObj.blockHasTileEntity(x, y, z) && worldObj.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
+        return constructorList.isEmpty();
     }
 
     private void searchForOthers(int y) {
         int tempY = y;
         for (int i = -width; i < width + 1; i++) {
             for (int k = -width; k < width + 1; k++) {
-                if(i == 0 && k == 0)
+                if (i == 0 && k == 0)
                     continue;
                 tempY = loopDownUntilLastAirBlock(xCoord + i, y, zCoord + k);
-                if (isMatch(xCoord + i, tempY, zCoord + k)) {
+                if (UtilMethods.isConstructor(worldObj, xCoord + i, tempY, zCoord + k))
                     constructorList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + i, tempY, zCoord + k));
-                }
             }
         }
     }
 
-    private boolean hasAirUnderneath(int x, int y, int z) {
-        return worldObj.isAirBlock(x, y - 1, z);
-    }
-
     private int loopDownUntilLastAirBlock(int x, int y, int z) {
         int tempY = y;
-        while (hasAirUnderneath(x, tempY, z)) {
+        while (hasAirUnderneath(x, tempY, z))
             tempY -= 1;
-        }
         return tempY;
+    }
+
+    private boolean hasAirUnderneath(int x, int y, int z) {
+        return worldObj.isAirBlock(x, y - 1, z);
     }
 
     public ArrayList<TileAtomicConstructor> getConstructorList() {

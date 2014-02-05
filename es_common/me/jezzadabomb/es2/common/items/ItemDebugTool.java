@@ -4,34 +4,24 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.ClientProxy;
-import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.api.HUDBlackLists;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.packets.SetBlockChunkPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -67,7 +57,7 @@ public class ItemDebugTool extends ItemES {
             add("Solar Lens - Set List"); // 11
             add("Solar Lens - Get List"); // 12
             add("Console - Locate Master"); // 13
-            add("Constructor - 3x3");
+            add("Constructor - 3x3"); // 14
         }
     };
 
@@ -110,7 +100,8 @@ public class ItemDebugTool extends ItemES {
                         }
                         break;
                     case 15:
-                        PacketDispatcher.sendPacketToServer(new SetBlockChunkPacket(new CoordSet((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)), ModBlocks.atomicConstructor.blockID, 20).makePacket());
+                        int range = 3;
+                        PacketDispatcher.sendPacketToServer(new SetBlockChunkPacket(new CoordSet((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ)), ModBlocks.atomicConstructor.blockID, range).makePacket());
                         break;
                 }
             }

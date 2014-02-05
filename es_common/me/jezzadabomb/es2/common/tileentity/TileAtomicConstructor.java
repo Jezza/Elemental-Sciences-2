@@ -1,29 +1,27 @@
 package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import me.jezzadabomb.es2.client.drone.DroneState;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.TimeTracker;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import cofh.api.energy.EnergyStorage;
+import cofh.api.block.IDismantleable;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileAtomicConstructor extends TileES implements IEnergyHandler {
+public class TileAtomicConstructor extends TileES implements IDismantleable {
 
     boolean[] renderMatrix;
     TileConsole tileConsole;
@@ -85,7 +83,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)
                 for (int k = -1; k < 2; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && isConstructor(xCoord + i, yCoord + j, zCoord + k)) {
+                    if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (tile.hasConsole()) {
                             tileConsole = tile.getConsole();
@@ -99,7 +97,7 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)
                 for (int k = -1; k < 2; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && isConsole(xCoord + i, yCoord + j, zCoord + k)) {
+                    if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileConsole tile = (TileConsole) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         tileConsole = tile;
                         return true;
@@ -115,39 +113,9 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         return tileConsole;
     }
 
-    private boolean isConstructor(int x, int y, int z) {
-        return worldObj.blockHasTileEntity(x, y, z) && worldObj.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
-    }
-
-    private boolean isConsole(int x, int y, int z) {
-        return worldObj.blockHasTileEntity(x, y, z) && worldObj.getBlockTileEntity(x, y, z) instanceof TileConsole;
-    }
-
     public void markForUpdate() {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
-
-    // private void droneMaintenance() {
-    // droneList.removeAll(removeList);
-    // removeList.clear();
-    //
-    // droneList.addAll(addList);
-    // addList.clear();
-    //
-    // if (droneList.isEmpty()) {
-    // workingList.clear();
-    // return;
-    // }
-    //
-    // for (DroneState drone : droneList) {
-    // if (drone.isIdle()) {
-    // removeList.add(drone);
-    // }
-    // }
-    //
-    // workingList.removeAll(removeList);
-    // removeList.clear();
-    // }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -209,12 +177,6 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
         return false;
     }
 
-    public boolean removeDrone() {
-        if (tileConsole != null)
-            return tileConsole.removeDroneFromList();
-        return false;
-    }
-
     public boolean isPartRendering(int pos) {
         if (renderMatrix != null)
             return renderMatrix[pos];
@@ -222,40 +184,20 @@ public class TileAtomicConstructor extends TileES implements IEnergyHandler {
     }
 
     @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-        if (tileConsole != null)
-            return tileConsole.receiveEnergy(from, maxReceive, simulate);
-        return 0;
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        if (tileConsole != null)
-            return tileConsole.extractEnergy(from, maxExtract, simulate);
-        return 0;
-    }
-
-    @Override
-    public boolean canInterface(ForgeDirection from) {
-        return true;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from) {
-        if (tileConsole != null)
-            return tileConsole.getEnergyStored(from);
-        return 0;
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
-        if (tileConsole != null)
-            return tileConsole.getMaxEnergyStored(from);
-        return 0;
-    }
-
-    @Override
     public String toString() {
         return "Constructor" + new CoordSet(xCoord, yCoord, zCoord);
+    }
+
+    @Override
+    public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
+        world.setBlockToAir(x, y, z);
+        if (!world.isRemote && returnBlock)
+            world.spawnEntityInWorld(new EntityItem(world, x + 0.5F, y + 0.1F, z + 0.5F, new ItemStack(ModBlocks.atomicConstructor)));
+        return null;
+    }
+
+    @Override
+    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+        return true;
     }
 }

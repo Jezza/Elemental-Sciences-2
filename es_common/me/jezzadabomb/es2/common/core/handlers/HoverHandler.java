@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.packets.HoverHandlerPacket;
@@ -238,8 +239,9 @@ public class HoverHandler {
 
         public void hoverTick() {
             if (justStarted) {
+                ESLogger.info("Moving up");
                 justStarted = false;
-                player.moveEntity(0, 0.08F, 0);
+                player.moveEntity(0, 0.30F, 0);
             }
             if (player.motionY < 0)
                 player.motionY = 0;
@@ -258,10 +260,9 @@ public class HoverHandler {
                 return equals(hoveringPlayer.getUsername());
             } else if (obj instanceof EntityPlayer) {
                 EntityPlayer hoveringPlayer = (EntityPlayer) obj;
-                return equals(player.username);
-            } else {
-                return false;
+                return equals(hoveringPlayer.username);
             }
+            return false;
         }
 
         public boolean equals(String username) {

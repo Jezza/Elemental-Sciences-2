@@ -4,26 +4,27 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Random;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
-
-import me.jezzadabomb.es2.client.drone.DroneState;
-import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import cofh.api.block.IDismantleable;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 
-public class TileConsole extends TileES implements IEnergyHandler {
+public class TileConsole extends TileES implements IEnergyHandler, IDismantleable {
 
     protected EnergyStorage storage = new EnergyStorage(1000000);
-    ArrayList<TileAtomicConstructor> constructorList, utilList;
-    ArrayList<EntityDrone> droneList, workingList, removeList;
+    ArrayList<TileAtomicConstructor> constructorList;
+    ArrayList<EntityDrone> droneList;
     int direction, prevDroneSize, prevWorkingSize;
     BitSet renderCables;
 
@@ -33,10 +34,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
 
     public TileConsole(TileConsole master) {
         constructorList = new ArrayList<TileAtomicConstructor>();
-        utilList = new ArrayList<TileAtomicConstructor>();
         droneList = new ArrayList<EntityDrone>();
-        workingList = new ArrayList<EntityDrone>();
-        removeList = new ArrayList<EntityDrone>();
         prevDroneSize = 0;
         prevWorkingSize = 0;
         direction = 0;
@@ -54,7 +52,7 @@ public class TileConsole extends TileES implements IEnergyHandler {
             updateRenderCables();
 
         atomicMaintenance();
-        ESLogger.info(constructorList.size());
+//        ESLogger.info(constructorList.size());
         droneMaintenance();
         if (droneList.size() != prevDroneSize)
             markForUpdate();
@@ -64,45 +62,14 @@ public class TileConsole extends TileES implements IEnergyHandler {
     }
 
     private void droneMaintenance() {
-        droneList.removeAll(removeList);
-        removeList.clear();
-
         if (droneList.isEmpty()) {
-            workingList.clear();
             return;
         }
-
-        for (EntityDrone drone : workingList)
-            if (drone.isIdle())
-                removeList.add(drone);
-
-        workingList.removeAll(removeList);
-        removeList.clear();
-
-        if (!worldObj.isRemote)
-            for (EntityDrone drone : droneList) {
-                drone.receiveEnergy(null, storage.extractEnergy(1, false), false);
-                if (!drone.isWithinConstructor()) {
-                    drone.pathToNewConstructor(getRandomConstructor());
-                } else {
-                    if (drone.hasReachedTarget()) {
-                        if (new Random().nextInt(10) > 7) {
-                            drone.pathToNewConstructor(getRandomConstructor());
-                        } else {
-                            CoordSetF targetSet = drone.getCurrentBlock();
-                            Random rand = new Random();
-
-                            targetSet.addX((rand.nextFloat() - 1) / 2);
-                            targetSet.addY((rand.nextFloat() - 1) / 2);
-                            targetSet.addZ((rand.nextFloat() - 1) / 2);
-                            drone.setTargetCoords(targetSet);
-                        }
-                    }
-                }
-            }
     }
 
     private void atomicMaintenance() {
+        ArrayList<TileAtomicConstructor> utilList = new ArrayList<TileAtomicConstructor>();
+        
         for (TileAtomicConstructor atomic : constructorList)
             if (atomic.isInvalid())
                 utilList.add(atomic);
@@ -110,7 +77,6 @@ public class TileConsole extends TileES implements IEnergyHandler {
         if (utilList.size() > 0) {
             constructorList.removeAll(utilList);
             disconnectAll(false);
-            utilList.clear();
         }
     }
 
@@ -149,21 +115,6 @@ public class TileConsole extends TileES implements IEnergyHandler {
     public boolean addDrone(EntityDrone drone) {
         droneList.add(drone);
         return droneList.contains(drone);
-    }
-
-    public boolean removeDroneFromList(EntityDrone drone) {
-        if (!removeList.contains(drone))
-            removeList.add(drone);
-        return removeList.contains(drone);
-    }
-
-    public boolean removeDroneFromList() {
-        EntityDrone drone = getRandomDrone();
-        if (droneList.contains(drone) && !removeList.contains(drone)) {
-            removeList.add(drone);
-            drone.setDead();
-        }
-        return removeList.contains(drone);
     }
 
     public EntityDrone getRandomDrone() {
@@ -314,5 +265,18 @@ public class TileConsole extends TileES implements IEnergyHandler {
     @Override
     public int getMaxEnergyStored(ForgeDirection from) {
         return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
+        world.setBlockToAir(x, y, z);
+        if (!world.isRemote && returnBlock)
+            world.spawnEntityInWorld(new EntityItem(world, x + 0.5F, y + 0.1F, z + 0.5F, new ItemStack(ModBlocks.console)));
+        return null;
+    }
+
+    @Override
+    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+        return true;
     }
 }

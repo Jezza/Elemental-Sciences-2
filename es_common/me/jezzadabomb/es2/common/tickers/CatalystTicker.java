@@ -15,7 +15,7 @@ import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class WorldTicker implements ITickHandler {
+public class CatalystTicker implements ITickHandler {
 
     public static Map<Integer, LinkedBlockingQueue<VirtualBreaker>> breakList = new HashMap<Integer, LinkedBlockingQueue<VirtualBreaker>>();
 
@@ -45,6 +45,7 @@ public class WorldTicker implements ITickHandler {
 
         if (queue != null) {
             boolean didSomething = false;
+            int limit = 0;
             while (!didSomething) {
                 VirtualBreaker vb = (VirtualBreaker) queue.poll();
 
@@ -53,27 +54,20 @@ public class WorldTicker implements ITickHandler {
                     int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
                     boolean skip = Block.blocksList[vb.id].isWood(world, vb.x, vb.y, vb.z);
                     if ((vb.id == bi) && ((vb.meta == md) || skip)) {
-                        didSomething = true;
+                        if (limit++ > 0 * 3)
+                            didSomething = true;
                         ArrayList<ItemStack> ret = Block.blocksList[bi].getBlockDropped(world, vb.x, vb.y, vb.z, md, vb.fortune);
-                        if (ret.size() > 0) {
-                            for (ItemStack is : ret) {
-                                if (!vb.player.capabilities.isCreativeMode) {
-                                    if (!vb.player.inventory.addItemStackToInventory(is)) {
-                                        world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
-                                    }
-                                }
-                            }
-                        }
+                        for (ItemStack is : ret)
+                            if (!vb.player.capabilities.isCreativeMode)
+                                if (!vb.player.inventory.addItemStackToInventory(is))
+                                    world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
                         world.destroyBlock(vb.x, vb.y, vb.z, false);
                         if (vb.lifespan > 0) {
                             for (int xx = -1; xx <= 1; xx++)
                                 for (int yy = -1; yy <= 1; yy++)
                                     for (int zz = -1; zz <= 1; zz++) {
-                                        if (((xx == 0) && (yy == 0) && (zz == 0)) || (world.getBlockId(vb.x + xx, vb.y + yy, vb.z + zz) != vb.idTarget)) {
-                                            if ((world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.metaTarget) || !skip) {
-                                                continue;
-                                            }
-                                        }
+                                        if (((xx == 0) && (yy == 0) && (zz == 0)) || ((world.getBlockId(vb.x + xx, vb.y + yy, vb.z + zz) != vb.idTarget) && ((world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.metaTarget) || !skip)))
+                                            continue;
                                         queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.id, vb.meta, vb.idTarget, vb.metaTarget, vb.lifespan - 1, vb.player, vb.fortune));
                                     }
                         }

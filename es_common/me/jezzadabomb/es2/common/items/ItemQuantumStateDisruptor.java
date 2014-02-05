@@ -27,19 +27,16 @@ public class ItemQuantumStateDisruptor extends ItemES {
         y += 1;
         if (!world.isRemote && !(new CoordSet(player).isAtXYZ(x, y, z))) {
             world.setBlock(x, y, z, ModBlocks.quantumStateDisrupter.blockID);
-            stack = UtilMethods.decrCurrentItem(player);
+            UtilMethods.decrCurrentItem(player);
         }
         return true;
     }
 
     private boolean checkAround(World world, int x, int y, int z) {
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                if (!world.isAirBlock(x + i, y + 1, z + j) || world.isAirBlock(x + i, y, z + j)) {
+        for (int i = -1; i < 2; i++)
+            for (int j = -1; j < 2; j++)
+                if (!world.isAirBlock(x + i, y + 1, z + j) || world.isAirBlock(x + i, y, z + j))
                     return false;
-                }
-            }
-        }
         return true;
     }
 

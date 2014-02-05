@@ -1,12 +1,10 @@
 package me.jezzadabomb.es2.common.items;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 
-import cofh.api.block.IDismantleable;
-import cofh.api.energy.IEnergyHandler;
-
-import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
@@ -15,16 +13,22 @@ import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import cofh.api.block.IDismantleable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -66,46 +70,69 @@ public class ItemPlaceHolder extends ItemES {
                 shiftList.add("He shall be called Geoff.");
                 break;
             case 9:
-                addToBothLists("Fancy tool to dismantle stuff quickly.");
+                if (!stack.hasTagCompound()) {
+                    stack.setTagCompound(new NBTTagCompound());
+                    stack.getTagCompound().setInteger("Durablity", 512);
+                }
+                int damage = stack.getTagCompound().getInteger("Durablity");
+                addToBothLists("Uses left: " + damage);
                 break;
         }
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && stack.getItemDamage() == getDamage("constructorDrone") && UtilMethods.isConstructor(world, x, y, z)) {
+        if (getDamage("constructorDrone", stack) && UtilMethods.isConstructor(world, x, y, z) && !world.isRemote) {            
             TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
-            EntityDrone drone = new EntityDrone(world);
+            boolean flag = tAC.hasConsole();
+            if (flag) {
+                TileConsole console = tAC.getConsole();
+                EntityDrone drone = new EntityDrone(world).setConsole(console);
 
-            Random rand = new Random();
+                Random rand = new Random();
 
-            drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-            drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-            drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+                drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+                drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+                drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
 
-            if (tAC.registerDrone(drone)) {
                 world.spawnEntityInWorld(drone);
+
                 if (!player.capabilities.isCreativeMode)
                     UtilMethods.decrCurrentItem(player);
-                player.swingItem();
             }
-            return true;
-        }
-        if (stack.getItemDamage() == getDamage("wrenchThing") && UtilMethods.isDismantable(world, x, y, z)) {
+            if (flag)
+                player.swingItem();
+            return flag;
+        } else if (getDamage("wrenchThing", stack) && UtilMethods.isDismantable(world, x, y, z)) {
             IDismantleable dismantle = (IDismantleable) world.getBlockTileEntity(x, y, z);
             if (dismantle.canDismantle(player, world, x, y, z)) {
-                ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, true);
+                ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, !player.capabilities.isCreativeMode);
+                int damage = stack.getTagCompound().getInteger("Durablity") - 1;
+                stack.getTagCompound().setInteger("Durablity", damage);
+                if (damage == 0) {
+                    ((EntityLivingBase) player).renderBrokenItemStack(stack);
+                    UtilMethods.decrCurrentItem(player);
+                }
                 if (tempStack != null)
                     player.inventory.addItemStackToInventory(tempStack);
             }
-            return true;
+            player.swingItem();
         }
         return false;
     }
 
     @Override
+    public void onUpdate(ItemStack stack, World world, Entity par3Entity, int par4, boolean par5) {
+        super.onUpdate(stack, world, par3Entity, par4, par5);
+        if (getDamage("wrenchThing", stack) && !stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setInteger("Durablity", 512);
+        }
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (stack.getItemDamage() == getDamage("empTrigger")) {
+        if (getDamage("empTrigger", stack)) {
             float range = 5.0F;
             List<Object> droneList = world.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
             for (Object object : droneList) {
@@ -123,17 +150,21 @@ public class ItemPlaceHolder extends ItemES {
         return stack;
     }
 
+    public boolean getDamage(String name, ItemStack stack) {
+        return stack.getItemDamage() == getDamage(name);
+    }
+
     public int getDamage(String name) {
         for (int i = 0; i < names.length; i++)
             if (names[i].equals(name))
                 return i;
         return -1;
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
-        for (int i = 0; i < names.length; i++)
+        for (int i = 1; i < names.length; i++)
             list.add(new ItemStack(this, 1, i));
     }
 

@@ -6,7 +6,7 @@ import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
-import me.jezzadabomb.es2.common.tickers.WorldTicker;
+import me.jezzadabomb.es2.common.tickers.CatalystTicker;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -35,7 +35,7 @@ public class ItemAtomicCatalyst extends ItemES {
         if (!world.isRemote && notOnList) {
             Sounds.CATALYST_PULSE.play(x, y, z);
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStack);
-            WorldTicker.addBreaker(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), strength, player, fortune);
+            CatalystTicker.addBreaker(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), strength, player, fortune);
             itemStack.damageItem(1, player);
         }
         return notOnList;

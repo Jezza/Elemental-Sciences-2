@@ -45,7 +45,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
                 renderAtomicCatalyst(0.0F, 0.1F, 0.0F, 0.4F, false, true, false);
                 return;
             }
-            
+
             case EQUIPPED: {
                 renderAtomicCatalyst(0.5F, 0.5F, 0.4F, 0.5F, false, false, true);
                 return;
@@ -58,7 +58,6 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
 
     // Bohr Model, because bite me.
     private void renderAtomicCatalyst(float x, float y, float z, float scale, boolean fp, boolean inv, boolean eq) {
-
         TextureManager texture = Minecraft.getMinecraft().renderEngine;
 
         glPushMatrix();
@@ -102,7 +101,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
         switch (part) {
             case "Main":
                 glPushMatrix();
-                glRotatef((float)angle, 0.0F, 1.0F, 0.0F);
+                glRotatef((float) angle, 0.0F, 1.0F, 0.0F);
                 RenderUtils.bindTexture(TextureMaps.MODEL_ATOMIC_CATALYST_MAIN);
                 modelAtomicCatalyst.renderPart("Main");
                 glPopMatrix();

@@ -33,7 +33,7 @@ public abstract class BlockES extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("tile.", ""));
+        blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + getUnlocalizedName().replace("tile.", ""));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class ESLogger {
 
     public static void log(Level logLevel, Object object) {
         if (object == null)
-            object = "NULL";
+            object = "null";
         esLogger.log(logLevel, object.toString());
     }
 
@@ -27,8 +27,7 @@ public class ESLogger {
     }
 
     public static void debug(Object object) {
-        if (UtilMethods.canShowDebugHUD())
-            log(Level.WARNING, "[DEBUG] " + object);
+        log(Level.WARNING, "[DEBUG] " + object);
     }
 
     // Possible flood case.

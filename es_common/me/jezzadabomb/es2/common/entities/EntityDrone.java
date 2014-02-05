@@ -16,6 +16,7 @@ import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.TimeTracker;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -28,26 +29,35 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public class EntityDrone extends EntityES implements IEnergyHandler {
+public class EntityDrone extends EntityES {
 
-    // 1 - idle
-    // 2 - working
-    // 4 - moving
-    int mode;
-    boolean withinConstructor, reachedTarget, marked;
-    TimeTracker timeTracker;
+    boolean withinConstructor, reachedTarget, pathed, moving, working;
     CoordSetF targetSet;
     double xSpeed, ySpeed, zSpeed;
-    private EnergyStorage storage = new EnergyStorage(10000);
+    TileConsole console;
 
     public EntityDrone(World world) {
         super(world);
-        reachedTarget = withinConstructor = true;
-        marked = false;
-        setSize(8F / 16F, 8F / 16F);
-        timeTracker = new TimeTracker();
+//        setSize(8F / 16F, 8F / 16F);
         noClip = true;
-        setIdle();
+        setWorking(false);
+        reachedTarget = withinConstructor = true;
+        pathed = moving = working = false;
+    }
+
+    /**
+     * Note that it will also register itself with it.
+     * 
+     * @param console
+     */
+    public EntityDrone setConsole(TileConsole console) {
+        this.console = console;
+        console.registerDrone(this);
+        return this;
+    }
+
+    public TileConsole getConsole() {
+        return console;
     }
 
     @Override
@@ -58,22 +68,29 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
     protected void updateTick() {
         withinConstructor = isWithinBlockID(ModBlocks.atomicConstructor.blockID);
 
-        if (storage.getEnergyStored() == 0)
+        if (console == null || console.isInvalid()) {
+            if (withinConstructor) {
+                TileAtomicConstructor atomic = getConstructor();
+                if(atomic == null || !atomic.hasConsole())
+                    return;
+                setConsole(atomic.getConsole());
+            }
             return;
-        ESLogger.info("Moving");
+        }
+
+        if (!withinConstructor && !pathed)
+            pathToNewConstructor(console.getRandomConstructor());
+
         moveDrone();
-        storage.modifyEnergyStored(-1);
     }
 
+    // Determines movement and motion.
     public void moveDrone() {
         if (targetSet == null)
             return;
-        if (!isMoving())
-            setMoving();
         double xDisplace = targetSet.getX() - posX;
         double yDisplace = targetSet.getY() - posY;
         double zDisplace = targetSet.getZ() - posZ;
-        boolean moved = false;
         motionX = motionY = motionZ = 0.0F;
 
         if (!MathHelper.withinRange(xDisplace, 0.0F, xSpeed)) {
@@ -82,7 +99,6 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
             } else if (xDisplace > 0) {
                 motionX = xSpeed;
             }
-            moved = true;
         }
         if (!MathHelper.withinRange(yDisplace, 0.0F, ySpeed)) {
             if (yDisplace < 0) {
@@ -90,7 +106,6 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
             } else if (yDisplace > 0) {
                 motionY = ySpeed;
             }
-            moved = true;
         }
         if (!MathHelper.withinRange(zDisplace, 0.0F, zSpeed)) {
             if (zDisplace < 0) {
@@ -98,21 +113,11 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
             } else if (zDisplace > 0) {
                 motionZ = zSpeed;
             }
-            moved = true;
         }
-        reachedTarget = !moved;
-        if (reachedTarget) {
+        reachedTarget = !(motionX != 0.0F || motionY != 0.0F || motionZ != 0.0F);
+        setMoving(!reachedTarget);
+        if (reachedTarget)
             targetSet = null;
-            setIdle();
-        }
-    }
-
-    public boolean hasReachedTarget() {
-        return reachedTarget;
-    }
-
-    public CoordSetF getTargetCoords() {
-        return targetSet;
     }
 
     public CoordSetF getCurrentBlock() {
@@ -121,54 +126,59 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
 
     public void setTargetCoords(CoordSetF targetSet) {
         reachedTarget = false;
+        pathed = true;
         this.targetSet = targetSet;
     }
 
     public void pathToNewConstructor(TileAtomicConstructor atomic) {
+        if (atomic == null)
+            return;
         pathToXYZ(atomic.xCoord, atomic.yCoord, atomic.zCoord);
     }
 
     public void pathToXYZ(int x, int y, int z) {
         setTargetCoords(new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F));
     }
+    
+    public boolean hasReachedTarget() {
+        return reachedTarget;
+    }
+
+    public CoordSetF getTargetCoords() {
+        return targetSet;
+    }
 
     public boolean isWithinConstructor() {
         return withinConstructor;
     }
 
-    public boolean isIdle() {
-        return mode == 1;
-    }
-
     public boolean isWorking() {
-        return mode == 2;
+        return working;
     }
 
     public boolean isMoving() {
-        return mode == 4;
+        return moving;
     }
 
-    public void setIdle() {
-        setSpeed(0.0F);
-        mode = 1;
+    public void setWorking(boolean working) {
+        this.working = working;
     }
 
-    public void setWorking() {
-        setSpeed(0.03F);
-        mode = 2;
-    }
-
-    public void setMoving() {
-        setSpeed(0.008F);
-        mode = 4;
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 
     private boolean isWithinBlockID(int blockID) {
         return worldObj.getBlockId((int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ)) == blockID;
     }
 
-    private boolean hitGround() {
-        return worldObj.getBlockId((int) Math.floor(posX), (int) (Math.floor(posY - (height / 2))), (int) Math.floor(posZ)) != 0;
+    private TileAtomicConstructor getConstructor() {
+        int x = (int) Math.floor(posX);
+        int y = (int) Math.floor(posX);
+        int z = (int) Math.floor(posX);
+        if (isWithinConstructor())
+            return (TileAtomicConstructor) worldObj.getBlockTileEntity(x, y, z);
+        return null;
     }
 
     public void setSpeed(float speed) {
@@ -182,49 +192,25 @@ public class EntityDrone extends EntityES implements IEnergyHandler {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+    protected void addDataWatchers() {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+    protected void readEntityFromNBT(NBTTagCompound tag) {
+        moving = tag.getBoolean("moving");
+        working = tag.getBoolean("working");
+    }
 
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setBoolean("moving", moving);
+        tag.setBoolean("working", working);
     }
 
     @Override
     protected boolean canApplyFriction() {
         return false;
-    }
-
-    @Override
-    protected boolean canAddDataToWatcher() {
-        return false;
-    }
-
-    @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-        ESLogger.info(maxReceive);
-        return storage.receiveEnergy(maxReceive, simulate);
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        return storage.extractEnergy(maxExtract, simulate);
-    }
-
-    @Override
-    public boolean canInterface(ForgeDirection from) {
-        return true;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from) {
-        return storage.getEnergyStored();
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
-        return storage.getMaxEnergyStored();
     }
 
 }

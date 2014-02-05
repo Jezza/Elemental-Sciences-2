@@ -29,13 +29,11 @@ public abstract class EntityES extends Entity {
         moveEntity();
     }
 
-    protected abstract void updateTick();
-
     protected void moveEntity() {
         if (canApplyFriction())
             applyFriction();
         moveEntity(motionX, motionY, motionZ);
-//         setPosition(posX + motionX, posY + motionY, posZ + motionZ);
+        // setPosition(posX + motionX, posY + motionY, posZ + motionZ);
     }
 
     protected void applyFriction() {
@@ -54,18 +52,14 @@ public abstract class EntityES extends Entity {
 
     @Override
     protected void entityInit() {
-        if (canAddDataToWatcher())
-            addDataToWatcher();
+        addDataWatchers();
     }
 
-    protected void addDataToWatcher() {
-
-    }
-
+    protected abstract void addDataWatchers();
     protected abstract boolean canApplyFriction();
 
-    protected abstract void updateEntity();
+    protected abstract void updateTick();
 
-    protected abstract boolean canAddDataToWatcher();
+    protected abstract void updateEntity();
 
 }

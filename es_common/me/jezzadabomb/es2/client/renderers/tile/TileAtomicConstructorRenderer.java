@@ -1,19 +1,17 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
-import static org.lwjgl.opengl.GL11.*;
-import me.jezzadabomb.es2.client.models.ModelAtomicCatalyst;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotated;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import me.jezzadabomb.es2.client.models.ModelAtomicConstructor;
-import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
-import me.jezzadabomb.es2.client.models.ModelPixel;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.client.drone.*;
-import me.jezzadabomb.es2.client.drone.DroneState;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

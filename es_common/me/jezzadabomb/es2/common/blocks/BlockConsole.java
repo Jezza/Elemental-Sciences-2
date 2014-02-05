@@ -1,8 +1,5 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import me.jezzadabomb.es2.client.drone.DroneState;
-import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
@@ -19,6 +16,7 @@ public class BlockConsole extends BlockES {
     public BlockConsole(int id, Material material, String name) {
         super(id, material, name);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 7F / 8F, 1.0F);
+        setBlockUnbreakable();
     }
 
     @Override
