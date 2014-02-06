@@ -17,9 +17,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import cofh.api.block.IDismantleable;
-import cofh.api.energy.IEnergyHandler;
 
 public class TileAtomicConstructor extends TileES implements IDismantleable {
 

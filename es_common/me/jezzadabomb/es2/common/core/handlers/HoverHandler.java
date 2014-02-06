@@ -123,8 +123,8 @@ public class HoverHandler {
                     glScaled(0.01D, 0.01D, 0.01D);
 
                     glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
-
-                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
+                    
+                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURES[player.getTexture()], 0, 0, 0, 0, 256, 256, 161);
                 } else {
                     RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
 
@@ -139,7 +139,7 @@ public class HoverHandler {
 
                     glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
 
-                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURE, 0, 0, 0, 0, 256, 256, 161);
+                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURES[player.getTexture()], 0, 0, 0, 0, 256, 256, 161);
 
                 }
                 glEnable(GL_CULL_FACE);
@@ -149,7 +149,7 @@ public class HoverHandler {
         }
     }
 
-    public void updatePlayer(EntityPlayer player, int time, boolean hovering, boolean waiting) {
+    public void updatePlayer(EntityPlayer player, int time, boolean hovering, boolean waiting, int texture) {
         if (player == null)
             return;
         HoveringPlayer hoveringPlayer = getHoveringPlayer(player);
@@ -157,7 +157,7 @@ public class HoverHandler {
             hoveringPlayer.setTimeLeft(time);
             hoveringPlayer.setHovering(hovering);
             hoveringPlayer.setWaiting(waiting);
-
+            hoveringPlayer.setTexture(texture);
         }
     }
 
@@ -177,7 +177,7 @@ public class HoverHandler {
         int MAX_HOVER_TIME = 80;
 
         EntityPlayer player;
-        int timeLeft;
+        int timeLeft, texture;
         boolean waiting, hovering, justStarted;
 
         public HoveringPlayer(EntityPlayer player) {
@@ -237,14 +237,23 @@ public class HoverHandler {
             justStarted = true;
         }
 
+        public int getTexture(){
+            return texture;
+        }
+        
+        public void setTexture(int texture){
+            this.texture = texture;
+        }
+        
         public void hoverTick() {
             if (justStarted) {
-                ESLogger.info("Moving up");
                 justStarted = false;
-                player.moveEntity(0, 0.30F, 0);
+                player.motionY = 0.30F;
+//                player.moveEntity(0, 0.30F, 0);
+            }else{                
+                if (player.motionY < 0)
+                    player.motionY = 0;
             }
-            if (player.motionY < 0)
-                player.motionY = 0;
             double slipperness = 0.95;
             player.motionX *= slipperness;
             player.motionZ *= slipperness;

@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.common.blocks;
 
 import java.util.List;
 
+import cpw.mods.fml.common.Loader;
+
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -13,6 +15,7 @@ public class BlockAtomicConstructor extends BlockES {
 
     public BlockAtomicConstructor(int id, Material material, String name) {
         super(id, material, name);
+        setHardness(7F);
     }
 
     @Override

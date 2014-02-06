@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Strings {
     // Block Name Constants
     public static final String INVENTORY_SCANNER = "inventoryScanner";
-    
+
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
     public static final String GLASSES = "spectralGlasses";
@@ -17,6 +17,7 @@ public class Strings {
     public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
     public static final String SOLAR_LENS = "solarLens";
     public static final String CONSOLE = "console";
+    public static final String DRONE_BAY = "droneBay";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";
@@ -28,7 +29,7 @@ public class Strings {
     public static final String HUD_PITCH = "Enable hud pitch";
     public static final String DRAW_TEXTURED_SLOTS = "Enable slot texture";
     public static final String CAN_DEBUG = "Enable debug mode";
-    
-    //Entity Constants
+
+    // Entity Constants
     public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
 }

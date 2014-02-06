@@ -12,6 +12,7 @@ public class Models {
     public static final String CONSTRUCTOR_DRONE = getModelLocation("drone");
     public static final String SOLAR_LENS = getModelLocation("solarLens");
     public static final String SOLAR_LENS_LOOP = getModelLocation("solarLoop");
+    public static final String DRONE_BAY = getModelLocation("droneBay");
 
     private static String getModelLocation(String name) {
         return MODEL_LOCATION + name + ".obj";

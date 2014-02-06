@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.packets;
 
+import java.util.Random;
+
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler.HoveringPlayer;
 import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
@@ -51,7 +53,7 @@ public class HoverHandlerPacket extends CentralPacket {
         if (side.isClient()) {
             World world = player.worldObj;
             EntityPlayer target = world.getPlayerEntityByName(username);
-            HoverHandler.getInstance().updatePlayer(target, time, hovering, waiting);
+            HoverHandler.getInstance().updatePlayer(target, time, hovering, waiting, new Random().nextInt(3));
 
         } else {
             throw new ProtocolException("Cannot send packet to the server!");

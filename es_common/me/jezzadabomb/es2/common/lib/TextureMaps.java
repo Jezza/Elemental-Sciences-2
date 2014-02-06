@@ -17,7 +17,9 @@ public class TextureMaps {
     public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_2 = getResource("electronCube2");
     public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_3 = getResource("electronCube3");
     public static final ResourceLocation HUD_INVENTORY = getResource("inventoryRender");
-    public static final ResourceLocation HOVER_TEXTURE = getResource("hoverGlow");
+
+    public static final ResourceLocation[] HOVER_TEXTURES = new ResourceLocation[] { getResource("hoverGlow1"), getResource("hoverGlow2"), getResource("hoverGlow3") };
+
     public static final ResourceLocation ATOMIC_CONSTRUCTOR = getResource("atomicConstructor");
     public static final ResourceLocation CONSTRUCTOR_DRONE = getResource("constructorDrone");
     public static final ResourceLocation BLANK_PIXEL = getResource("blankPixel");
@@ -28,6 +30,7 @@ public class TextureMaps {
     public static final ResourceLocation CONSOLE_SCREEN = getResource("consoleScreen");
     public static final ResourceLocation BLANK_SCREEN = getResource("blankScreen");
     public static final ResourceLocation CABLE_PIXEL = getResource("cable");
+    public static final ResourceLocation DRONE_BAY = getResource("droneBay");
 
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";

@@ -47,6 +47,7 @@ public class ConfigHandler {
         BlockIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, BlockIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
         BlockIds.SOLAR_LENS = getID(Strings.SOLAR_LENS, BlockIds.SOLAR_LENS_DEFAULT);
         BlockIds.CONSOLE = getID(Strings.CONSOLE, BlockIds.CONSOLE_DEFAULT);
+        BlockIds.DRONE_BAY = getID(Strings.DRONE_BAY, BlockIds.DRONE_BAY_DEFAULT);
 
         ItemIds.ATOMIC_CATALYST = getID(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT);
         ItemIds.GLASSES = getID(Strings.GLASSES, ItemIds.GLASSES_DEFAULT);
@@ -75,6 +76,7 @@ public class ConfigHandler {
     public static int getID(String path, int defaultID) {
         return config.get("IDs", path, defaultID).getInt();
     }
+
     public static int getID(String path, int defaultID, String comment) {
         return config.get("IDs", path, defaultID, comment).getInt();
     }

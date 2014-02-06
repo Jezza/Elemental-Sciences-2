@@ -10,6 +10,7 @@ import me.jezzadabomb.es2.client.renderers.item.ItemConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileSolarLensRenderer;
 import me.jezzadabomb.es2.client.sound.SoundHandler;
@@ -19,6 +20,7 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -59,9 +61,11 @@ public class ClientProxy extends CommonProxy {
     private void initTileRenderers() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
-        // TODO Make an item render.
+        // TODO Make an item renderer.
         ClientRegistry.bindTileEntitySpecialRenderer(TileSolarLens.class, new TileSolarLensRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileConsole.class, new TileConsoleRenderer());
+        // TODO Make an item renderer.
+        ClientRegistry.bindTileEntitySpecialRenderer(TileDroneBay.class, new TileDroneBayRenderer());
     }
 
     private void initItemRenderer() {
