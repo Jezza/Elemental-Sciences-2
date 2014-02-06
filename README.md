@@ -1,5 +1,6 @@
 ##This is Elemental Sciences 2
-**Latest Offical Version**: [ES2 v0.0.014 for MC 1.6.4](http://adf.ly/bMTBD)
+**Latest Offical Version**: [ES2 v0.0.014 for MC 1.6.4](http://adf.ly/bMTBD)  
+Nearing a new release.
 
 [Minecraft Forums Page](http://www.minecraftforum.net/topic/2196292-164forgeelemental-sciences-2-wip-new-version00014/)
 
