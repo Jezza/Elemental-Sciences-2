@@ -1,6 +1,5 @@
 ##This is Elemental Sciences 2
 **Latest Offical Version**: [ES2 v0.0.014 for MC 1.6.4](http://adf.ly/bMTBD)  
-Nearing a new release.
 
 [Minecraft Forums Page](http://www.minecraftforum.net/topic/2196292-164forgeelemental-sciences-2-wip-new-version00014/)
 
@@ -17,9 +16,11 @@ Because this mod is really early stage, I can't blame you for wanting to compile
 But note that I take no responsibility for the outcome of the compile, as noted in the license.  
 If you need to ask how to compile it, because it's in the early stages I'd recommend not to.
 But if you're REALLY persistant and what to try it out...  
-[Just download the latest 1.6.x](https://files.minecraftnet.com)  
-Follow this [install guide](http://www.minecraftforge.net/wiki/Installation/Source#Installation), written by me.  
-And then throw all this code into the src/main/java and src/main/resources for each folder, eg, stuff in common goes into src/main/java, and stuff in resources go in src/main/resources.  
+Just download gradle, from [here](http://www.gradle.org/downloads), install it, and run  
+gradle setupCIWorkspace  
+then
+gradle build
+
 
 **About the Mod**
 ***
@@ -28,11 +29,11 @@ I mean, sure, you have GregTech, and other cool mods like that, but it doesn't c
 I mean, you should end up a god, but that's not fun.  
 You'll get bored within a couple of minutes.
 
-Another that has annoyed me, is that people argue that having something really overpowered just brings all these problems.  
+Another thing that has annoyed me, is that people argue that having something really overpowered just brings all these problems.  
 Maybe.  
 But you're forgetting one thing, the reason minecraft is fun, and moderately easy, at the start, is because everything is level for that.  
 But once you get to the realm of the gods, it gets easy.
 
 What if, we level stuff at the power of gods.  
-What if, we gave everyone, the power of gods.  
+What if, we gave everything, the power of gods.  
 What if, god became the common man.
