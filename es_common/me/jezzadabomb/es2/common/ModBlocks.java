@@ -32,6 +32,7 @@ public class ModBlocks {
         initBlockRecipes();
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
+        HUDBlackLists.addToHUDIgnoreList(droneBay);
     }
 
     private static void initBlockRecipes() {

@@ -81,25 +81,34 @@ public class ItemPlaceHolder extends ItemES {
     }
 
     @Override
+    public int getDisplayDamage(ItemStack stack) {
+        ESLogger.info("Display");
+        if (getDamage("wrenchThing", stack))
+            return stack.getTagCompound().getInteger("Durablity");
+        return super.getDisplayDamage(stack);
+    }
+
+    @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (getDamage("constructorDrone", stack) && UtilMethods.isConstructor(world, x, y, z) && !world.isRemote) {            
+        if (getDamage("constructorDrone", stack) && UtilMethods.isConstructor(world, x, y, z) && !world.isRemote) {
+            ESLogger.info(world.isRemote);
             TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
             boolean flag = tAC.hasConsole();
-            if (flag) {
-                TileConsole console = tAC.getConsole();
-                EntityDrone drone = new EntityDrone(world).setConsole(console);
-
-                Random rand = new Random();
-
-                drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-                drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-                drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-
-                world.spawnEntityInWorld(drone);
-
-                if (!player.capabilities.isCreativeMode)
-                    UtilMethods.decrCurrentItem(player);
-            }
+//            if (flag) {
+//                TileConsole console = tAC.getConsole();
+//                EntityDrone drone = new EntityDrone(world).setConsole(console);
+//
+//                Random rand = new Random();
+//
+//                drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+//                drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+//                drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+//
+//                world.spawnEntityInWorld(drone);
+//
+//                if (!player.capabilities.isCreativeMode)
+//                    UtilMethods.decrCurrentItem(player);
+//            }
             if (flag)
                 player.swingItem();
             return flag;

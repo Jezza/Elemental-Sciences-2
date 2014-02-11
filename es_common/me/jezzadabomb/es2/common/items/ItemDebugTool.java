@@ -13,7 +13,9 @@ import me.jezzadabomb.es2.common.packets.InventoryPacket;
 import me.jezzadabomb.es2.common.packets.SetBlockChunkPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
@@ -58,6 +60,8 @@ public class ItemDebugTool extends ItemES {
             add("Solar Lens - Get List"); // 12
             add("Console - Locate Master"); // 13
             add("Constructor - 3x3"); // 14
+            add("Drone Bay - Door control"); // 15
+            add("Drone Bay - Spawn Drone");
         }
     };
 
@@ -79,6 +83,7 @@ public class ItemDebugTool extends ItemES {
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 if (++debugMode == debugStringList.size())
                     debugMode = 0;
+                Minecraft.getMinecraft().ingameGUI.getChatGUI().clearChatMessages();
                 player.addChatMessage(getDebugString());
             } else {
                 switch (debugMode) {
@@ -111,6 +116,16 @@ public class ItemDebugTool extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
+
+        if (getDebugMode("Drone Bay - Door control") && isDroneBay(world, x, y, z)) {
+            TileDroneBay droneBay = (TileDroneBay) world.getBlockTileEntity(x, y, z);
+            droneBay.toggleDoor();
+        }
+
+        if (getDebugMode("Drone Bay - Spawn Drone") && isDroneBay(world, x, y, z)) {
+            TileDroneBay droneBay = (TileDroneBay) world.getBlockTileEntity(x, y, z);
+            droneBay.spawnDrone();
+        }
 
         if (getDebugMode("Constructor - Energy count") && isIEnergyHandler(world, x, y, z)) {
             IEnergyHandler tEH = (IEnergyHandler) world.getBlockTileEntity(x, y, z);
@@ -263,6 +278,10 @@ public class ItemDebugTool extends ItemES {
 
     private boolean isConstructor(World world, int x, int y, int z) {
         return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
+    }
+
+    private boolean isDroneBay(World world, int x, int y, int z) {
+        return world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileDroneBay;
     }
 
     @Override

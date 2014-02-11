@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import me.jezzadabomb.es2.common.ModBlocks;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.TimeTracker;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
@@ -24,32 +25,33 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
     boolean[] renderMatrix;
     TileConsole tileConsole;
     boolean registered = false;
-    TimeTracker timeTracker;
-    boolean marked;
+    int renderTimeTicked = 0;
     int timeTicked = 0;
+    boolean canSearch, canConstructRenderMatrix;
 
     public TileAtomicConstructor() {
-        timeTracker = new TimeTracker();
-        marked = false;
+        canSearch = true;
+        canConstructRenderMatrix = true;
     }
 
     @Override
     public void updateEntity() {
-        if (renderMatrix == null || ++timeTicked >= 100) {
+        if (canConstructRenderMatrix && ++renderTimeTicked <= 5) {
             constructRenderMatrix();
-            timeTicked = 0;
+        } else {
+            canConstructRenderMatrix = false;
         }
-        if (!marked) {
-            marked = true;
-            timeTracker.markTime(worldObj);
-        }
-        if (tileConsole == null) {
-            if (timeTracker.hasDelayPassed(worldObj, 50 + new Random().nextInt(50))) {
-                findNewConsole();
-                marked = false;
+
+        if (canSearch && tileConsole == null) {
+            if (!findNewConsole()) {
+                canSearch = false;
+                return;
             }
+        } else {
+            canSearch = ++timeTicked >= 60;
             return;
         }
+
         if (tileConsole.isInvalid()) {
             resetState();
             return;

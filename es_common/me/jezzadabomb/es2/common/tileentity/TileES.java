@@ -6,10 +6,15 @@ import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class TileES extends TileEntity {
-    
-    public void onNeighbourBlockChange(NeighbourChangedPacket packet){
+
+    public void onNeighbourBlockChange(NeighbourChangedPacket packet) {
         this.onNeighbourBlockChange(packet.coordSet);
     }
-    
-    public void onNeighbourBlockChange(CoordSet coordSet){}
+
+    public void onNeighbourBlockChange(CoordSet coordSet) {
+    }
+
+    public CoordSet getCoordSet() {
+        return new CoordSet(xCoord, yCoord, zCoord);
+    }
 }

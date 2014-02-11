@@ -26,7 +26,8 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
 
     @Override
     public void updateEntity() {
-        if (worldObj.isRemote || !worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord)) {
+        boolean tru = true;
+        if (worldObj.isRemote || !worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord) || tru) {
             return;
         }
         if (searchForTileEntity())

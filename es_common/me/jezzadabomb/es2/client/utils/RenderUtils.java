@@ -119,6 +119,11 @@ public class RenderUtils {
         temp[2] = (float) (interpPosY - (y + 1.8D));
         return temp;
     }
+    
+    public static boolean isPlayerRendering(String username){
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        return (player != null && player.username.equals(username));
+    }
 
     // Individual translations if I want.
     private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
@@ -235,7 +240,8 @@ public class RenderUtils {
             glTranslated(-9, 5, 0);
 
             glScaled(2.8D, 2.8D, 2.8D);
-
+            
+            //TODO Clean up this pile of shit.
             translateSpecialRender(indexNum, rowNum, false);
             if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
                 translateSpecialRender(indexNum, rowNum, true);

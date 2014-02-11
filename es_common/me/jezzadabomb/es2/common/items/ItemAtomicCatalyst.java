@@ -35,7 +35,8 @@ public class ItemAtomicCatalyst extends ItemES {
         if (!world.isRemote && notOnList) {
             Sounds.CATALYST_PULSE.play(x, y, z);
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStack);
-            CatalystTicker.addBreaker(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), strength, player, fortune);
+            int speed = 0;
+            CatalystTicker.addBreaker(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), strength, player, fortune, speed);
             itemStack.damageItem(1, player);
         }
         return notOnList;

@@ -6,6 +6,7 @@ import java.util.Random;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,66 +26,52 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
     protected EnergyStorage storage = new EnergyStorage(1000000);
     ArrayList<TileAtomicConstructor> constructorList;
     ArrayList<EntityDrone> droneList;
-    int direction, prevDroneSize, prevWorkingSize;
+    ArrayList<TileDroneBay> droneBayList;
+    int direction, timeTicked;
     BitSet renderCables;
 
     public TileConsole() {
-        this(null);
-    }
-
-    public TileConsole(TileConsole master) {
         constructorList = new ArrayList<TileAtomicConstructor>();
         droneList = new ArrayList<EntityDrone>();
-        prevDroneSize = 0;
-        prevWorkingSize = 0;
+        droneBayList = new ArrayList<TileDroneBay>();
         direction = 0;
+        timeTicked = 0;
         renderCables = new BitSet(4);
         updateRenderCables();
-    }
-
-    public CoordSet getCoordSet() {
-        return new CoordSet(xCoord, yCoord, zCoord);
+        droneBayMaintenance();
     }
 
     @Override
     public void updateEntity() {
-        if (renderCables == null)
-            updateRenderCables();
-
         atomicMaintenance();
-//        ESLogger.info(constructorList.size());
-        droneMaintenance();
-        if (droneList.size() != prevDroneSize)
-            markForUpdate();
-
-        prevDroneSize = droneList.size();
-        prevWorkingSize = droneList.size();
-    }
-
-    private void droneMaintenance() {
-        if (droneList.isEmpty()) {
-            return;
-        }
+        if (++timeTicked > 40)
+            droneBayMaintenance();
     }
 
     private void atomicMaintenance() {
         ArrayList<TileAtomicConstructor> utilList = new ArrayList<TileAtomicConstructor>();
-        
+
         for (TileAtomicConstructor atomic : constructorList)
             if (atomic.isInvalid())
                 utilList.add(atomic);
 
         if (utilList.size() > 0) {
             constructorList.removeAll(utilList);
-            disconnectAll(false);
+            disconnectAll();
         }
     }
 
+    private void droneBayMaintenance() {
+        
+    }
+
     public TileAtomicConstructor getRandomConstructor() {
+        if (constructorList.isEmpty())
+            return null;
         return constructorList.get(new Random().nextInt(constructorList.size()));
     }
 
-    public void disconnectAll(boolean resetMaster) {
+    public void disconnectAll() {
         for (TileAtomicConstructor atomic : constructorList)
             atomic.resetState();
         constructorList.clear();
@@ -101,9 +88,9 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)
                 for (int k = -1; k < 2; k++) {
-                    if (i == 0 && j == 0 && k == 0 || !worldObj.blockHasTileEntity(xCoord + i, yCoord + j, zCoord + k))
+                    if (i == 0 && j == 0 && k == 0)
                         continue;
-                    if (worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k) instanceof TileConsole)
+                    if (UtilMethods.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k))
                         ((TileConsole) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k)).updateRenderCables();
                 }
     }
@@ -205,14 +192,6 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
                 droneList.add(drone);
             add = true;
         }
-    }
-
-    private boolean isConstructor(int x, int y, int z) {
-        return worldObj.blockHasTileEntity(x, y, z) && worldObj.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
-    }
-
-    private boolean isConsole(int x, int y, int z) {
-        return worldObj.blockHasTileEntity(x, y, z) && worldObj.getBlockTileEntity(x, y, z) instanceof TileConsole;
     }
 
     @Override

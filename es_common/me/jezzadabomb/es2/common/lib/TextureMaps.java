@@ -30,7 +30,8 @@ public class TextureMaps {
     public static final ResourceLocation CONSOLE_SCREEN = getResource("consoleScreen");
     public static final ResourceLocation BLANK_SCREEN = getResource("blankScreen");
     public static final ResourceLocation CABLE_PIXEL = getResource("cable");
-    public static final ResourceLocation DRONE_BAY = getResource("droneBay");
+    public static final ResourceLocation DRONE_BAY_FRAME = getResource("droneBayFrame");
+    public static final ResourceLocation DRONE_BAY_DOOR = getResource("droneBayDoor");
 
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";

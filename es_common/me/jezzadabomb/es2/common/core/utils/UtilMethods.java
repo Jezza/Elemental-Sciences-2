@@ -7,6 +7,7 @@ import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
@@ -81,7 +83,7 @@ public class UtilMethods {
     public static boolean isScanner(World world, int x, int y, int z) {
         return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner;
     }
-    
+
     public static boolean isDismantable(World world, int x, int y, int z) {
         return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IDismantleable;
     }
@@ -92,6 +94,10 @@ public class UtilMethods {
             return !world.isAirBlock(x, y, z) && (tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory);
         }
         return false;
+    }
+
+    public static boolean isDroneBay(World world, int x, int y, int z) {
+        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileDroneBay;
     }
 
     public static boolean hasPressedShift() {
@@ -151,10 +157,22 @@ public class UtilMethods {
     }
 
     public static boolean isRenderType(TileEntity tileEntity, int type) {
-        if (tileEntity == null) {
+        if (tileEntity == null)
             return false;
-        }
-        return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord - 1, tileEntity.zCoord) == type;
+        return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == type;
+    }
+
+    public static boolean isRenderType(World world, int x, int y, int z, int type) {
+        if (world.blockHasTileEntity(x, y, z))
+            return isRenderType(world.getBlockTileEntity(x, y, z), type);
+        return false;
+    }
+
+    public static boolean isRenderType(IBlockAccess world, int x, int y, int z, int type) {
+        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+        if (tileEntity != null)
+            return isRenderType(tileEntity, type);
+        return false;
     }
 
     public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume) {
@@ -219,6 +237,10 @@ public class UtilMethods {
             default:
                 return -1;
         }
+    }
+
+    public static String getLocFromXYZ(int x, int y, int z) {
+        return x + ":" + y + ":" + z;
     }
 
     public static String getLocFromArray(int[] coords) {

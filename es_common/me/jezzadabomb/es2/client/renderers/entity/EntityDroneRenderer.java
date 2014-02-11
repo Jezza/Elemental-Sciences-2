@@ -15,14 +15,16 @@ public class EntityDroneRenderer extends Render {
 
     public EntityDroneRenderer() {
         modelConstructorDrone = new ModelConstructorDrone();
-        shadowOpaque = 0.0F;
+        shadowSize = 0.1F;
     }
 
     public void renderDrone(EntityDrone drone, double x, double y, double z, float yaw, float partialTickTime) {
         glPushMatrix();
 
         glTranslated(x, y, z);
+        
         glScalef(0.1F, 0.1F, 0.1F);
+        
         bindEntityTexture(drone);
 
         modelConstructorDrone.render();

@@ -9,7 +9,16 @@ public class ModelConstructorDrone {
 	IModelCustom constructorDrone;
 
 	public ModelConstructorDrone(){
-		constructorDrone = AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_MAIN);
+	    // 10
+	    // 10
+	    // 13
+	    // 4
+	    // 6
+	    // 4
+	    // 13
+	    // 10
+	    // 10
+		constructorDrone = AdvancedModelLoader.loadModel(Models.CONSTRUCTOR_DRONE);
 	}
 	
 	public void render(){
