@@ -1,7 +1,8 @@
 package me.jezzadabomb.es2.common.core.utils;
 
+import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -91,6 +92,20 @@ public class CoordSet {
         return new CoordSet(tag.getIntArray("coords"));
     }
 
+    public void writeBytes(ByteBuf bytes) {
+        bytes.writeInt(x);
+        bytes.writeInt(y);
+        bytes.writeInt(z);
+    }
+
+    public static CoordSet readBytes(ByteBuf bytes) {
+        int x = bytes.readInt();
+        int y = bytes.readInt();
+        int z = bytes.readInt();
+
+        return new CoordSet(x, y, z);
+    }
+
     /*
      * Truncated.
      */
@@ -108,10 +123,10 @@ public class CoordSet {
         return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
     }
 
-    public String toPacketString(){
+    public String toPacketString() {
         return x + ":" + y + ":" + z;
     }
-    
+
     @Override
     public String toString() {
         return " @ " + toPacketString();

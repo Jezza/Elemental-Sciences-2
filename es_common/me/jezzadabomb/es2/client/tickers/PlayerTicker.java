@@ -1,7 +1,5 @@
 package me.jezzadabomb.es2.client.tickers;
 
-import java.util.EnumSet;
-
 import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
@@ -10,21 +8,20 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.packets.InventoryRequestPacket;
+import me.jezzadabomb.es2.common.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.network.packet.client.InventoryRequestPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PlayerTicker implements ITickHandler {
+public class PlayerTicker {
 
     private int dis;
     private int oldX, oldY, oldZ, notMoveTick;
@@ -35,12 +32,8 @@ public class PlayerTicker implements ITickHandler {
         storedQueues = new StoredQueues();
     }
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-    }
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+    @SubscribeEvent
+    public void clientTick(TickEvent.ClientTickEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (UtilMethods.isPlayerWearing(player, ModItems.glasses)) {
             World world = player.worldObj;
@@ -57,11 +50,11 @@ public class PlayerTicker implements ITickHandler {
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;
                             if (UtilMethods.isIInventory(world, tempX, tempY, tempZ)) {
-                                TileEntity tileEntity = world.getBlockTileEntity(tempX, tempY, tempZ);
+                                TileEntity tileEntity = world.getTileEntity(tempX, tempY, tempZ);
                                 if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType()))
                                     break;
 
-                                InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInvName(), tempX, tempY, tempZ);
+                                InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInventoryName(), tempX, tempY, tempZ);
 
                                 storedQueues.putTempInventory(tempInstance);
 
@@ -78,8 +71,7 @@ public class PlayerTicker implements ITickHandler {
 
                 // TODO Make a packet method to send more than one InventoryInstance at once.
                 for (InventoryInstance i : storedQueues.getRequestList())
-                    PacketDispatcher.sendPacketToServer(new InventoryRequestPacket(i).makePacket());
-
+                    PacketDispatcher.sendToServer(new InventoryRequestPacket(i));
             }
         }
     }
@@ -88,16 +80,6 @@ public class PlayerTicker implements ITickHandler {
         // return (oldX != x || oldY != y || oldZ != z);
         int range = 2;
         return (!MathHelper.withinRange(x, oldX, range) || !MathHelper.withinRange(y, oldY, range) || !MathHelper.withinRange(z, oldZ, range));
-    }
-
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.CLIENT);
-    }
-
-    @Override
-    public String getLabel() {
-        return "ES2-GlassesTicker";
     }
 
 }

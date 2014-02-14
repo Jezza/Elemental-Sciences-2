@@ -1,45 +1,39 @@
 package me.jezzadabomb.es2.common.items;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Random;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import cofh.api.block.IDismantleable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPlaceHolder extends ItemES {
 
     @SideOnly(Side.CLIENT)
-    private Icon[] icons;
+    private IIcon[] icons;
     public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "empTrigger", "wrenchThing" };
 
-    public ItemPlaceHolder(int id, String name) {
-        super(id, name);
+    public ItemPlaceHolder(String name) {
+        super(name);
         setHasSubtypes(true);
         setMaxStackSize(1);
     }
@@ -92,28 +86,28 @@ public class ItemPlaceHolder extends ItemES {
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (getDamage("constructorDrone", stack) && UtilMethods.isConstructor(world, x, y, z) && !world.isRemote) {
             ESLogger.info(world.isRemote);
-            TileAtomicConstructor tAC = (TileAtomicConstructor) world.getBlockTileEntity(x, y, z);
+            TileAtomicConstructor tAC = (TileAtomicConstructor) world.getTileEntity(x, y, z);
             boolean flag = tAC.hasConsole();
-//            if (flag) {
-//                TileConsole console = tAC.getConsole();
-//                EntityDrone drone = new EntityDrone(world).setConsole(console);
-//
-//                Random rand = new Random();
-//
-//                drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-//                drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-//                drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-//
-//                world.spawnEntityInWorld(drone);
-//
-//                if (!player.capabilities.isCreativeMode)
-//                    UtilMethods.decrCurrentItem(player);
-//            }
+            // if (flag) {
+            // TileConsole console = tAC.getConsole();
+            // EntityDrone drone = new EntityDrone(world).setConsole(console);
+            //
+            // Random rand = new Random();
+            //
+            // drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+            // drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+            // drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
+            //
+            // world.spawnEntityInWorld(drone);
+            //
+            // if (!player.capabilities.isCreativeMode)
+            // UtilMethods.decrCurrentItem(player);
+            // }
             if (flag)
                 player.swingItem();
             return flag;
         } else if (getDamage("wrenchThing", stack) && UtilMethods.isDismantable(world, x, y, z)) {
-            IDismantleable dismantle = (IDismantleable) world.getBlockTileEntity(x, y, z);
+            IDismantleable dismantle = (IDismantleable) world.getTileEntity(x, y, z);
             if (dismantle.canDismantle(player, world, x, y, z)) {
                 ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, !player.capabilities.isCreativeMode);
                 int damage = stack.getTagCompound().getInteger("Durablity") - 1;
@@ -172,21 +166,21 @@ public class ItemPlaceHolder extends ItemES {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(int par1, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item item, CreativeTabs tab, List list) {
         for (int i = 1; i < names.length; i++)
             list.add(new ItemStack(this, 1, i));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister iconRegister) {
-        icons = new Icon[names.length];
+    public void registerIcons(IIconRegister iconRegister) {
+        icons = new IIcon[names.length];
         for (int i = 0; i < icons.length; i++)
             icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
     }
 
     @Override
-    public Icon getIconFromDamage(int damage) {
+    public IIcon getIconFromDamage(int damage) {
         damage = MathHelper.clipInt(damage, names.length - 1);
         return icons[damage];
     }

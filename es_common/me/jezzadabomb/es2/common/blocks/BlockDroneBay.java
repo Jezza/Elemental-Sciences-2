@@ -15,13 +15,13 @@ import net.minecraft.world.World;
 
 public class BlockDroneBay extends BlockES {
 
-    public BlockDroneBay(int id, Material material, String name) {
-        super(id, material, name);
+    public BlockDroneBay(Material material, String name) {
+        super(material, name);
     }
 
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
-        TileEntity tileEntity = blockAccess.getBlockTileEntity(x, y, z);
+        TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
         if (tileEntity instanceof TileDroneBay) {
             TileDroneBay droneBay = (TileDroneBay) tileEntity;
             if (droneBay.isOverChestRenderType()) {
@@ -38,7 +38,7 @@ public class BlockDroneBay extends BlockES {
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;
     }
-    
+
     @Override
     public boolean renderWithModel() {
         return true;

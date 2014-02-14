@@ -17,7 +17,7 @@ public class DroneTracker {
 
     public DroneTracker(TileConsole console) {
         this.console = console;
-        world = console.worldObj;
+        world = console.getWorldObj();
         x = console.xCoord;
         y = console.yCoord;
         z = console.zCoord;
@@ -31,7 +31,7 @@ public class DroneTracker {
             for (int j = -width; j < width + 1; j++)
                 for (int k = -width; k < width + 1; k++) {
                     if (UtilMethods.isDroneBay(world, x + i, y + j, z + k)) {
-                        TileDroneBay droneBay = (TileDroneBay) world.getBlockTileEntity(x + i, y + j, z + k);
+                        TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x + i, y + j, z + k);
                         if (!droneBayList.contains(droneBay))
                             droneBayList.add(droneBay);
                     }

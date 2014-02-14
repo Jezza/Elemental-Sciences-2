@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.common.lib;
 
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
+
 import me.jezzadabomb.es2.common.core.ESLogger;
 
 public class BlackList {
@@ -13,26 +15,24 @@ public class BlackList {
 
     private static int getTotalEntries(String values) {
         int num = 0;
-        for (int i = 0; i < values.length(); i++) {
-            if (values.charAt(i) == ',') {
+        for (int i = 0; i < values.length(); i++)
+            if (values.charAt(i) == ',')
                 num++;
-            }
-        }
         return num;
     }
 
-    public static boolean OnBlackList(int id, int meta) {
-        for (int i = 0; i < blackList.size();i += 2) {
-            if(blackList.get(i) == id && blackList.get(i + 1) == meta){
+    public static boolean OnBlackList(Block block, int meta) {
+        int id = Block.getIdFromBlock(block);
+        for (int i = 0; i < blackList.size(); i += 2)
+            if (blackList.get(i) == id && blackList.get(i + 1) == meta)
                 return true;
-            }
-        }
         return false;
     }
 
     public static void putValues(String values) {
-        if(values.lastIndexOf(splitChar) != values.length())values += splitChar;
-        
+        if (values.lastIndexOf(splitChar) != values.length())
+            values += splitChar;
+
         int tempStringLength = 0;
         for (int i = 0; i < getTotalEntries(values); i++) {
             String temp = values.substring(tempStringLength, values.indexOf(splitChar, tempStringLength));

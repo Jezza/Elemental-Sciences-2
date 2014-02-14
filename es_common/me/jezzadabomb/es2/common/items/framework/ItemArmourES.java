@@ -3,17 +3,16 @@ package me.jezzadabomb.es2.common.items.framework;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.lib.TextureMaps;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,8 +25,8 @@ public abstract class ItemArmourES extends ItemArmor {
 	int slot;
 	String textureLocation;
 
-	public ItemArmourES(int id, EnumArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
-		super(id, armorMaterial, renderIndex, armourIndex.slot);
+	public ItemArmourES(ArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
+		super(armorMaterial, renderIndex, armourIndex.slot);
 		slot = armourIndex.slot;
 		this.textureLocation = textureLocation;
 		setMaxDamage(0);
@@ -52,13 +51,13 @@ public abstract class ItemArmourES extends ItemArmor {
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer) {
-		return textureLocation;
+	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+	    return textureLocation;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {
+	public void registerIcons(IIconRegister register) {
 		itemIcon = register.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
 	

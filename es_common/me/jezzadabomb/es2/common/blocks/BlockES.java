@@ -1,27 +1,28 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.packets.NeighbourChangedPacket;
+import me.jezzadabomb.es2.common.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.network.packet.server.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockES extends Block {
 
-    public BlockES(int id, Material material, String name) {
-        super(id, material);
-        setUnlocalizedName(name);
+    public BlockES(Material material, String name) {
+        super(material);
+        setBlockName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
         register(name);
     }
@@ -32,7 +33,7 @@ public abstract class BlockES extends Block {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister iconRegister) {
+    public void registerBlockIcons(IIconRegister iconRegister) {
         blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + getUnlocalizedName().replace("tile.", ""));
     }
 
@@ -69,23 +70,23 @@ public abstract class BlockES extends Block {
      * A client side update method. Calls it inside TileES
      */
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, int ID) {
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         if (!canSendUpdatePacket()) {
-            super.onNeighborBlockChange(world, x, y, z, ID);
+            super.onNeighborBlockChange(world, x, y, z, block);
             return;
         }
         if (getTileEntity() == null) {
-            super.onNeighborBlockChange(world, x, y, z, ID);
+            super.onNeighborBlockChange(world, x, y, z, block);
         } else if (getTileEntity() instanceof TileES) {
-            PacketDispatcher.sendPacketToAllAround(x, y, z, 64, world.provider.dimensionId, new NeighbourChangedPacket(new CoordSet(x, y, z)).makePacket());
+            PacketDispatcher.sendToAllAround(new NeighbourChangedPacket(new CoordSet(x, y, z)), new TargetPoint(world.provider.dimensionId, x, y, z, 64));
         }
-        super.onNeighborBlockChange(world, x, y, z, ID);
+        super.onNeighborBlockChange(world, x, y, z, block);
     }
 
     @Override
     public boolean onBlockEventReceived(World world, int x, int y, int z, int ID, int param) {
         super.onBlockEventReceived(world, x, y, z, ID, param);
-        TileEntity tileentity = world.getBlockTileEntity(x, y, z);
+        TileEntity tileentity = world.getTileEntity(x, y, z);
         return tileentity != null ? tileentity.receiveClientEvent(ID, param) : false;
     }
 

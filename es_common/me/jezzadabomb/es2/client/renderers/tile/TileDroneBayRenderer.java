@@ -1,14 +1,7 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.*;
+
 import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.ModelDroneBay;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -29,6 +22,8 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
     public void renderDroneBayAt(TileDroneBay droneBay, double x, double y, double z, double f) {
         glPushMatrix();
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_CULL_FACE);
 
         glTranslated(x + 0.5F, y + 0.0255F, z + 0.5F);
 
@@ -41,9 +36,7 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_FRAME);
 
-        glDisable(GL_CULL_FACE);
         modelDroneBay.renderPart("BaseFrame");
-        glEnable(GL_CULL_FACE);
 
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_DOOR);
 
@@ -52,6 +45,8 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
         for (int i = 0; i < 32; i++)
             translateScaleRender(progress, i);
 
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_ALPHA_TEST);
         glPopMatrix();
     }
 
@@ -81,10 +76,10 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
     private float getZTarget(int door) {
         return (float) -Math.cos(getAnimationEquation(door)) * 1.3F;
     }
-    
-    private double getAnimationEquation(int door){
+
+    private double getAnimationEquation(int door) {
         float magicNum = 1.1F;
-        if(RenderUtils.isPlayerRendering("ZimmyG"))
+        if (RenderUtils.isPlayerRendering("ZimmyG"))
             magicNum = 2.0F;
         return Math.PI * door / 16 + magicNum;
     }

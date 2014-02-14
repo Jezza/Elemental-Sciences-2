@@ -3,13 +3,12 @@ package me.jezzadabomb.es2.common.core.config;
 import java.io.File;
 import java.util.logging.Level;
 
+import net.minecraftforge.common.config.Configuration;
+
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.BlackList;
-import me.jezzadabomb.es2.common.lib.BlockIds;
-import me.jezzadabomb.es2.common.lib.ItemIds;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
-import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
 
 public class ConfigHandler {
@@ -18,7 +17,7 @@ public class ConfigHandler {
     private static String var = "Gameplay";
 
     // Local dev environment.
-    private static final String debugString = "G:\\Minecraft\\forge\\eclipse\\config\\ElementalSciences2.cfg";
+    private static final String debugString = "G:\\Minecraft\\forge\\eclipse\\config\\elementalsciences2.cfg";
 
     public static void init(File file) {
         config = new Configuration(file);
@@ -31,7 +30,6 @@ public class ConfigHandler {
             getStrings();
             getBooleanValues();
             getReferenceConstants();
-            getIDs();
 
             ESLogger.info("Loaded successful.");
         } catch (Exception e) {
@@ -39,24 +37,6 @@ public class ConfigHandler {
         } finally {
             config.save();
         }
-    }
-
-    public static void getIDs() {
-        BlockIds.INVENTORY_SCANNER = getID(Strings.INVENTORY_SCANNER, BlockIds.INVENTORY_SCANNER_DEFAULT);
-        BlockIds.ATOMIC_CONSTRUCTOR = getID(Strings.ATOMIC_CONSTRUCTOR, BlockIds.ATOMIC_CONSTRUCTOR_DEFAULT);
-        BlockIds.QUANTUM_STATE_DISRUPTER = getID(Strings.QUANTUM_STATE_DISRUPTER, BlockIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
-        BlockIds.SOLAR_LENS = getID(Strings.SOLAR_LENS, BlockIds.SOLAR_LENS_DEFAULT);
-        BlockIds.CONSOLE = getID(Strings.CONSOLE, BlockIds.CONSOLE_DEFAULT);
-        BlockIds.DRONE_BAY = getID(Strings.DRONE_BAY, BlockIds.DRONE_BAY_DEFAULT);
-
-        ItemIds.ATOMIC_CATALYST = getID(Strings.ATOMIC_CATALYST, ItemIds.ATOMIC_CATALYST_DEFAULT);
-        ItemIds.GLASSES = getID(Strings.GLASSES, ItemIds.GLASSES_DEFAULT);
-        ItemIds.HOVER_BOOTS = getID(Strings.HOVER_BOOTS, ItemIds.HOVER_BOOTS_DEFAULT);
-        ItemIds.QUANTUM_STATE_DISRUPTER = getID(Strings.ITEM_QUANTUM_STATE_DISRUPTER, ItemIds.QUANTUM_STATE_DISRUPTER_DEFAULT);
-        ItemIds.PLACEHOLDER = getID(Strings.PLACEHOLDER, ItemIds.PLACEHOLDER_DEFAULT);
-
-        if (Reference.CAN_DEBUG)
-            ItemIds.DEBUG_TOOL = getID(Strings.DEBUG_TOOL, ItemIds.DEBUG_TOOL_DEFAULT, "This value isn't taken if this is a release.");
     }
 
     public static void getStrings() {

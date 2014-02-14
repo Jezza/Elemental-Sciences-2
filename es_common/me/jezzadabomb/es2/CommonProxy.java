@@ -3,8 +3,8 @@ package me.jezzadabomb.es2;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
-import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
+import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -12,15 +12,12 @@ import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisrupter;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy {
-
     public QuantumBombTicker quantumBomb = new QuantumBombTicker();
-
-    // public HoverHandler hoverHandler = new HoverHandler();
 
     public void runServerSide() {
         MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
@@ -29,8 +26,8 @@ public class CommonProxy {
     }
 
     public void registerTickHandlers() {
-        TickRegistry.registerTickHandler(quantumBomb, Side.SERVER);
-        TickRegistry.registerTickHandler(new CatalystTicker(), Side.SERVER);
+        FMLCommonHandler.instance().bus().register(quantumBomb);
+        FMLCommonHandler.instance().bus().register(new CatalystTicker());
     }
 
     public void registerTileEntities() {
@@ -43,5 +40,9 @@ public class CommonProxy {
     }
 
     public void runClientSide() {
+    }
+
+    public Side getSide(){
+        return Side.SERVER;
     }
 }

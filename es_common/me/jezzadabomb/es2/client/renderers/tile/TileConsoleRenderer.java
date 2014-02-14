@@ -69,7 +69,7 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
         glPushMatrix();
 
         RenderUtils.bindTexture(TextureMaps.CONSOLE_SCREEN);
-        if (tileConsole.worldObj.isAirBlock(tileConsole.xCoord, tileConsole.yCoord + 1, tileConsole.zCoord)) {
+        if (tileConsole.getWorldObj().isAirBlock(tileConsole.xCoord, tileConsole.yCoord + 1, tileConsole.zCoord)) {
             glTranslatef(0.5F, 0.5F, 0.5F);
             glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
 

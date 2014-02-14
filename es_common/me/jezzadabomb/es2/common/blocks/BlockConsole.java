@@ -9,19 +9,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockConsole extends BlockES {
 
-    public BlockConsole(int id, Material material, String name) {
-        super(id, material, name);
+    public BlockConsole(Material material, String name) {
+        super(material, name);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 7F / 8F, 1.0F);
         setBlockUnbreakable();
     }
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
-        if (world.getBlockTileEntity(x, y, z) instanceof TileConsole) {
+        if (world.getTileEntity(x, y, z) instanceof TileConsole) {
             int direction = 0;
             int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
@@ -34,7 +34,7 @@ public class BlockConsole extends BlockES {
             } else if (facing == 3) {
                 direction = ForgeDirection.WEST.ordinal();
             }
-            TileConsole tC = ((TileConsole) world.getBlockTileEntity(x, y, z));
+            TileConsole tC = ((TileConsole) world.getTileEntity(x, y, z));
             tC.setOrientation(direction);
             tC.updateRenderCables();
         }
@@ -49,10 +49,10 @@ public class BlockConsole extends BlockES {
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)
                 for (int k = -1; k < 2; k++) {
-                    if (i == 0 && j == 0 && k == 0 || !world.blockHasTileEntity(x + i, y + j, z + k))
+                    if (i == 0 && j == 0 && k == 0 || !(world.getTileEntity(x + i, y + j, z + k) != null))
                         continue;
-                    if (world.getBlockTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor) {
-                        TileAtomicConstructor atomic = ((TileAtomicConstructor) world.getBlockTileEntity(x + i, y + j, z + k));
+                    if (world.getTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor) {
+                        TileAtomicConstructor atomic = ((TileAtomicConstructor) world.getTileEntity(x + i, y + j, z + k));
                         if (atomic.hasConsole())
                             return atomic.getConsole();
                     }

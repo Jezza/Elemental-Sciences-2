@@ -1,38 +1,19 @@
 package me.jezzadabomb.es2.common.entities;
 
-import java.util.ArrayList;
+import io.netty.buffer.ByteBuf;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-
-import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
-import me.jezzadabomb.es2.common.core.utils.TimeTracker;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.pathfinding.PathEntity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 
 public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData {
 
@@ -154,10 +135,6 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData 
         this.moving = moving;
     }
 
-    private boolean isWithinBlockID(int blockID) {
-        return worldObj.getBlockId((int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ)) == blockID;
-    }
-
     public void setSpeed(float speed) {
         xSpeed = ySpeed = zSpeed = speed;
     }
@@ -210,29 +187,37 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void writeSpawnData(ByteArrayDataOutput data) {
+    public void writeSpawnData(ByteBuf buffer) {
         int x = droneBay.xCoord;
         int y = droneBay.yCoord;
         int z = droneBay.zCoord;
 
-        data.writeUTF(UtilMethods.getLocFromXYZ(x, y, z));
+        byte[] loc = UtilMethods.getLocFromXYZ(x, y, z).getBytes();
+        buffer.writeInt(loc.length);
+        buffer.writeBytes(loc);
 
         boolean flag = targetSet != null;
-        data.writeBoolean(flag);
+        buffer.writeBoolean(flag);
         if (flag)
-            targetSet.writeToStream(data);
+            targetSet.writeToStream(buffer);
+
     }
 
     @Override
-    public void readSpawnData(ByteArrayDataInput data) {
-        String loc = data.readUTF();
+    public void readSpawnData(ByteBuf additionalData) {
+        // TODO Keep an eye on this.
+        int length = additionalData.readInt();
+        ByteBuf buf = additionalData.readBytes(length);
+        String loc = additionalData.toString();
+        ESLogger.info(loc);
         int[] coords = UtilMethods.getArrayFromString(loc);
 
-        droneBay = (TileDroneBay) worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]);
+        droneBay = (TileDroneBay) worldObj.getTileEntity(coords[0], coords[1], coords[2]);
 
-        boolean flag = data.readBoolean();
+        boolean flag = additionalData.readBoolean();
         if (flag)
-            targetSet = CoordSetF.readFromStream(data);
+            targetSet = CoordSetF.readFromStream(additionalData);
+
     }
 
 }

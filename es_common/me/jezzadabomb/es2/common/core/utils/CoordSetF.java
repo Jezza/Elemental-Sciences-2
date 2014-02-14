@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.core.utils;
 
+import io.netty.buffer.ByteBuf;
+
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
@@ -86,13 +88,13 @@ public class CoordSetF {
         return this;
     }
 
-    public void writeToStream(ByteArrayDataOutput out) {
+    public void writeToStream(ByteBuf out) {
         out.writeFloat(x);
         out.writeFloat(y);
         out.writeFloat(z);
     }
 
-    public static CoordSetF readFromStream(ByteArrayDataInput in) {
+    public static CoordSetF readFromStream(ByteBuf in) {
         float x = in.readFloat();
         float y = in.readFloat();
         float z = in.readFloat();

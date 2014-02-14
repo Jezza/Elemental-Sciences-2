@@ -2,24 +2,21 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
-import cofh.api.block.IDismantleable;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
-import net.minecraft.block.Block;
+import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -81,7 +78,7 @@ public class TileDroneBay extends TileES implements IDismantleable {
 
     public ItemStack getDroneFromInventory(boolean remove) {
         if (UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord)) {
-            IInventory inventory = (IInventory) worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord);
+            IInventory inventory = (IInventory) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
             for (int i = 0; i < inventory.getSizeInventory(); i++) {
                 ItemStack itemStack = inventory.getStackInSlot(i);
                 if (itemStack == null)
@@ -107,7 +104,7 @@ public class TileDroneBay extends TileES implements IDismantleable {
 
             drone.setTargetCoords(new CoordSetF(getCoordSet()).addXYZ(0.5F, 1.0F, 0.5F));
             drone.setDroneBay(this);
-            
+
             droneList.add(drone);
             worldObj.spawnEntityInWorld(drone);
             return true;
@@ -167,20 +164,21 @@ public class TileDroneBay extends TileES implements IDismantleable {
     }
 
     public boolean isOverChestRenderType() {
-        TileEntity te = worldObj.getBlockTileEntity(xCoord, yCoord - 1, zCoord);
-        return UtilMethods.isRenderType(te, Block.chest.getRenderType());
+        TileEntity te = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+        return UtilMethods.isRenderType(te, Blocks.chest.getRenderType());
     }
 
     @Override
-    public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
-        readFromNBT(packet.data);
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.func_148857_g());
     }
 
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
-        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+
     }
 
     @Override

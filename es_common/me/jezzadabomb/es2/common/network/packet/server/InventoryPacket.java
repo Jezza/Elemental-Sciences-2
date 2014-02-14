@@ -1,26 +1,27 @@
-package me.jezzadabomb.es2.common.packets;
+package me.jezzadabomb.es2.common.network.packet.server;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.packets.handler.CentralPacket;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.network.PacketUtils;
+import me.jezzadabomb.es2.common.network.packet.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.relauncher.Side;
 
-public class InventoryPacket extends CentralPacket {
+public class InventoryPacket implements IPacket {
 
     public ArrayList<ItemStack> itemStacks;
     public String loc = null;
@@ -43,46 +44,39 @@ public class InventoryPacket extends CentralPacket {
     }
 
     @Override
-    public void write(ByteArrayDataOutput out) {
-        out.writeUTF(loc);
-        out.writeShort(itemStacks != null ? (itemStacks.isEmpty() ? (short) 0 : (short) itemStacks.size()) : (short) 0);
+    public void writeBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+        PacketUtils.writeStringByteBuffer(buffer, loc);
+        buffer.writeShort(itemStacks != null ? (itemStacks.isEmpty() ? (short) 0 : (short) itemStacks.size()) : (short) 0);
         if (itemStacks != null)
             for (ItemStack i : itemStacks)
-                try {
-                    writeItemStack(i, out);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                PacketUtils.writeItemStack(buffer, i);
     }
 
     @Override
-    public void read(ByteArrayDataInput in) throws ProtocolException {
-        loc = in.readUTF();
-        int length = in.readShort();
+    public void readBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
+        loc = PacketUtils.readStringByteBuffer(buffer);
+        short length = buffer.readShort();
         itemStacks = new ArrayList<ItemStack>(length);
         for (int i = 0; i < length; i++)
-            try {
-                itemStacks.add(readItemStack(in));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            itemStacks.add(PacketUtils.readItemStack(buffer));
     }
 
     @Override
-    public void execute(EntityPlayer player, Side side) throws ProtocolException {
-        if (side.isClient()) {
-            int[] coord = UtilMethods.getArrayFromString(loc);
-            if (coord == null)
-                return;
-            coordSet = new CoordSet(coord[0], coord[1], coord[2]);
-            ClientProxy.getHUDRenderer().addPacketToList(this);
-            tickTiming = 0;
-        } else {
-            throw new ProtocolException("Cannot send this packet to the server!");
-        }
+    public void executeClientSide(EntityPlayer player) {
+        World world = player.worldObj;
+        int[] coord = UtilMethods.getArrayFromString(loc);
+        if (coord == null)
+            return;
+        coordSet = new CoordSet(coord[0], coord[1], coord[2]);
+        ClientProxy.getHUDRenderer().addPacketToList(this);
+        tickTiming = 0;
     }
 
+    @Override
+    public void executeServerSide(EntityPlayer player) {
+        ESLogger.severe("Tried to send a packet to the wrong side!");
+    }
+    
     public String getItemStacksInfo() {
         StringBuilder temp = new StringBuilder();
         for (ItemStack tempStack : getItemStacks()) {
@@ -133,4 +127,5 @@ public class InventoryPacket extends CentralPacket {
         CoordSet externalSet = tempP.coordSet;
         return player.getDistance(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < player.getDistance(externalSet.getX(), externalSet.getY(), externalSet.getZ());
     }
+    
 }

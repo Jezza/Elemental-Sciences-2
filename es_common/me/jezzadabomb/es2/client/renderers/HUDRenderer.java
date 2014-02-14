@@ -14,7 +14,7 @@ import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -22,7 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -124,20 +124,20 @@ public class HUDRenderer {
         return false;
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         ArrayList<PacketTimeout> utilList = new ArrayList<PacketTimeout>();
         utilList.addAll(ignoreList);
-        
+
         for (PacketTimeout packet : utilList)
             if (packet.tickTimeout())
                 ignoreList.remove(packet);
-        
+
         if (packetList.isEmpty()) {
             ESLogger.debugFlood("PacketList is empty");
             return;
         }
-        
+
         ESLogger.debugFlood(packetList);
 
         ArrayList<InventoryPacket> packetUtilList = new ArrayList<InventoryPacket>();
@@ -155,7 +155,7 @@ public class HUDRenderer {
 
         packetUtilList.clear();
         packetUtilList.addAll(packetList);
-        
+
         for (InventoryPacket p : packetUtilList) {
             boolean underBlock = renderInfoScreen(p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), event.partialTicks, p);
             if (UtilMethods.canShowDebugHUD())
@@ -196,7 +196,7 @@ public class HUDRenderer {
             int packetY = p.coordSet.getY();
             int packetZ = p.coordSet.getZ();
 
-            if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.ignoreListContains(UtilMethods.getBlockAtXYZ(world, packetX, packetY + 1, packetZ))) {
+            if (!world.isAirBlock(packetX, packetY + 1, packetZ) && !HUDBlackLists.ignoreListContains(world.getBlock(packetX, packetY + 1, packetZ))) {
                 yInventoryPos = 190;
                 yd += 1.0F;
                 // TODO Add support for blocks on top of inventory.

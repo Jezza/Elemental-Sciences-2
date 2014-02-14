@@ -1,10 +1,8 @@
 package me.jezzadabomb.es2.client.renderers;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -13,7 +11,7 @@ public class QuantumBombRenderer {
 
 	private String player = null;
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onRenderWorldLast(RenderWorldLastEvent event) {
 	    player = ElementalSciences2.proxy.quantumBomb.getPlayer();
 		if (player == null || player.equals("null"))

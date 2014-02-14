@@ -1,8 +1,6 @@
 package me.jezzadabomb.es2.common.entities;
 
-import cofh.api.energy.IEnergyHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public abstract class EntityES extends Entity {

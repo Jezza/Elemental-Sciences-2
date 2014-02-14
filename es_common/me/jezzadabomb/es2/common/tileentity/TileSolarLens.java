@@ -2,16 +2,10 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
 
-public class TileSolarLens extends TileES implements IEnergyHandler {
+public class TileSolarLens extends TileES {
 
     ArrayList<TileAtomicConstructor> constructorList;
     int tickCount = 0;
@@ -53,7 +47,7 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
         if (heightBonus < 1)
             heightBonus = 1;
         if (UtilMethods.isConstructor(worldObj, xCoord, y, zCoord)) {
-            constructorList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord, y, zCoord));
+            constructorList.add((TileAtomicConstructor) worldObj.getTileEntity(xCoord, y, zCoord));
             searchForOthers(y);
         } else {
             searchForOthers(y + 1);
@@ -69,7 +63,7 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
                     continue;
                 tempY = loopDownUntilLastAirBlock(xCoord + i, y, zCoord + k);
                 if (UtilMethods.isConstructor(worldObj, xCoord + i, tempY, zCoord + k))
-                    constructorList.add((TileAtomicConstructor) worldObj.getBlockTileEntity(xCoord + i, tempY, zCoord + k));
+                    constructorList.add((TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, tempY, zCoord + k));
             }
         }
     }
@@ -87,30 +81,5 @@ public class TileSolarLens extends TileES implements IEnergyHandler {
 
     public ArrayList<TileAtomicConstructor> getConstructorList() {
         return constructorList;
-    }
-
-    @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    public boolean canInterface(ForgeDirection from) {
-        return true;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from) {
-        return 0;
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
-        return 0;
     }
 }

@@ -1,0 +1,8 @@
+{
+    "catalyst": {
+        "category": "player",
+        "sounds": [
+            "pulse"
+        ]
+    }
+}

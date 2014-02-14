@@ -1,13 +1,11 @@
 package me.jezzadabomb.es2.common.tileentity;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 
 public class TileQuantumStateDisrupter extends TileES {
 
-	int brokenBlocks;
-
 	public TileQuantumStateDisrupter() {
-		brokenBlocks = 0;
 	}
 
 	@Override
@@ -22,7 +20,7 @@ public class TileQuantumStateDisrupter extends TileES {
 				if (i == 0 && j == 0)
 					continue;
 				if (!worldObj.isAirBlock(xCoord + i, yCoord, zCoord + j))
-					worldObj.destroyBlock(xCoord + i, yCoord, zCoord + j, brokenBlocks++ > 9 ? false : true);
+					worldObj.setBlockToAir(xCoord + i, yCoord, zCoord + j);
 			}
 		}
 	}
@@ -32,7 +30,7 @@ public class TileQuantumStateDisrupter extends TileES {
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				if (worldObj.isAirBlock(xCoord + i, tempY, zCoord + j))
-					worldObj.setBlock(xCoord + i, tempY, zCoord + j, Block.bedrock.blockID);
+					worldObj.setBlock(xCoord + i, tempY, zCoord + j, Blocks.bedrock);
 			}
 		}
 	}

@@ -1,21 +1,20 @@
 package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import me.jezzadabomb.es2.client.ClientProxy;
-import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.packets.InventoryPacket;
+import me.jezzadabomb.es2.common.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import cofh.api.block.IDismantleable;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 public class TileInventoryScanner extends TileES implements IDismantleable {
 
@@ -28,7 +27,10 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
     public void updateEntity() {
         hasInventory = UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
         if (!hasInventory) {
-            worldObj.destroyBlock(xCoord, yCoord, zCoord, true);
+            Item item = Item.getItemFromBlock(worldObj.getBlock(xCoord, yCoord, zCoord));
+            worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F, new ItemStack(item)));
+            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+
             return;
         }
         if (!worldObj.isRemote)
@@ -56,7 +58,7 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
             coords[0] = xCoord;
             coords[1] = yCoord - 1;
             coords[2] = zCoord;
-            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]), UtilMethods.getLocFromArray(coords)).makePacket(), (Player) player);
+            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getTileEntity(coords[0], coords[1], coords[2]), UtilMethods.getLocFromArray(coords)), (EntityPlayerMP) player);
         }
     }
 

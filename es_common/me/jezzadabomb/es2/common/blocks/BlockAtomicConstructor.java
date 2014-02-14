@@ -9,12 +9,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockAtomicConstructor extends BlockES {
 
-    public BlockAtomicConstructor(int id, Material material, String name) {
-        super(id, material, name);
+    public BlockAtomicConstructor(Material material, String name) {
+        super(material, name);
         setHardness(7F);
     }
 
@@ -24,13 +25,13 @@ public class BlockAtomicConstructor extends BlockES {
     }
 
     @Override
-    public boolean isBlockNormalCube(World world, int x, int y, int z) {
+    public boolean isNormalCube(IBlockAccess world, int x, int y, int z) {
         return false;
     }
 
     @Override
     public void addCollisionBoxesToList(World world, int i, int j, int k, AxisAlignedBB aabb, List list, Entity ent) {
-        TileEntity te = world.getBlockTileEntity(i, j, k);
+        TileEntity te = world.getTileEntity(i, j, k);
         if (te instanceof TileAtomicConstructor) {
             TileAtomicConstructor tAC = (TileAtomicConstructor) te;
             boolean[] renderMatrix = tAC.constructRenderMatrix();

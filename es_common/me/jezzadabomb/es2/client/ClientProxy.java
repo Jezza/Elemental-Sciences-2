@@ -14,7 +14,6 @@ import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileSolarLensRenderer;
-import me.jezzadabomb.es2.client.sound.SoundHandler;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
@@ -24,11 +23,12 @@ import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -47,16 +47,11 @@ public class ClientProxy extends CommonProxy {
         initTileRenderers();
         initItemRenderer();
         initEventHandlers();
-        initSoundHandler();
         initEntityHandler();
     }
 
     public void initEntityHandler() {
         RenderingRegistry.registerEntityRenderingHandler(EntityDrone.class, new EntityDroneRenderer());
-    }
-
-    public void initSoundHandler() {
-        MinecraftForge.EVENT_BUS.register(new SoundHandler());
     }
 
     private void initTileRenderers() {
@@ -69,15 +64,15 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void initItemRenderer() {
-        MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst.itemID, new ItemAtomicCatalystRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.inventoryScanner.blockID, new ItemInventoryScannerRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.atomicConstructor.blockID, new ItemAtomicConstructorRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.console.blockID, new ItemConsoleRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModBlocks.solarLens.blockID, new ItemSolarLensRenderer());
+        MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.inventoryScanner), new ItemInventoryScannerRenderer());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.atomicConstructor), new ItemAtomicConstructorRenderer());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.console), new ItemConsoleRenderer());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.solarLens), new ItemSolarLensRenderer());
     }
 
     private void initTickHandlers() {
-        TickRegistry.registerTickHandler(new PlayerTicker(), Side.CLIENT);
+        FMLCommonHandler.instance().bus().register(new PlayerTicker());
     }
 
     public void initEventHandlers() {
@@ -85,4 +80,8 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new QuantumBombRenderer());
     }
 
+    @Override
+    public Side getSide() {
+        return Side.CLIENT;
+    }
 }

@@ -7,13 +7,13 @@ import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.items.framework.ArmourSlotIndex;
-import me.jezzadabomb.es2.common.lib.ItemIds;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import net.minecraft.block.Block;
-import net.minecraft.item.EnumArmorMaterial;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
@@ -33,14 +33,14 @@ public class ModItems {
 
     public static void init() {
         // // Bohr model. Bite me :P
-        atomicCatalyst = new ItemAtomicCatalyst(ItemIds.ATOMIC_CATALYST, Strings.ATOMIC_CATALYST);
-        glasses = new ItemGlasses(ItemIds.GLASSES, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
-        hoverBoots = new ItemHoverBoots(ItemIds.HOVER_BOOTS, EnumArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
-        quantumStateDisrupter = new ItemQuantumStateDisruptor(ItemIds.QUANTUM_STATE_DISRUPTER, Strings.ITEM_QUANTUM_STATE_DISRUPTER);
-        placeHolders = new ItemPlaceHolder(ItemIds.PLACEHOLDER, Strings.PLACEHOLDER);
+        atomicCatalyst = new ItemAtomicCatalyst(Strings.ATOMIC_CATALYST);
+        glasses = new ItemGlasses(ArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
+        hoverBoots = new ItemHoverBoots(ArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
+        quantumStateDisrupter = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTER);
+        placeHolders = new ItemPlaceHolder(Strings.PLACEHOLDER);
 
         if (Reference.CAN_DEBUG)
-            debugItem = new ItemDebugTool(ItemIds.DEBUG_TOOL, Strings.DEBUG_TOOL);
+            debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);
 
         initItemRecipes();
     }
@@ -61,14 +61,14 @@ public class ModItems {
         CraftingManager craftingManager = CraftingManager.getInstance();
         
         // TODO all the recipes.
-        craftingManager.addRecipe(new ItemStack(Item.ingotGold), new Object[] { "i", Character.valueOf('i'), new ItemStack(placeHolders, 1, 1) });
+        craftingManager.addRecipe(new ItemStack(Items.gold_ingot), new Object[] { "i", Character.valueOf('i'), new ItemStack(placeHolders, 1, 1) });
 
         // TEMP Crafting until proper method comes.
-        craftingManager.addRecipe(getPlaceHolderStack("ironBar"), new Object[] { "i", Character.valueOf('i'), Block.pressurePlateIron });
+        craftingManager.addRecipe(getPlaceHolderStack("ironBar"), new Object[] { "i", Character.valueOf('i'), Blocks.heavy_weighted_pressure_plate });
         craftingManager.addRecipe(getPlaceHolderStack("frameSegment"), new Object[] { "iii", Character.valueOf('i'), new ItemStack(placeHolders, 1, 4) });
-        craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('i'), new ItemStack(placeHolders, 1, 4), Character.valueOf('x'), Block.fenceIron, Character.valueOf('y'), Block.glass });
-        craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('x'), new ItemStack(placeHolders, 1, 4), Character.valueOf('i'), Block.fenceIron, Character.valueOf('y'), Block.glass });
-        craftingManager.addRecipe(getPlaceHolderStack("spectrumSensor"), new Object[] { "xix", "xyx", "xzx", Character.valueOf('i'), Block.thinGlass, Character.valueOf('x'), Block.blockRedstone, Character.valueOf('y'), Item.diamond, Character.valueOf('z'), Block.daylightSensor });
+        craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('i'), new ItemStack(placeHolders, 1, 4), Character.valueOf('x'), Blocks.iron_bars, Character.valueOf('y'), Blocks.glass });
+        craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('x'), new ItemStack(placeHolders, 1, 4), Character.valueOf('i'), Blocks.iron_bars, Character.valueOf('y'), Blocks.glass });
+        craftingManager.addRecipe(getPlaceHolderStack("spectrumSensor"), new Object[] { "xix", "xyx", "xzx", Character.valueOf('i'), Blocks.glass_pane, Character.valueOf('x'), Blocks.redstone_block, Character.valueOf('y'), Items.diamond, Character.valueOf('z'), Blocks.daylight_detector });
 
         craftingManager.addRecipe(new ItemStack(glasses), new Object[] { "xix", "a a", Character.valueOf('x'), getPlaceHolderStack("frameSegment"), Character.valueOf('i'), getPlaceHolderStack("spectrumSensor"), Character.valueOf('a'), getPlaceHolderStack("glassesLens") });
     }

@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.core.utils;
 import java.util.Arrays;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -24,20 +25,18 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
-import cofh.api.block.IDismantleable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class UtilMethods {
 
     public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow) {
-        if (itemStack1 == null || itemStack2 == null || itemStack1.itemID != itemStack2.itemID || itemStack1.getItemDamage() != itemStack2.getItemDamage())
+        if ((itemStack1 == null && itemStack2 == null) || !ItemStack.areItemStacksEqual(itemStack1, itemStack2))
             return null;
         itemStack1.stackSize += itemStack2.stackSize;
         itemStack2.stackSize = 0;
-        if (!overflow && itemStack1.stackSize > 64) {
+        if (!overflow && itemStack1.stackSize > 64)
             itemStack1.stackSize = 64;
-        }
         return itemStack1;
     }
 
@@ -73,31 +72,33 @@ public class UtilMethods {
     }
 
     public static boolean isConsole(World world, int x, int y, int z) {
-        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileConsole;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileConsole;
     }
 
     public static boolean isConstructor(World world, int x, int y, int z) {
-        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileAtomicConstructor;
     }
 
     public static boolean isScanner(World world, int x, int y, int z) {
-        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileInventoryScanner;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileInventoryScanner;
     }
 
     public static boolean isDismantable(World world, int x, int y, int z) {
-        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof IDismantleable;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof IDismantleable;
     }
 
     public static boolean isIInventory(World world, int x, int y, int z) {
-        if (world.blockHasTileEntity(x, y, z)) {
-            TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-            return !world.isAirBlock(x, y, z) && (tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory);
-        }
-        return false;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && (tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory);
     }
 
     public static boolean isDroneBay(World world, int x, int y, int z) {
-        return !world.isAirBlock(x, y, z) && world.blockHasTileEntity(x, y, z) && world.getBlockTileEntity(x, y, z) instanceof TileDroneBay;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileDroneBay;
     }
 
     public static boolean hasPressedShift() {
@@ -127,21 +128,6 @@ public class UtilMethods {
         return ((ItemDebugTool) ModItems.debugItem).getDebugPos(mode);
     }
 
-    public static void writeStackToNBT(ItemStack itemStack, NBTTagCompound compound) {
-        compound.setShort("ID", (short) itemStack.itemID);
-        compound.setByte("Count", (byte) itemStack.stackSize);
-        compound.setShort("Damage", (short) itemStack.getItemDamage());
-    }
-
-    public static ItemStack readStackFromNBT(NBTTagCompound compound) {
-        int itemID = compound.getShort("ID");
-        int stackSize = compound.getByte("Count");
-        int itemDamage = compound.getShort("Damage");
-        if (itemDamage < 0)
-            itemDamage = 0;
-        return new ItemStack(itemID, stackSize, itemDamage);
-    }
-
     public static int getTicksFromSeconds(int seconds) {
         return seconds * 20;
     }
@@ -157,22 +143,17 @@ public class UtilMethods {
     }
 
     public static boolean isRenderType(TileEntity tileEntity, int type) {
-        if (tileEntity == null)
-            return false;
-        return tileEntity.worldObj.blockGetRenderType(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == type;
+        return tileEntity != null && tileEntity.getBlockType().getRenderType() == type;
     }
 
     public static boolean isRenderType(World world, int x, int y, int z, int type) {
-        if (world.blockHasTileEntity(x, y, z))
-            return isRenderType(world.getBlockTileEntity(x, y, z), type);
-        return false;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && isRenderType(tileEntity, type);
     }
 
     public static boolean isRenderType(IBlockAccess world, int x, int y, int z, int type) {
-        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-        if (tileEntity != null)
-            return isRenderType(tileEntity, type);
-        return false;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && isRenderType(tileEntity, type);
     }
 
     public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume) {
@@ -239,6 +220,15 @@ public class UtilMethods {
         }
     }
 
+    public static void destroyBlock(World world, int x, int y, int z, Block block, int meta) {
+        world.setBlockToAir(x, y, z);
+        Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(x, y, z, block, meta);
+    }
+
+    public static void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        destroyBlock(world, x, y, z, block, meta);
+    }
+
     public static String getLocFromXYZ(int x, int y, int z) {
         return x + ":" + y + ":" + z;
     }
@@ -255,9 +245,5 @@ public class UtilMethods {
         coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
         coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
         return coord;
-    }
-
-    public static Block getBlockAtXYZ(World world, int x, int y, int z) {
-        return Block.blocksList[world.getBlockId(x, y, z)];
     }
 }

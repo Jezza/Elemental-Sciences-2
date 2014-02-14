@@ -15,8 +15,8 @@ import net.minecraft.world.World;
 
 public class ItemQuantumStateDisruptor extends ItemES {
 
-    public ItemQuantumStateDisruptor(int id, String name) {
-        super(id, name);
+    public ItemQuantumStateDisruptor(String name) {
+        super(name);
         setMaxStackSize(1);
     }
 
@@ -26,7 +26,7 @@ public class ItemQuantumStateDisruptor extends ItemES {
             return false;
         y += 1;
         if (!world.isRemote && !(new CoordSet(player).isAtXYZ(x, y, z))) {
-            world.setBlock(x, y, z, ModBlocks.quantumStateDisrupter.blockID);
+            world.setBlock(x, y, z, ModBlocks.quantumStateDisrupter);
             UtilMethods.decrCurrentItem(player);
         }
         return true;

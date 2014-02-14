@@ -8,22 +8,18 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
-import cofh.api.block.IDismantleable;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
 
-public class TileConsole extends TileES implements IEnergyHandler, IDismantleable {
+public class TileConsole extends TileES implements IDismantleable {
 
-    protected EnergyStorage storage = new EnergyStorage(1000000);
     ArrayList<TileAtomicConstructor> constructorList;
     ArrayList<EntityDrone> droneList;
     ArrayList<TileDroneBay> droneBayList;
@@ -62,7 +58,7 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
     }
 
     private void droneBayMaintenance() {
-        
+
     }
 
     public TileAtomicConstructor getRandomConstructor() {
@@ -91,7 +87,7 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
                     if (i == 0 && j == 0 && k == 0)
                         continue;
                     if (UtilMethods.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k))
-                        ((TileConsole) worldObj.getBlockTileEntity(xCoord + i, yCoord + j, zCoord + k)).updateRenderCables();
+                        ((TileConsole) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k)).updateRenderCables();
                 }
     }
 
@@ -125,22 +121,19 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
     }
 
     private boolean isMatch(int x, int y, int z) {
-        if (worldObj != null)
-            return worldObj.blockHasTileEntity(x, y, z) && (worldObj.getBlockTileEntity(x, y, z) instanceof TileConsole || worldObj.getBlockTileEntity(x, y, z) instanceof TileAtomicConstructor);
-        return false;
+        return worldObj != null && (UtilMethods.isConsole(worldObj, x, y, z) || UtilMethods.isConstructor(worldObj, x, y, z));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        storage.writeToNBT(tag);
 
         tag.setInteger("direction", direction);
 
         int[] idArray = new int[droneList.size()];
         int i = 0;
         for (EntityDrone drone : droneList)
-            idArray[i++] = drone.entityId;
+            idArray[i++] = drone.getEntityId();
 
         tag.setIntArray("droneList", idArray);
     }
@@ -148,8 +141,6 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-
-        storage.readFromNBT(tag);
 
         direction = tag.getInteger("direction");
 
@@ -166,7 +157,7 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
             if (object instanceof EntityDrone) {
                 EntityDrone drone = (EntityDrone) object;
                 for (int i : idArray)
-                    if (drone.entityId == i)
+                    if (drone.getEntityId() == i)
                         addDrone(drone);
             }
         }
@@ -182,7 +173,7 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
         boolean add = true;
         for (EntityDrone drone : allDrones) {
             for (EntityDrone temp : droneList) {
-                if (drone.entityId == temp.entityId) {
+                if (drone.getEntityId() == temp.getEntityId()) {
                     add = false;
                     break;
                 }
@@ -195,15 +186,15 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
     }
 
     @Override
-    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-        readFromNBT(pkt.data);
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.func_148857_g());
     }
 
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
-        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
     }
 
     public boolean registerAtomicConstructor(TileAtomicConstructor atomic) {
@@ -219,31 +210,6 @@ public class TileConsole extends TileES implements IEnergyHandler, IDismantleabl
 
     public int getOrientation() {
         return direction;
-    }
-
-    @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-        return storage.receiveEnergy(maxReceive, simulate);
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        return storage.extractEnergy(maxExtract, simulate);
-    }
-
-    @Override
-    public boolean canInterface(ForgeDirection from) {
-        return true;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from) {
-        return storage.getEnergyStored();
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
-        return storage.getMaxEnergyStored();
     }
 
     @Override

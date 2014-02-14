@@ -3,7 +3,6 @@ package me.jezzadabomb.es2.common.items;
 import java.util.Random;
 
 import me.jezzadabomb.es2.client.sound.Sounds;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
@@ -13,8 +12,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -23,20 +20,21 @@ public class ItemAtomicCatalyst extends ItemES {
 
     private int strength = 3;
 
-    public ItemAtomicCatalyst(int id, String name) {
-        super(id, name);
+    public ItemAtomicCatalyst(String name) {
+        super(name);
         setMaxDamage(511);
         setMaxStackSize(1);
     }
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-        boolean notOnList = !BlackList.OnBlackList(world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z));
+        Block block = world.getBlock(x, y, z);
+        boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));
         if (!world.isRemote && notOnList) {
             Sounds.CATALYST_PULSE.play(x, y, z);
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStack);
             int speed = 0;
-            CatalystTicker.addBreaker(world, x, y, z, world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), world.getBlockId(x, y, z), world.getBlockMetadata(x, y, z), strength, player, fortune, speed);
+            CatalystTicker.addBreaker(world, x, y, z, block, world.getBlockMetadata(x, y, z), strength, player, fortune, speed);
             itemStack.damageItem(1, player);
         }
         return notOnList;
