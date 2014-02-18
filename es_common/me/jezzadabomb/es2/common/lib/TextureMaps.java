@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.lib;
 
+import java.util.ArrayList;
+
 import net.minecraft.util.ResourceLocation;
 
 public class TextureMaps {
@@ -18,7 +20,8 @@ public class TextureMaps {
     public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_3 = getResource("electronCube3");
     public static final ResourceLocation HUD_INVENTORY = getResource("inventoryRender");
 
-    public static final ResourceLocation[] HOVER_TEXTURES = new ResourceLocation[] { getResource("hoverGlow1"), getResource("hoverGlow2"), getResource("hoverGlow3") };
+    public static final ResourceLocation[] HOVER_TEXTURES = getResources("hoverGlow1", "hoverGlow2", "hoverGlow3");
+    public static final ResourceLocation[] QUANTUM_TEXTURES = getResources("quantumHole1", "quantumHole2", "quantumHole3");
 
     public static final ResourceLocation ATOMIC_CONSTRUCTOR = getResource("atomicConstructor");
     public static final ResourceLocation CONSTRUCTOR_DRONE = getResource("constructorDrone");
@@ -39,5 +42,14 @@ public class TextureMaps {
 
     private static ResourceLocation getResource(String loc) {
         return new ResourceLocation(Reference.MOD_ID.toLowerCase(), MODEL_SHEET_LOCATION + loc + ".png");
+    }
+
+    private static ResourceLocation[] getResources(String... loc) {
+        if (loc.length <= 0)
+            return null;
+        ArrayList<ResourceLocation> resourceMap = new ArrayList<ResourceLocation>();
+        for (int i = 0; i < loc.length; i++)
+            resourceMap.add(getResource(loc[i]));
+        return resourceMap.toArray(new ResourceLocation[resourceMap.size()]);
     }
 }

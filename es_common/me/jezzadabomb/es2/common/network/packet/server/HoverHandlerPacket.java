@@ -14,7 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler.HoveringPlayer;
-import me.jezzadabomb.es2.common.network.PacketUtils;
+import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.network.packet.IPacket;
 
 public class HoverHandlerPacket implements IPacket {

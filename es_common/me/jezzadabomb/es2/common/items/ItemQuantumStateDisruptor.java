@@ -22,21 +22,13 @@ public class ItemQuantumStateDisruptor extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (side != 1 || !checkAround(world, x, y, z))
+        if (side != 1 || world.isAirBlock(x, y, z))
             return false;
         y += 1;
         if (!world.isRemote && !(new CoordSet(player).isAtXYZ(x, y, z))) {
             world.setBlock(x, y, z, ModBlocks.quantumStateDisrupter);
             UtilMethods.decrCurrentItem(player);
         }
-        return true;
-    }
-
-    private boolean checkAround(World world, int x, int y, int z) {
-        for (int i = -1; i < 2; i++)
-            for (int j = -1; j < 2; j++)
-                if (!world.isAirBlock(x + i, y + 1, z + j) || world.isAirBlock(x + i, y, z + j))
-                    return false;
         return true;
     }
 

@@ -11,6 +11,7 @@ public class Reference {
     public static final String MOD_NAME = "Elemental Sciences 2";
     public static final String VERSION = "@VERSION@";
     public static final String CHANNEL_NAME = "ES2";
+    public static final String MOD_IDENTIFIER = MOD_ID + ":";
     
     //Class Constants
     public static final String SERVER_PROXY_CLASS = "me.jezzadabomb.es2.CommonProxy";
@@ -26,7 +27,7 @@ public class Reference {
     //Boolean constants
     public static boolean HUD_VERTICAL_ROTATION;
     public static boolean DRAW_TEXTURED_SLOTS;
-    public static boolean CAN_DEBUG;
+    public static boolean isDebugMode;
     
     //Numerical constants
     public static int HUD_BLOCK_RANGE = 6;

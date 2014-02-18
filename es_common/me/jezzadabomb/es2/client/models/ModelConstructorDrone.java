@@ -9,15 +9,6 @@ public class ModelConstructorDrone {
 	IModelCustom constructorDrone;
 
 	public ModelConstructorDrone(){
-	    // 10
-	    // 10
-	    // 13
-	    // 4
-	    // 6
-	    // 4
-	    // 13
-	    // 10
-	    // 10
 		constructorDrone = AdvancedModelLoader.loadModel(Models.CONSTRUCTOR_DRONE);
 	}
 	

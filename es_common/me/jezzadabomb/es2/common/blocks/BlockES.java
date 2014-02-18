@@ -2,9 +2,9 @@ package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.network.packet.server.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.block.Block;

@@ -1,78 +1,88 @@
 package me.jezzadabomb.es2.common.entities;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.PacketUtils;
+import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
+import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData {
+public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData, IMasterable {
 
-    boolean withinConstructor, reachedTarget, pathed, moving, working;
-    CoordSetF targetSet;
+    boolean reachedTarget, reachedFinalTarget, moving, working;
+    // CoordSetF targetSet;
+    LinkedBlockingQueue<CoordSetF> targetSetQueue;
     double xSpeed, ySpeed, zSpeed;
     TileDroneBay droneBay;
+    int[] droneBayCoords;
 
     public EntityDrone(World world) {
         super(world);
-        setSize(2F / 16F, 2F / 16F);
+        setSize(8F / 16F, 8F / 16F);
         noClip = true;
-        setWorking(false);
-        reachedTarget = withinConstructor = true;
-        pathed = moving = working = false;
-        setSpeed(0.1F);
-    }
 
-    public EntityDrone setDroneBay(TileDroneBay droneBay) {
-        this.droneBay = droneBay;
-        return this;
+        targetSetQueue = new LinkedBlockingQueue<CoordSetF>();
+        setWorking(false);
+        reachedTarget = reachedFinalTarget = true;
+        moving = working = false;
+        setSpeed(0.05F);
     }
 
     @Override
     protected void updateEntity() {
-        if (!worldObj.isRemote)
-            ESLogger.info("HALP");
-        moveDrone();
     }
 
     @Override
     protected void updateTick() {
+        if (worldObj != null && droneBayCoords != null && droneBay == null) {
+            droneBay = (TileDroneBay) worldObj.getTileEntity(droneBayCoords[0], droneBayCoords[1], droneBayCoords[2]);
+            droneBayCoords = null;
+        }
+
+        moveDrone();
     }
 
     public void moveDrone() {
-        if (targetSet == null) {
-            setMoving(false);
+        motionX = motionY = motionZ = 0.0F;
+        if (targetSetQueue.isEmpty()) {
+            if (isMoving())
+                setMoving(false);
             return;
         }
+
+        CoordSetF targetSet = targetSetQueue.element();
+
         double xDisplace = targetSet.getX() - posX;
         double yDisplace = targetSet.getY() - posY;
         double zDisplace = targetSet.getZ() - posZ;
-        motionX = motionY = motionZ = 0.0F;
 
-        if (!MathHelper.withinRange(xDisplace, 0.0F, xSpeed / 2)) {
+        if (!MathHelper.withinRange(xDisplace, 0.0F, xSpeed)) {
             if (xDisplace < 0) {
                 motionX = -xSpeed;
             } else if (xDisplace > 0) {
                 motionX = xSpeed;
             }
         }
-        if (!MathHelper.withinRange(yDisplace, 0.0F, ySpeed / 2)) {
+        if (!MathHelper.withinRange(yDisplace, 0.0F, ySpeed)) {
             if (yDisplace < 0) {
                 motionY = -ySpeed;
             } else if (yDisplace > 0) {
                 motionY = ySpeed;
             }
         }
-        if (!MathHelper.withinRange(zDisplace, 0.0F, zSpeed / 2)) {
+        if (!MathHelper.withinRange(zDisplace, 0.0F, zSpeed)) {
             if (zDisplace < 0) {
                 motionZ = -zSpeed;
             } else if (zDisplace > 0) {
@@ -80,43 +90,40 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData 
             }
         }
         reachedTarget = motionX == 0.0F && motionY == 0.0F && motionZ == 0.0F;
-        if (reachedTarget) {
-            setMoving(false);
-            targetSet = null;
-        }
+        if (reachedTarget)
+            targetSetQueue.remove();
     }
 
-    public CoordSetF getCurrentBlock() {
+    public CoordSetF getCurrentPos() {
         return new CoordSetF((float) posX, (float) posY, (float) posZ);
     }
 
-    public void setTargetCoords(CoordSetF targetSet) {
-        reachedTarget = false;
-        pathed = true;
-        this.targetSet = targetSet;
+    public void addTargetCoords(CoordSetF targetSet) {
+        reachedFinalTarget = false;
+        try {
+            targetSetQueue.put(targetSet);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setMoving(true);
     }
 
-    public void pathToNewConstructor(TileAtomicConstructor atomic) {
-        if (atomic == null)
+    public void addTargetCoords(CoordSet coordSet) {
+        if (coordSet == null)
             return;
-        pathToXYZ(atomic.xCoord, atomic.yCoord, atomic.zCoord);
+        addTargetCoords(coordSet.toCoordSetF());
     }
 
     public void pathToXYZ(int x, int y, int z) {
-        setTargetCoords(new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F));
+        addTargetCoords(new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F));
     }
 
     public boolean hasReachedTarget() {
         return reachedTarget;
     }
 
-    public CoordSetF getTargetCoords() {
-        return targetSet;
-    }
-
-    public boolean isWithinConstructor() {
-        return withinConstructor;
+    public LinkedBlockingQueue<CoordSetF> getTargetCoords() {
+        return targetSetQueue;
     }
 
     public boolean isWorking() {
@@ -155,12 +162,15 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData 
         tag.setBoolean("moving", moving);
         tag.setBoolean("working", working);
 
-        boolean flag = targetSet != null;
+        boolean flag = droneBay != null;
+        tag.setBoolean("hasDroneBay", flag);
+        if (flag)
+            tag.setString("droneLoc", UtilMethods.getLocFromXYZ(droneBay.xCoord, droneBay.yCoord, droneBay.zCoord));
+
+        flag = !targetSetQueue.isEmpty();
         tag.setBoolean("hasTargetSet", flag);
         if (flag) {
-            tag.setFloat("targetX", targetSet.getX());
-            tag.setFloat("targetY", targetSet.getY());
-            tag.setFloat("targetZ", targetSet.getZ());
+            UtilMethods.writeQueueToNBT(targetSetQueue, tag);
         }
     }
 
@@ -169,55 +179,67 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData 
         moving = tag.getBoolean("moving");
         working = tag.getBoolean("working");
 
-        boolean flag = tag.getBoolean("hasTargetSet");
-        if (flag) {
-            float x = tag.getFloat("targetX");
-            float y = tag.getFloat("targetY");
-            float z = tag.getFloat("targetZ");
+        boolean flag = tag.getBoolean("hasDroneBay");
+        flag = false;
+        droneBay = null;
+        if (flag)
+            droneBayCoords = UtilMethods.getArrayFromString(tag.getString("droneLoc"));
 
-            targetSet = new CoordSetF(x, y, z);
-        } else {
-            targetSet = null;
-        }
-    }
-
-    @Override
-    protected boolean canApplyFriction() {
-        return false;
+        flag = tag.getBoolean("hasTargetSet");
+        if (flag)
+            targetSetQueue = UtilMethods.readQueueFromNBT(tag);
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        int x = droneBay.xCoord;
-        int y = droneBay.yCoord;
-        int z = droneBay.zCoord;
+        boolean flag = droneBay != null;
 
-        byte[] loc = UtilMethods.getLocFromXYZ(x, y, z).getBytes();
-        buffer.writeInt(loc.length);
-        buffer.writeBytes(loc);
+        buffer.writeBoolean(flag);
 
-        boolean flag = targetSet != null;
+        if (flag) {
+            int x = droneBay.xCoord;
+            int y = droneBay.yCoord;
+            int z = droneBay.zCoord;
+
+            PacketUtils.writeStringByteBuffer(buffer, UtilMethods.getLocFromXYZ(x, y, z));
+        }
+
+        flag = !(targetSetQueue == null || targetSetQueue.isEmpty());
         buffer.writeBoolean(flag);
         if (flag)
-            targetSet.writeToStream(buffer);
-
+            UtilMethods.writeQueueToBuffer(targetSetQueue, buffer);
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData) {
-        // TODO Keep an eye on this.
-        int length = additionalData.readInt();
-        ByteBuf buf = additionalData.readBytes(length);
-        String loc = additionalData.toString();
-        ESLogger.info(loc);
-        int[] coords = UtilMethods.getArrayFromString(loc);
-
-        droneBay = (TileDroneBay) worldObj.getTileEntity(coords[0], coords[1], coords[2]);
-
         boolean flag = additionalData.readBoolean();
-        if (flag)
-            targetSet = CoordSetF.readFromStream(additionalData);
 
+        if (flag) {
+            String loc = PacketUtils.readStringByteBuffer(additionalData);
+            int[] coords = UtilMethods.getArrayFromString(loc);
+
+            droneBay = (TileDroneBay) worldObj.getTileEntity(coords[0], coords[1], coords[2]);
+        }
+
+        flag = additionalData.readBoolean();
+        if (flag)
+            targetSetQueue = UtilMethods.readQueueFromBuffer(additionalData);
+    }
+
+    @Override
+    public void setMaster(TileES tileES) {
+        if (tileES instanceof TileDroneBay)
+            droneBay = (TileDroneBay) tileES;
+    }
+
+    @Override
+    public TileES getMaster() {
+        return droneBay;
+    }
+
+    @Override
+    public boolean hasMaster() {
+        return droneBay != null;
     }
 
 }

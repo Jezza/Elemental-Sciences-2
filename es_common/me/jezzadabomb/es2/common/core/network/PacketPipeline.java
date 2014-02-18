@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network;
+package me.jezzadabomb.es2.common.core.network;
 
 import java.util.*;
 

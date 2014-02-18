@@ -55,16 +55,8 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
             resetState();
             return;
         }
-        if (!registered && !tileConsole.isInvalid()) {
+        if (!registered && !tileConsole.isInvalid())
             registered = tileConsole.registerAtomicConstructor(this);
-        }
-    }
-
-    public ArrayList<EntityDrone> getAllDrones() {
-        ArrayList<EntityDrone> droneList = new ArrayList<EntityDrone>();
-        droneList.addAll(worldObj.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 1.0F, zCoord + 1.0F)));
-
-        return droneList;
     }
 
     public void resetState() {
@@ -112,18 +104,35 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
         return tileConsole;
     }
 
-    public void markForUpdate() {
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+
+        boolean flag = tag.getBoolean("hasTileConsole");
+
+        if (flag) {
+            String loc = tag.getString("consoleLoc");
+            int[] consoleLoc = UtilMethods.getArrayFromString(loc);
+
+            TileEntity tileEntity = worldObj.getTileEntity(consoleLoc[0], consoleLoc[1], consoleLoc[2]);
+            if (tileEntity instanceof TileConsole)
+                tileConsole = (TileConsole) tileEntity;
+        }
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-    }
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
-    @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
+        boolean flag = tileConsole != null;
+
+        tag.setBoolean("hasTileConsole", flag);
+
+        if (flag) {
+            String consoleLoc = UtilMethods.getLocFromXYZ(tileConsole.xCoord, tileConsole.yCoord, tileConsole.zCoord);
+            tag.setString("consoleLoc", consoleLoc);
+        }
+
     }
 
     @Override
@@ -166,15 +175,10 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
                 for (int k = -1; k < 2; k++) {
                     if (i == 0 && j == 0 && k == 0)
                         continue;
-                    localArray[index++] = worldObj.getBlock(xCoord + i, yCoord + j, zCoord + k) == ModBlocks.atomicConstructor;
+                    // Yoda conditions! No null check, because effort.
+                    localArray[index++] = ModBlocks.atomicConstructor.equals(worldObj.getBlock(xCoord + i, yCoord + j, zCoord + k));
                 }
         return renderMatrix = new boolean[] { (!(localArray[10])), (!(localArray[0] && localArray[1] && localArray[3] && localArray[4] && localArray[9] && localArray[10] && localArray[12])), (!(localArray[9] && localArray[10] && localArray[12] && localArray[17] && localArray[18] && localArray[20] && localArray[21])), (!(localArray[11] && localArray[13] && localArray[22] && localArray[19] && localArray[21] && localArray[18] && localArray[10])), (!(localArray[10] && localArray[11] && localArray[13] && localArray[2] && localArray[5] && localArray[1] && localArray[4])), (!(localArray[12] && localArray[14] && localArray[15])), (!(localArray[4] && localArray[7] && localArray[15])), (!(localArray[15] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[16] && localArray[13])), (!(localArray[21] && localArray[22] && localArray[13])), (!(localArray[12] && localArray[4] && localArray[3])), (!(localArray[4] && localArray[5] && localArray[13])), (!(localArray[12] && localArray[21] && localArray[20])), (!(localArray[15] && localArray[7] && localArray[4] && localArray[5] && localArray[13] && localArray[16] && localArray[8])), (!(localArray[4] && localArray[7] && localArray[15] && localArray[12] && localArray[3] && localArray[6] && localArray[14])), (!(localArray[15] && localArray[16] && localArray[13] && localArray[22] && localArray[25] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[14] && localArray[12] && localArray[21] && localArray[20] && localArray[23] && localArray[24])), (!(localArray[10] && localArray[9] && localArray[12])), (!(localArray[10] && localArray[21] && localArray[18])), (!(localArray[10] && localArray[11] && localArray[13])), (!(localArray[10] && localArray[1] && localArray[4])) };
-    }
-
-    public boolean registerDrone(EntityDrone drone) {
-        if (hasConsole())
-            return getConsole().registerDrone(drone);
-        return false;
     }
 
     public boolean isPartRendering(int pos) {

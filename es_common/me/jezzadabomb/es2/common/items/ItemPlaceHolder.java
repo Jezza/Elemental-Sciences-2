@@ -75,38 +75,8 @@ public class ItemPlaceHolder extends ItemES {
     }
 
     @Override
-    public int getDisplayDamage(ItemStack stack) {
-        ESLogger.info("Display");
-        if (getDamage("wrenchThing", stack))
-            return stack.getTagCompound().getInteger("Durablity");
-        return super.getDisplayDamage(stack);
-    }
-
-    @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (getDamage("constructorDrone", stack) && UtilMethods.isConstructor(world, x, y, z) && !world.isRemote) {
-            ESLogger.info(world.isRemote);
-            TileAtomicConstructor tAC = (TileAtomicConstructor) world.getTileEntity(x, y, z);
-            boolean flag = tAC.hasConsole();
-            // if (flag) {
-            // TileConsole console = tAC.getConsole();
-            // EntityDrone drone = new EntityDrone(world).setConsole(console);
-            //
-            // Random rand = new Random();
-            //
-            // drone.posX = x + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-            // drone.posY = y + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-            // drone.posZ = z + MathHelper.clipFloat(rand.nextFloat(), 0.1F, 0.9F);
-            //
-            // world.spawnEntityInWorld(drone);
-            //
-            // if (!player.capabilities.isCreativeMode)
-            // UtilMethods.decrCurrentItem(player);
-            // }
-            if (flag)
-                player.swingItem();
-            return flag;
-        } else if (getDamage("wrenchThing", stack) && UtilMethods.isDismantable(world, x, y, z)) {
+        if (isDamageType("wrenchThing", stack) && UtilMethods.isDismantable(world, x, y, z)) {
             IDismantleable dismantle = (IDismantleable) world.getTileEntity(x, y, z);
             if (dismantle.canDismantle(player, world, x, y, z)) {
                 ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, !player.capabilities.isCreativeMode);
@@ -127,7 +97,7 @@ public class ItemPlaceHolder extends ItemES {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity par3Entity, int par4, boolean par5) {
         super.onUpdate(stack, world, par3Entity, par4, par5);
-        if (getDamage("wrenchThing", stack) && !stack.hasTagCompound()) {
+        if (isDamageType("wrenchThing", stack) && !stack.hasTagCompound()) {
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setInteger("Durablity", 512);
         }
@@ -135,8 +105,8 @@ public class ItemPlaceHolder extends ItemES {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (getDamage("empTrigger", stack)) {
-            float range = 5.0F;
+        if (isDamageType("empTrigger", stack)) {
+            float range = 5.0F; // Player at the centre.
             List<Object> droneList = world.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
             for (Object object : droneList) {
                 if (object instanceof EntityDrone) {
@@ -147,17 +117,19 @@ public class ItemPlaceHolder extends ItemES {
                         world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
                 }
             }
+            if (!world.isRemote)
+                UtilMethods.addChatMessage(player, "Removed " + droneList.size() + " drones.");
             player.swingItem();
-            return player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1);
+            return droneList.size() > 0 ? player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1) : stack;
         }
         return stack;
     }
 
-    public boolean getDamage(String name, ItemStack stack) {
-        return stack.getItemDamage() == getDamage(name);
+    public boolean isDamageType(String name, ItemStack stack) {
+        return stack.getItemDamage() == getDamageFromString(name);
     }
 
-    public int getDamage(String name) {
+    public int getDamageFromString(String name) {
         for (int i = 0; i < names.length; i++)
             if (names[i].equals(name))
                 return i;

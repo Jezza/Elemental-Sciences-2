@@ -20,6 +20,9 @@ public class TileSolarLens extends TileES {
 
     @Override
     public void updateEntity() {
+        worldObj.setRainStrength(0.0F);
+        worldObj.setWorldTime(1500);
+        
         boolean tru = true;
         if (worldObj.isRemote || !worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord) || tru) {
             return;

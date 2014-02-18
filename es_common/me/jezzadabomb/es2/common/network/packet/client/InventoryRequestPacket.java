@@ -13,11 +13,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.core.network.PacketPipeline;
+import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.network.PacketDispatcher;
-import me.jezzadabomb.es2.common.network.PacketPipeline;
-import me.jezzadabomb.es2.common.network.PacketUtils;
 import me.jezzadabomb.es2.common.network.packet.IPacket;
 import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 

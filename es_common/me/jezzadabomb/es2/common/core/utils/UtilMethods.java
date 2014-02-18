@@ -1,8 +1,12 @@
 package me.jezzadabomb.es2.common.core.utils;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Arrays;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -12,6 +16,7 @@ import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,6 +25,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -29,6 +35,21 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class UtilMethods {
+
+    public static void addChatMessage(EntityPlayer player, String string) {
+        player.addChatMessage(new ChatComponentText(string));
+    }
+
+    public static int getTimeInTicks(int hours, int minutes, int seconds, int ticks) {
+        int tempHours = hours * 60;
+        minutes += tempHours;
+        int tempMinutes = minutes * 60;
+        seconds += tempMinutes;
+        int tempSeconds = seconds * 20;
+        ticks += tempSeconds;
+
+        return ticks;
+    }
 
     public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow) {
         if ((itemStack1 == null && itemStack2 == null) || !ItemStack.areItemStacksEqual(itemStack1, itemStack2))
@@ -97,6 +118,8 @@ public class UtilMethods {
     }
 
     public static boolean isDroneBay(World world, int x, int y, int z) {
+        if (world == null)
+            return false;
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         return tileEntity != null && tileEntity instanceof TileDroneBay;
     }
@@ -128,16 +151,12 @@ public class UtilMethods {
         return ((ItemDebugTool) ModItems.debugItem).getDebugPos(mode);
     }
 
-    public static int getTicksFromSeconds(int seconds) {
-        return seconds * 20;
-    }
-
     public static int getSecondsFromTicks(int ticks) {
         return ticks / 20;
     }
 
     public static boolean canShowDebugHUD() {
-        if (!Reference.CAN_DEBUG)
+        if (!Reference.isDebugMode)
             return false;
         return isHoldingItem(ModItems.debugItem);
     }
@@ -156,14 +175,18 @@ public class UtilMethods {
         return tileEntity != null && isRenderType(tileEntity, type);
     }
 
-    public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume) {
+    public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume, ItemStack replaceStack) {
+        if (shouldConsume)
+            ESLogger.info("Hitting");
+        int index = 0;
         for (ItemStack tempStack : player.inventory.mainInventory) {
             if (tempStack != null && ItemStack.areItemStacksEqual(itemStack, tempStack)) {
                 if (shouldConsume) {
-                    tempStack.setItemDamage(1);
+                    player.inventory.mainInventory[index] = replaceStack;
                 }
                 return true;
             }
+            index++;
         }
         return false;
     }
@@ -245,5 +268,63 @@ public class UtilMethods {
         coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
         coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
         return coord;
+    }
+
+    public static void writeQueueToNBT(LinkedBlockingQueue<CoordSetF> targetSetQueue, NBTTagCompound tag) {
+        tag.setInteger("queueSize", targetSetQueue.size());
+
+        int index = 0;
+        for (CoordSetF coordSet : targetSetQueue) {
+            tag.setDouble("coordSetX" + index, coordSet.getX());
+            tag.setDouble("coordSetY" + index, coordSet.getY());
+            tag.setDouble("coordSetZ" + index, coordSet.getZ());
+            index++;
+        }
+    }
+
+    public static LinkedBlockingQueue<CoordSetF> readQueueFromNBT(NBTTagCompound tag) {
+        int length = tag.getInteger("queueSize");
+
+        LinkedBlockingQueue<CoordSetF> coordSetQueue = new LinkedBlockingQueue<CoordSetF>(length);
+
+        for (int i = 0; i < length; i++) {
+            double x = tag.getDouble("coordSetX" + i);
+            double y = tag.getDouble("coordSetY" + i);
+            double z = tag.getDouble("coordSetZ" + i);
+
+            coordSetQueue.add(new CoordSetF(x, y, z));
+        }
+
+        return coordSetQueue;
+    }
+
+    public static void writeQueueToBuffer(LinkedBlockingQueue<CoordSetF> targetSetQueue, ByteBuf buffer) {
+        buffer.writeInt(targetSetQueue.size());
+
+        for (CoordSetF coordSet : targetSetQueue) {
+            buffer.writeDouble(coordSet.getX());
+            buffer.writeDouble(coordSet.getY());
+            buffer.writeDouble(coordSet.getZ());
+        }
+    }
+
+    public static LinkedBlockingQueue<CoordSetF> readQueueFromBuffer(ByteBuf buffer) {
+        int length = buffer.readInt();
+
+        LinkedBlockingQueue<CoordSetF> coordSetQueue = new LinkedBlockingQueue<CoordSetF>(length);
+
+        for (int i = 0; i < length; i++) {
+            double x = buffer.readDouble();
+            double y = buffer.readDouble();
+            double z = buffer.readDouble();
+
+            coordSetQueue.add(new CoordSetF(x, y, z));
+        }
+
+        return coordSetQueue;
+    }
+
+    public static boolean isEntityWithin(EntityLivingBase entity, CoordSet coordSet, double value) {
+        return entity.getDistanceSq(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < (value * value);
     }
 }

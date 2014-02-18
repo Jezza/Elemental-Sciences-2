@@ -35,7 +35,7 @@ public abstract class ItemES extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconRegister) {
-		itemIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
+		itemIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + this.getUnlocalizedName().replace("item.", ""));
 	}
 
 	@Override

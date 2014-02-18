@@ -15,16 +15,18 @@ import net.minecraft.util.MathHelper;
 public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
     ModelDroneBay modelDroneBay;
+    ModelConstructorDrone modelDrone;
 
     public TileDroneBayRenderer() {
         modelDroneBay = new ModelDroneBay();
+        modelDrone = new ModelConstructorDrone();
     }
 
     public void renderDroneBayAt(TileDroneBay droneBay, double x, double y, double z, double f) {
         glPushMatrix();
         glDisable(GL_ALPHA_TEST);
         glDisable(GL_CULL_FACE);
-
+        
         glTranslated(x + 0.5F, y + 0.0255F, z + 0.5F);
 
         if (droneBay.isOverChestRenderType()) {
@@ -36,8 +38,9 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_FRAME);
 
-        modelDroneBay.renderPart("BaseFrame");
 
+        modelDroneBay.renderPart("BaseFrame");
+        
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_DOOR);
 
         float progress = droneBay.getDoorProgress();
@@ -47,6 +50,25 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_ALPHA_TEST);
+        glPopMatrix();
+    }
+
+    private void renderDrone() {
+        glPushMatrix();
+
+        glTranslatef(0.0F, 5.3F, 0.0F);
+
+        float scale = 1.0F;
+        glScalef(scale, scale, scale);
+
+        glRotatef(-(float) (720.0 * 1 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 1.0F, 0.0F);
+
+        RenderUtils.bindTexture(TextureMaps.CONSTRUCTOR_DRONE);
+
+        glDisable(GL_LIGHTING);
+        modelDrone.render();
+        glEnable(GL_LIGHTING);
+
         glPopMatrix();
     }
 

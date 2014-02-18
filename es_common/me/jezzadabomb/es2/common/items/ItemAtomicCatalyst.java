@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.items;
 import java.util.Random;
 
 import me.jezzadabomb.es2.client.sound.Sounds;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
@@ -31,7 +32,7 @@ public class ItemAtomicCatalyst extends ItemES {
         Block block = world.getBlock(x, y, z);
         boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));
         if (!world.isRemote && notOnList) {
-            Sounds.CATALYST_PULSE.play(x, y, z);
+            Sounds.CATALYST_PULSE.play(player, 1.0F, 0.8F);
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStack);
             int speed = 0;
             CatalystTicker.addBreaker(world, x, y, z, block, world.getBlockMetadata(x, y, z), strength, player, fortune, speed);

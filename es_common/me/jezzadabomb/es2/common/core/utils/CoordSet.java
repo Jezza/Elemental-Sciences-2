@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.core.utils;
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
+import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,6 +13,12 @@ import com.google.common.io.ByteArrayDataOutput;
 public class CoordSet {
 
     private int x, y, z;
+
+    public CoordSet(TileES tileES) {
+        x = tileES.xCoord;
+        y = tileES.yCoord;
+        z = tileES.zCoord;
+    }
 
     public CoordSet(EntityPlayer player) {
         this((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ));
@@ -106,6 +113,10 @@ public class CoordSet {
         return new CoordSet(x, y, z);
     }
 
+    public CoordSetF toCoordSetF(){
+        return new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F);
+    }
+    
     /*
      * Truncated.
      */

@@ -29,7 +29,7 @@ public class TileInventoryScannerRenderer extends TileEntitySpecialRenderer {
         glPushMatrix();
         glDisable(GL_LIGHTING);
 
-        glTranslatef((float) x, (float) y, (float) z);
+        glTranslated(x, y, z);
 
         glTranslatef(0.5F, 1.5F, 0.5F);
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);

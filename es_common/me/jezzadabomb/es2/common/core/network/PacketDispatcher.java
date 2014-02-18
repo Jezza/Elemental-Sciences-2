@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network;
+package me.jezzadabomb.es2.common.core.network;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;

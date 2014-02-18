@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
@@ -26,54 +27,83 @@ public class TileDroneBay extends TileES implements IDismantleable {
     private boolean opening, closing, changed;
     private float doorProgress;
     public float doorStepAmount = 0.05F;
+    private ArrayList<EntityDrone> spawnList;
+    private ArrayList<EntityDrone> spawnedList;
     private ArrayList<EntityDrone> droneList;
+
     private ArrayList<EntityDrone> removingList;
-    private ArrayList<EntityDrone> addingList;
 
     public TileDroneBay() {
         doorProgress = 1.0F;
         opening = closing = false;
+
+        spawnList = new ArrayList<EntityDrone>();
+        spawnedList = new ArrayList<EntityDrone>();
         droneList = new ArrayList<EntityDrone>();
+
         removingList = new ArrayList<EntityDrone>();
-        addingList = new ArrayList<EntityDrone>();
     }
 
     @Override
     public void updateEntity() {
+        if(changed)
+            markForUpdate();
+        
         doorProgress = MathHelper.clamp_float(doorProgress, 0.0F, 1.0F);
 
-        if (!changed && (doorProgress <= 0.0F || doorProgress >= 1.0F)) {
-            stopDoorMovement();
-        } else {
-            changed = false;
+        if (spawnList.size() > 0 && !opening) {
+            openHatch();
         }
 
-        if (opening || closing)
-            stepDoor();
+        if (!changed && (isOpened() || isClosed()))
+            stopDoorMovement();
+        else
+            changed = false;
+
+        stepDoor();
+
+        if (spawnList.size() > 0 && isOpened())
+            spawnDronesFromList();
 
         ArrayList<EntityDrone> utilList = new ArrayList<EntityDrone>();
-        utilList.addAll(removingList);
+        utilList.addAll(spawnedList);
+        for (EntityDrone drone : utilList)
+            if (drone.hasReachedTarget()) {
+                spawnedList.remove(drone);
+                droneList.add(drone);
+            }
 
+    }
+
+    private void spawnDronesFromList() {
+        ArrayList<EntityDrone> utilList = new ArrayList<EntityDrone>();
+        utilList.addAll(spawnList);
         for (EntityDrone drone : utilList) {
-            if (!drone.hasReachedTarget())
-                continue;
+            drone.posX = xCoord + 0.5F;
+            drone.posY = yCoord - 0.5F;
+            drone.posZ = zCoord + 0.5F;
 
-            // Keep track of where it is.
+            CoordSetF targetSet = new CoordSetF(xCoord + 0.5F, yCoord + 1.5F, zCoord + 0.5F);
+
+            drone.addTargetCoords(targetSet);
+            drone.setMaster(this);
+
+            worldObj.spawnEntityInWorld(drone);
+
+            spawnedList.add(drone);
+            spawnList.remove(drone);
         }
     }
 
+    public ArrayList<EntityDrone> getDroneList(){
+        return droneList;
+    }
+    
     public void stepDoor() {
-        if (!opening && !closing)
-            return;
-
         if (opening)
             doorProgress -= doorStepAmount;
         if (closing)
             doorProgress += doorStepAmount;
-    }
-
-    public boolean checkForDrone() {
-        return getDroneFromInventory(false) == null;
     }
 
     public ItemStack getDroneFromInventory(boolean remove) {
@@ -93,32 +123,27 @@ public class TileDroneBay extends TileES implements IDismantleable {
         return null;
     }
 
-    public boolean spawnDrone() {
-        ItemStack itemStack = getDroneFromInventory(false);
-        if (itemStack != null && !worldObj.isRemote) {
-            EntityDrone drone = new EntityDrone(worldObj);
+    public boolean canSpawnDrone() {
+        return getDroneFromInventory(false) != null;
+    }
 
-            drone.posX = xCoord + 0.5F;
-            drone.posY = yCoord - 0.5F;
-            drone.posZ = zCoord + 0.5F;
+    public int addDroneToSpawnList(int size) {
+        int tempSize = spawnList.size();
+        if (!canSpawnDrone())
+            return 0;
 
-            drone.setTargetCoords(new CoordSetF(getCoordSet()).addXYZ(0.5F, 1.0F, 0.5F));
-            drone.setDroneBay(this);
-
-            droneList.add(drone);
-            worldObj.spawnEntityInWorld(drone);
-            return true;
+        for (int i = 0; i < size; i++) {
+            ItemStack itemStack = getDroneFromInventory(false); // TODO Don't forget to put this back to true.
+            if (itemStack != null && !worldObj.isRemote) {
+                EntityDrone drone = new EntityDrone(worldObj);
+                spawnList.add(drone);
+            }
         }
-        return false;
+        return spawnList.size() - tempSize;
     }
 
     public void markForUpdate() {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
-
-    public void removeDrone(EntityDrone drone) {
-        drone.setTargetCoords(new CoordSetF(getCoordSet()).addXYZ(0.5F, 1.5F, 0.5F));
-        removingList.add(drone);
     }
 
     public void stopDoorMovement() {

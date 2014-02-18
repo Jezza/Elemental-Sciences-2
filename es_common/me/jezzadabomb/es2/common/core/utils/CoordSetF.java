@@ -9,8 +9,14 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class CoordSetF {
 
-    private float x, y, z;
+    private double x, y, z;
 
+    public CoordSetF(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    
     public CoordSetF(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -23,15 +29,15 @@ public class CoordSetF {
         this.z = coordSet.getZ();
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 
@@ -89,28 +95,28 @@ public class CoordSetF {
     }
 
     public void writeToStream(ByteBuf out) {
-        out.writeFloat(x);
-        out.writeFloat(y);
-        out.writeFloat(z);
+        out.writeDouble(x);
+        out.writeDouble(y);
+        out.writeDouble(z);
     }
 
     public static CoordSetF readFromStream(ByteBuf in) {
-        float x = in.readFloat();
-        float y = in.readFloat();
-        float z = in.readFloat();
+        double x = in.readDouble();
+        double y = in.readDouble();
+        double z = in.readDouble();
         return new CoordSetF(x, y, z);
     }
 
     public void writeToNBT(NBTTagCompound tag) {
-        tag.setFloat("coordX", x);
-        tag.setFloat("coordY", y);
-        tag.setFloat("coordZ", z);
+        tag.setDouble("coordX", x);
+        tag.setDouble("coordY", y);
+        tag.setDouble("coordZ", z);
     }
 
     public static CoordSetF readFromNBT(NBTTagCompound tag) {
-        float x = tag.getFloat("coordX");
-        float y = tag.getFloat("coordY");
-        float z = tag.getFloat("coordZ");
+        double x = tag.getDouble("coordX");
+        double y = tag.getDouble("coordY");
+        double z = tag.getDouble("coordZ");
         return new CoordSetF(x, y, z);
     }
 

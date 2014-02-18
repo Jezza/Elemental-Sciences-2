@@ -22,9 +22,11 @@ public class EntityDroneRenderer extends Render {
         glPushMatrix();
 
         glTranslated(x, y, z);
-        
-        glScalef(0.1F, 0.1F, 0.1F);
-        
+
+        float scale = 0.15F;
+
+        glScalef(scale, scale, scale);
+
         bindEntityTexture(drone);
 
         modelConstructorDrone.render();

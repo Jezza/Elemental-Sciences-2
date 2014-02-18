@@ -6,7 +6,7 @@ import me.jezzadabomb.es2.common.items.ItemGlasses;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
-import me.jezzadabomb.es2.common.items.framework.ArmourSlotIndex;
+import me.jezzadabomb.es2.common.items.framework.ItemArmourES.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -39,7 +39,7 @@ public class ModItems {
         quantumStateDisrupter = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTER);
         placeHolders = new ItemPlaceHolder(Strings.PLACEHOLDER);
 
-        if (Reference.CAN_DEBUG)
+        if (Reference.isDebugMode)
             debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);
 
         initItemRecipes();

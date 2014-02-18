@@ -21,47 +21,47 @@ public abstract class ItemArmourES extends ItemArmor {
 
     protected ArrayList<String> infoList = new ArrayList<String>();
     protected ArrayList<String> shiftList = new ArrayList<String>();
-    
-	int slot;
-	String textureLocation;
 
-	public ItemArmourES(ArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
-		super(armorMaterial, renderIndex, armourIndex.slot);
-		slot = armourIndex.slot;
-		this.textureLocation = textureLocation;
-		setMaxDamage(0);
-		setUnlocalizedName(name);
-		setCreativeTab(ElementalSciences2.creativeTab);
-		register(name);
-	}
+    int slot;
+    String textureLocation;
 
-	public void register(String name) {
-		GameRegistry.registerItem(this, name);
-	}
+    public ItemArmourES(ArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
+        super(armorMaterial, renderIndex, armourIndex.slot);
+        slot = armourIndex.slot;
+        this.textureLocation = textureLocation;
+        setMaxDamage(0);
+        setUnlocalizedName(name);
+        setCreativeTab(ElementalSciences2.creativeTab);
+        register(name);
+    }
 
-	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
-		return armorType == slot;
-	}
+    public void register(String name) {
+        GameRegistry.registerItem(this, name);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean requiresMultipleRenderPasses() {
-		return false;
-	}
+    @Override
+    public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
+        return armorType == slot;
+    }
 
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-	    return textureLocation;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses() {
+        return false;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {
-		itemIcon = register.registerIcon(Reference.MOD_ID + ":" + this.getUnlocalizedName().replace("item.", ""));
-	}
-	
-	@Override
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+        return textureLocation;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        itemIcon = register.registerIcon(Reference.MOD_IDENTIFIER + this.getUnlocalizedName().replace("item.", ""));
+    }
+
+    @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
@@ -75,14 +75,30 @@ public abstract class ItemArmourES extends ItemArmor {
         }
     }
 
-	protected void addToBothLists(String string){
+    protected void addToBothLists(String string) {
         shiftList.add(string);
         infoList.add(string);
     }
-	
-    protected void defaultInfoList(){
+
+    protected void defaultInfoList() {
         infoList.add("Press shift for more info.");
     }
-    
-    protected void addInformation() {}
+
+    protected void addInformation() {
+    }
+
+    public enum ArmourSlotIndex {
+        // @formatter:off
+        HEAD(0),
+        CHESTPLATE(1),
+        LEGGINGS(2),
+        BOOTS(3);
+        // @formatter:on
+
+        int slot;
+
+        ArmourSlotIndex(int slot) {
+            this.slot = slot;
+        }
+    }
 }

@@ -9,6 +9,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
+import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import cpw.mods.fml.common.FMLLog;
 
 public class ConfigHandler {
@@ -25,7 +26,7 @@ public class ConfigHandler {
         try {
             ESLogger.info("Starting to load configuration file.");
             config.load();
-            Reference.CAN_DEBUG = file.toString().equals(debugString);
+            Reference.isDebugMode = file.toString().equals(debugString);
 
             getStrings();
             getBooleanValues();
@@ -41,6 +42,7 @@ public class ConfigHandler {
 
     public static void getStrings() {
         BlackList.putValues(getString(Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "The blacklist on what blocks the atomic catalyst can break.\nNote: Some blocks you cant break on purpose, such as bedrock.\nTo add to it simply put a comma then follow it with the id:meta of the block you want to protect.\n-Serverside."));
+        QuantumBombTicker.parseTime(getString(Strings.QUANTUM_WAIT_TIMING, QuantumBombTicker.DEFAULT_TIMING, "The time it takes for the Quantum State Disrupter to explode.\nFormat: <hours> <minutes> <seconds> <ticks>\neg, 0 2 5 0 would be 0 hours, 2 minutes, 5 seconds, and 0 ticks.\nWrite default for random intervals between 5 and 20 minutes.\n-Serverside"));
     }
 
     public static void getBooleanValues() {
@@ -50,15 +52,6 @@ public class ConfigHandler {
 
     public static void getReferenceConstants() {
         Reference.GLASSES_WAIT_TIMER = getConstant(Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "How many ticks it waits before sending an update of an inventory.\n-Clientside");
-        Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER = getConstant(Strings.QUANTUM_WAIT_TIMING, Reference.QUANTUM_STATE_DISRUPTER_WAIT_TIMER_DEFAULT, "The time it takes for the Quantum State Disrupter to explode, in ticks.\nSo, just divide by twenty to get it in seconds.\n-Serverside");
-    }
-
-    public static int getID(String path, int defaultID) {
-        return config.get("IDs", path, defaultID).getInt();
-    }
-
-    public static int getID(String path, int defaultID, String comment) {
-        return config.get("IDs", path, defaultID, comment).getInt();
     }
 
     public static boolean getBoolean(String path, boolean defaultBoolean, String comment) {

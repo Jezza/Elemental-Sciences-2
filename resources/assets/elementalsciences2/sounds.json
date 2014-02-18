@@ -1,8 +1,14 @@
 {
-    "catalyst": {
-        "category": "player",
+    "pulse": {
+        "category": "block",
         "sounds": [
             "pulse"
         ]
-    }
+    },
+	"scanningWave": {
+		"category": "block",
+		"sounds": [
+			"scanningWave"
+		]
+	}
 }

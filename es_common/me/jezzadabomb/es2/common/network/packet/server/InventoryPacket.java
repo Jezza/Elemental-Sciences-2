@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.network.PacketUtils;
 import me.jezzadabomb.es2.common.network.packet.IPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

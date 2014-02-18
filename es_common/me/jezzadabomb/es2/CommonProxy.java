@@ -9,7 +9,7 @@ import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisrupter;
+import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -33,7 +33,7 @@ public class CommonProxy {
     public void registerTileEntities() {
         GameRegistry.registerTileEntity(TileInventoryScanner.class, Strings.INVENTORY_SCANNER);
         GameRegistry.registerTileEntity(TileAtomicConstructor.class, Strings.ATOMIC_CONSTRUCTOR);
-        GameRegistry.registerTileEntity(TileQuantumStateDisrupter.class, Strings.QUANTUM_STATE_DISRUPTER);
+        GameRegistry.registerTileEntity(TileQuantumStateDisruptor.class, Strings.QUANTUM_STATE_DISRUPTER);
         GameRegistry.registerTileEntity(TileSolarLens.class, Strings.SOLAR_LENS);
         GameRegistry.registerTileEntity(TileConsole.class, Strings.CONSOLE);
         GameRegistry.registerTileEntity(TileDroneBay.class, Strings.DRONE_BAY);
