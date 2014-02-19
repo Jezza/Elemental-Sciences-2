@@ -27,6 +27,9 @@ public class TileDroneBay extends TileES implements IDismantleable {
     private boolean opening, closing, changed;
     private float doorProgress;
     public float doorStepAmount = 0.05F;
+
+    public int totalSpawnableDrones;
+
     private ArrayList<EntityDrone> spawnList;
     private ArrayList<EntityDrone> spawnedList;
     private ArrayList<EntityDrone> droneList;
@@ -42,13 +45,16 @@ public class TileDroneBay extends TileES implements IDismantleable {
         droneList = new ArrayList<EntityDrone>();
 
         removingList = new ArrayList<EntityDrone>();
+        totalSpawnableDrones = 0;
     }
 
     @Override
     public void updateEntity() {
-        if(changed)
+        totalSpawnableDrones = getTotalDronesInInventory();
+
+        if (changed)
             markForUpdate();
-        
+
         doorProgress = MathHelper.clamp_float(doorProgress, 0.0F, 1.0F);
 
         if (spawnList.size() > 0 && !opening) {
@@ -85,7 +91,7 @@ public class TileDroneBay extends TileES implements IDismantleable {
 
             CoordSetF targetSet = new CoordSetF(xCoord + 0.5F, yCoord + 1.5F, zCoord + 0.5F);
 
-            drone.addTargetCoords(targetSet);
+            drone.addTargetCoordsToHead(targetSet);
             drone.setMaster(this);
 
             worldObj.spawnEntityInWorld(drone);
@@ -95,10 +101,10 @@ public class TileDroneBay extends TileES implements IDismantleable {
         }
     }
 
-    public ArrayList<EntityDrone> getDroneList(){
+    public ArrayList<EntityDrone> getDroneList() {
         return droneList;
     }
-    
+
     public void stepDoor() {
         if (opening)
             doorProgress -= doorStepAmount;
@@ -123,23 +129,60 @@ public class TileDroneBay extends TileES implements IDismantleable {
         return null;
     }
 
-    public boolean canSpawnDrone() {
-        return getDroneFromInventory(false) != null;
-    }
+    public ArrayList<ItemStack> getSpawnableDronesFromInventory(boolean remove) {
+        ArrayList<ItemStack> itemList = new ArrayList<ItemStack>();
 
-    public int addDroneToSpawnList(int size) {
-        int tempSize = spawnList.size();
-        if (!canSpawnDrone())
-            return 0;
-
-        for (int i = 0; i < size; i++) {
-            ItemStack itemStack = getDroneFromInventory(false); // TODO Don't forget to put this back to true.
-            if (itemStack != null && !worldObj.isRemote) {
-                EntityDrone drone = new EntityDrone(worldObj);
-                spawnList.add(drone);
+        if (UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord)) {
+            IInventory inventory = (IInventory) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                ItemStack itemStack = inventory.getStackInSlot(i);
+                if (itemStack != null && ItemStack.areItemStacksEqual(itemStack, ModItems.getPlaceHolderStack("constructorDrone"))) {
+                    itemList.add(itemStack);
+                    if (remove)
+                        inventory.setInventorySlotContents(i, (ItemStack) null);
+                }
             }
         }
-        return spawnList.size() - tempSize;
+
+        return itemList;
+    }
+
+    public int getTotalDronesInInventory() {
+        return getSpawnableDronesFromInventory(false).size();
+    }
+
+    public boolean canSpawnDrone(int num) {
+        return getTotalDronesInInventory() >= num;
+    }
+
+    public int addDroneToSpawnList(int dronesToSpawn, CoordSetF coordSetF) {
+        if (dronesToSpawn <= 0)
+            return 0;
+
+        ArrayList<ItemStack> itemList = getSpawnableDronesFromInventory(true);
+
+        if (itemList.size() <= 0)
+            return 0;
+
+        if (itemList.size() < dronesToSpawn)
+            dronesToSpawn = itemList.size();
+
+        if (worldObj.isRemote)
+            return dronesToSpawn;
+
+        int index = 0;
+        for (ItemStack item : itemList) {
+            EntityDrone drone = new EntityDrone(worldObj);
+            if (coordSetF != null)
+                drone.addTargetCoords(coordSetF);
+            spawnList.add(drone);
+            if (++index >= dronesToSpawn)
+                break;
+        }
+
+        ESLogger.info(spawnList);
+        
+        return dronesToSpawn;
     }
 
     public void markForUpdate() {

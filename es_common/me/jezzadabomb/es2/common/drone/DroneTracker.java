@@ -19,10 +19,10 @@ public class DroneTracker implements IMasterable {
 
     ArrayList<TileDroneBay> droneBayList, spawnableBayList;
 
-    ArrayList<EntityDrone> droneList, workingList, movingList, controllableList;
+    ArrayList<EntityDrone> droneList, workingList, movingList, controllableList, spawnableDroneList;
     private TileConsole console;
     private World world;
-    private int x, y, z;
+    private int x, y, z, totalSpawnableDrones;
 
     public DroneTracker() {
         // List of all found drone bays.
@@ -38,6 +38,8 @@ public class DroneTracker implements IMasterable {
         movingList = new ArrayList<EntityDrone>();
         // All drones currently idle.
         controllableList = new ArrayList<EntityDrone>();
+
+        totalSpawnableDrones = 0;
     }
 
     /**
@@ -64,46 +66,47 @@ public class DroneTracker implements IMasterable {
     }
 
     public void updateDroneAndDroneBays() {
+        droneList.clear();
         droneBayList.clear();
+        spawnableBayList.clear();
+        totalSpawnableDrones = 0;
+
         int width = 10;
+
         for (int i = -width; i < width + 1; i++)
             for (int j = -width; j < width + 1; j++)
                 for (int k = -width; k < width + 1; k++)
                     if (UtilMethods.isDroneBay(world, x + i, y + j, z + k)) {
                         TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x + i, y + j, z + k);
                         droneBayList.add(droneBay);
-                        if (droneBay.canSpawnDrone()) {
+                        if (droneBay.canSpawnDrone(1)) {
                             spawnableBayList.add(droneBay);
                             droneList.addAll(droneBay.getDroneList());
                         }
+                        totalSpawnableDrones += droneBay.totalSpawnableDrones;
                     }
     }
 
-    public int spawnDrone(int num) {
+    public int spawnDrone(int num, CoordSetF coordSetF) {
         if (num <= 0)
             return 0;
         TileDroneBay droneBay = getDroneBay();
         if (droneBay != null)
-            return droneBay.addDroneToSpawnList(num);
+            return droneBay.addDroneToSpawnList(num, coordSetF);
         return 0;
     }
 
     public int sendDronesToXYZ(int count, CoordSet coordSet) {
-        return sendDronesToXYZ(count, coordSet.getX(), coordSet.getY(), coordSet.getZ());
-    }
-
-    public int sendDronesToXYZ(int count, int x, int y, int z) {
-        count = MathHelper.clipInt(count, droneList.size());
-
         if (count <= 0)
             return 0;
 
         int dronesToSpawn = count - controllableList.size();
 
-        if (dronesToSpawn > 0) {
-            spawnDrone(dronesToSpawn);
-            updateDroneAndDroneBays();
-            sendDronesToXYZ(dronesToSpawn, x, y, z);
+        spawnDrone(dronesToSpawn, coordSet.toCoordSetF());
+
+        if (world.isRemote) {
+            ESLogger.info("asdasdasdasd");
+            return dronesToSpawn;
         }
 
         ArrayList<EntityDrone> utilList = new ArrayList<EntityDrone>();
@@ -113,13 +116,20 @@ public class DroneTracker implements IMasterable {
         for (EntityDrone drone : utilList) {
             if (++index >= count)
                 break;
-            drone.addTargetCoords(new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F));
+            drone.addTargetCoords(coordSet.toCoordSetF());
         }
 
         return index;
     }
 
+    public int sendDronesToXYZ(int count, int x, int y, int z) {
+        return sendDronesToXYZ(count, new CoordSet(x, y, z));
+    }
+
     public TileDroneBay getDroneBay() {
+        if (droneBayList.isEmpty() || spawnableBayList.isEmpty())
+            return null;
+
         return spawnableBayList.get(new Random().nextInt(spawnableBayList.size()));
     }
 
@@ -159,6 +169,7 @@ public class DroneTracker implements IMasterable {
         stringBuilder.append("Working Drone Count: " + workingList.size() + System.lineSeparator());
         stringBuilder.append("Moving Drone Count: " + movingList.size() + System.lineSeparator());
         stringBuilder.append("Total Controllable Count: " + controllableList.size() + System.lineSeparator());
+        stringBuilder.append("Total Spawnable Drones: " + totalSpawnableDrones);
 
         return stringBuilder.toString();
     }

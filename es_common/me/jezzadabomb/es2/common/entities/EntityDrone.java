@@ -22,7 +22,6 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData, IMasterable {
 
     boolean reachedTarget, reachedFinalTarget, moving, working;
-    // CoordSetF targetSet;
     LinkedBlockingQueue<CoordSetF> targetSetQueue;
     double xSpeed, ySpeed, zSpeed;
     TileDroneBay droneBay;
@@ -105,6 +104,18 @@ public class EntityDrone extends EntityES implements IEntityAdditionalSpawnData,
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        setMoving(true);
+    }
+    
+    public void addTargetCoordsToHead(CoordSetF targetSet) {
+        reachedFinalTarget = false;
+        
+        LinkedBlockingQueue<CoordSetF> tempSetQueue = new LinkedBlockingQueue<CoordSetF>();
+        
+        tempSetQueue.add(targetSet);
+        tempSetQueue.addAll(targetSetQueue);
+        targetSetQueue = tempSetQueue;
+        
         setMoving(true);
     }
 

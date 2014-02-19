@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -39,6 +40,7 @@ public class CatalystTicker {
                     Block block = world.getBlock(vb.x, vb.y, vb.z);
                     int bi = Block.getIdFromBlock(block);
                     int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
+                    
                     boolean skip = block.isWood(world, vb.x, vb.y, vb.z);
                     if ((vb.id == bi) && ((vb.meta == md) || skip)) {
                         if (limit++ > vb.speed * 3)

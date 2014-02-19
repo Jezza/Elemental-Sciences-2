@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.items;
 
 import java.util.List;
 
+import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
@@ -139,7 +140,10 @@ public class ItemPlaceHolder extends ItemES {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (int i = 1; i < names.length; i++)
+        int start = 1;
+        if (Reference.isDebugMode)
+            start = 0;
+        for (int i = start; i < names.length; i++)
             list.add(new ItemStack(this, 1, i));
     }
 

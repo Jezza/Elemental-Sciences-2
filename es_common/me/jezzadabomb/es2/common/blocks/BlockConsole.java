@@ -15,8 +15,8 @@ public class BlockConsole extends BlockES {
 
     public BlockConsole(Material material, String name) {
         super(material, name);
+        setHardness(5F);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 7F / 8F, 1.0F);
-        setBlockUnbreakable();
     }
 
     @Override
@@ -25,15 +25,21 @@ public class BlockConsole extends BlockES {
             int direction = 0;
             int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
-            if (facing == 0) {
-                direction = ForgeDirection.NORTH.ordinal();
-            } else if (facing == 1) {
-                direction = ForgeDirection.EAST.ordinal();
-            } else if (facing == 2) {
-                direction = ForgeDirection.SOUTH.ordinal();
-            } else if (facing == 3) {
-                direction = ForgeDirection.WEST.ordinal();
+            switch (facing) {
+                case 0:
+                    direction = ForgeDirection.NORTH.ordinal();
+                    break;
+                case 1:
+                    direction = ForgeDirection.EAST.ordinal();
+                    break;
+                case 2:
+                    direction = ForgeDirection.SOUTH.ordinal();
+                    break;
+                case 3:
+                    direction = ForgeDirection.WEST.ordinal();
+                    break;
             }
+
             TileConsole tC = ((TileConsole) world.getTileEntity(x, y, z));
             tC.setOrientation(direction);
             tC.updateRenderCables();

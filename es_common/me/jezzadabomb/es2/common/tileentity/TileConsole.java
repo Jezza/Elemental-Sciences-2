@@ -51,7 +51,12 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         atomicMaintenance();
 
-        if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 10, 0)) {
+        if (constructorList.isEmpty()) {
+            timeTicked = 0;
+            return;
+        }
+
+        if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 30, 0)) {
             droneBayMaintenance();
             timeTicked = 0;
         }
@@ -84,15 +89,12 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     }
 
     public void testDatShit(TileAtomicConstructor tileAtomic) {
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient()){
-            FMLLog.info("adasasdsaasdasdasas", (Object) null);
-//            ESLogger.info("adasasdsaasdasdasas");            
-        }
-        
         if (constructorList.isEmpty())
             return;
+        droneBayMaintenance();
 
         int result = droneTracker.sendDronesToXYZ(5, new CoordSet(tileAtomic));
+        // ESLogger.info(result);
     }
 
     public void updateRenderCables() {
@@ -176,7 +178,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Pos " + getCoordSet() + System.lineSeparator());
-        stringBuilder.append("Connected Constructors: " + constructorList.size());
+        stringBuilder.append("Connected Constructors: " + constructorList.size() + System.lineSeparator());
         stringBuilder.append(droneTracker.toString());
 
         return stringBuilder.toString();

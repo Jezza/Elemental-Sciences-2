@@ -15,7 +15,7 @@ public class BlockInventoryScanner extends BlockES {
 
     public BlockInventoryScanner(Material par2Material, String name) {
         super(par2Material, name);
-        setBlockUnbreakable();
+        setHardness(2.5F);
         setBlockBounds(0F, 0F, 0F, 1F, 1F / 16F, 1F);
     }
 

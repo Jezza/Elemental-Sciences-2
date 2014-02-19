@@ -131,7 +131,7 @@ public class ItemDebugTool extends ItemES {
 
             if (getDebugMode("Drone Bay - Spawn Drone")) {
                 TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
-                droneBay.addDroneToSpawnList(1);
+                droneBay.addDroneToSpawnList(1, null);
             }
         }
 

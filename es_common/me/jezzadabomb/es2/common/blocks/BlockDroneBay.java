@@ -17,6 +17,7 @@ public class BlockDroneBay extends BlockES {
 
     public BlockDroneBay(Material material, String name) {
         super(material, name);
+        setHardness(3.0F);
     }
 
     @Override
