@@ -12,6 +12,7 @@ public class Strings {
     public static final String DEBUG_TOOL = "debugTool";
     public static final String HOVER_BOOTS = "hoverBoots";
     public static final String PLACEHOLDER = "placeHolder";
+    public static final String PLACEHOLDER_64 = "placeHolder64";
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
     public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
     public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
@@ -23,6 +24,7 @@ public class Strings {
     public static final String TICK_TIMING = "Glasses tick timing constant";
     public static final String PACKET_TIMING = "Glasses idle packet time";
     public static final String QUANTUM_WAIT_TIMING = "Quantum wait timer";
+    public static final String DRONE_BAY_DOOR_TYPE = "Drone Bay Door Type";
 
     // String constants
     public static final String BLACKLIST_DEFAULT = "BlackList default";

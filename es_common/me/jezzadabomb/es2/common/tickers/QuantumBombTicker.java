@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
@@ -44,11 +45,11 @@ public class QuantumBombTicker {
             utilList.clear();
             utilList.addAll(itemList);
             for (EntityItem item : utilList) {
-                if (item.isCollided) {
+                if (item.isCollidedVertically) {
                     item.setDead();
                     itemList.remove(item);
                     World world = item.worldObj;
-                    world.setTileEntity((int) Math.floor(item.posX), (int) Math.floor(item.posY), (int) Math.floor(item.posZ), new TileQuantumStateDisruptor());
+                    world.setBlock((int) Math.floor(item.posX), (int) Math.floor(item.posY), (int) Math.floor(item.posZ), ModBlocks.quantumStateDisrupter);
                 }
             }
         }
@@ -66,10 +67,6 @@ public class QuantumBombTicker {
             ArrayList<EntityLivingBase> entityList = quantumState.getNearbyEntities();
 
             for (EntityLivingBase entity : entityList) {
-                double xVelocity = (entity.posX - (coordSet.getX() + 0.5F));
-                double yVelocity = (entity.posY - (coordSet.getY() + 0.5F));
-                double zVelocity = (entity.posZ - (coordSet.getZ() + 0.5F));
-
                 if (entity instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) entity;
 
@@ -80,6 +77,10 @@ public class QuantumBombTicker {
                         player.capabilities.isFlying = false;
                     player.inventory.dropAllItems();
                 }
+
+                double xVelocity = (entity.posX - (coordSet.getX() + 0.5F));
+                double yVelocity = (entity.posY - (coordSet.getY() + 0.5F));
+                double zVelocity = (entity.posZ - (coordSet.getZ() + 0.5F));
 
                 entity.addVelocity(xVelocity, yVelocity, zVelocity);
                 entity.velocityChanged = true;
@@ -99,7 +100,7 @@ public class QuantumBombTicker {
             if (object instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) object;
                 if (UtilMethods.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), true, ModItems.getPlaceHolderStack("deadCoin"))) {
-                    player.addChatComponentMessage(new ChatComponentText("You're lucky you managed to play a perfect game."));
+                    UtilMethods.addChatMessage(player, "You're lucky you managed to play a perfect game.");
                     continue;
                 }
 

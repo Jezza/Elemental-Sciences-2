@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.entities;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -11,15 +13,6 @@ public abstract class EntityES extends Entity {
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
-
-        updateEntity();
-    }
-
-    @Override
-    public void onEntityUpdate() {
-        super.onEntityUpdate();
-
         updateTick();
 
         moveEntity();
@@ -34,10 +27,17 @@ public abstract class EntityES extends Entity {
         addDataWatchers();
     }
 
+    protected CoordSetF getCurrentBlock() {
+        return new CoordSetF(posX, posY, posZ);
+    }
+
+    /**
+     * Used to init the data watchers.
+     */
     protected abstract void addDataWatchers();
 
+    /**
+     * Called every tick.
+     */
     protected abstract void updateTick();
-
-    protected abstract void updateEntity();
-
 }

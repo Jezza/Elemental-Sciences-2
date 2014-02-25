@@ -10,6 +10,7 @@ import me.jezzadabomb.es2.common.core.network.PacketPipeline;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -46,6 +47,8 @@ public class ElementalSciences2 {
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         ModBlocks.init();
         ModItems.init();
+        ModBlocks.initBlockRecipes();
+        ModItems.initItemRecipes();
         proxy.runClientSide();
         proxy.runServerSide();
     }

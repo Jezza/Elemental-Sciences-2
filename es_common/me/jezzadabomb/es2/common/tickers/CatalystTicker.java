@@ -40,7 +40,7 @@ public class CatalystTicker {
                     Block block = world.getBlock(vb.x, vb.y, vb.z);
                     int bi = Block.getIdFromBlock(block);
                     int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
-                    
+
                     boolean skip = block.isWood(world, vb.x, vb.y, vb.z);
                     if ((vb.id == bi) && ((vb.meta == md) || skip)) {
                         if (limit++ > vb.speed * 3)
@@ -51,6 +51,7 @@ public class CatalystTicker {
                                 if (!vb.player.inventory.addItemStackToInventory(is))
                                     world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
                         UtilMethods.breakBlock(world, vb.x, vb.y, vb.z, block, vb.meta);
+                        world.setBlockToAir(vb.x, vb.y, vb.z);
                         if (vb.lifespan > 0)
                             for (int xx = -1; xx <= 1; xx++)
                                 for (int yy = -1; yy <= 1; yy++)

@@ -6,6 +6,8 @@ import me.jezzadabomb.es2.client.renderers.entity.EntityDroneRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemConsoleRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemSolarLensRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
@@ -17,7 +19,7 @@ import me.jezzadabomb.es2.client.renderers.tile.TileSolarLensRenderer;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -52,7 +54,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void initEntityHandler() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityDrone.class, new EntityDroneRenderer());
+        RenderingRegistry.registerEntityRenderingHandler(EntityConstructorDrone.class, new EntityDroneRenderer());
     }
 
     private void initTileRenderers() {
@@ -67,6 +69,9 @@ public class ClientProxy extends CommonProxy {
 
     private void initItemRenderer() {
         MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
+        MinecraftForgeClient.registerItemRenderer(ModItems.placeHolders, new ItemPlaceHolderRenderer());
+        MinecraftForgeClient.registerItemRenderer(ModItems.placeHolders64, new ItemPlaceHolder64Renderer());
+
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.inventoryScanner), new ItemInventoryScannerRenderer());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.atomicConstructor), new ItemAtomicConstructorRenderer());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.console), new ItemConsoleRenderer());

@@ -3,7 +3,7 @@ package me.jezzadabomb.es2.client.renderers.entity;
 import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
@@ -18,11 +18,14 @@ public class EntityDroneRenderer extends Render {
         shadowSize = 0.1F;
     }
 
-    public void renderDrone(EntityDrone drone, double x, double y, double z, float yaw, float partialTickTime) {
+    public void renderDrone(EntityConstructorDrone drone, double x, double y, double z, float yaw, float partialTickTime) {
         glPushMatrix();
 
         glTranslated(x, y, z);
 
+        // TODO Stop it doing it in unison.
+        glTranslatef(0.0F, (float) ((0.4 * (Math.sin((6 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL)))) / 8), 0.0F);
+        
         float scale = 0.15F;
 
         glScalef(scale, scale, scale);
@@ -41,7 +44,7 @@ public class EntityDroneRenderer extends Render {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTickTime) {
-        if (entity instanceof EntityDrone)
-            renderDrone((EntityDrone) entity, x, y, z, yaw, partialTickTime);
+        if (entity instanceof EntityConstructorDrone)
+            renderDrone((EntityConstructorDrone) entity, x, y, z, yaw, partialTickTime);
     }
 }

@@ -12,17 +12,23 @@ import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.network.packet.client.ConsoleInfoPacket;
+import me.jezzadabomb.es2.common.network.packet.server.DroneBayDoorPacket;
 import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
+import me.jezzadabomb.es2.common.tileentity.TileES;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
@@ -36,7 +42,6 @@ public class ItemDebugTool extends ItemES {
     public int debugMode;
     public boolean canFlood;
     private CoordSet hitBlock;
-    private TileConsole tileConsole;
 
     public ItemDebugTool(String name) {
         super(name);
@@ -58,9 +63,9 @@ public class ItemDebugTool extends ItemES {
             add("Drone Bay - Door control"); // 8
             add("Drone Bay - Spawn Drone"); // 9
             add("Console - Set master"); // 10
-            add("Console - Info"); // 11
-            add("Console - Send To"); // 12
-            add("Quantum - Give Life Coin"); // 13
+            add("Console - Send To"); // 11
+            add("Quantum - Give Life Coin"); // 12
+            add("IMasterable - Locate Master"); // 11
         }
     };
 
@@ -95,14 +100,7 @@ public class ItemDebugTool extends ItemES {
                         Reference.HUD_VERTICAL_ROTATION = !temp;
                         player.addChatMessage(new ChatComponentText("HUD Rotation: " + !temp));
                         break;
-                    case 11:
-                        if (tileConsole != null) {
-                            PacketDispatcher.sendToServer(new ConsoleInfoPacket(tileConsole));
-                        } else {
-                            player.addChatMessage(new ChatComponentText("Master not set."));
-                        }
-                        break;
-                    case 13:
+                    case 12:
                         player.inventory.addItemStackToInventory(ModItems.getPlaceHolderStack("lifeCoin"));
                         break;
                 }
@@ -114,44 +112,45 @@ public class ItemDebugTool extends ItemES {
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
 
-        if (getDebugMode("Console - Send To")) {
-            if (tileConsole != null) {
-                if (UtilMethods.isConstructor(world, x, y, z))
-                    tileConsole.testDatShit((TileAtomicConstructor) world.getTileEntity(x, y, z));
-            } else {
-                addChatMessage(player, "Need to set master");
+        if (!world.isRemote) {
+
+            if (UtilMethods.isConstructor(world, x, y, z)) {
+                if (getDebugMode("Console - Send To")) {
+                    TileAtomicConstructor atomic = (TileAtomicConstructor) world.getTileEntity(x, y, z);
+                    if (atomic.hasMaster()) {
+                        ((TileConsole) atomic.getMaster()).testDatShit(atomic);
+                    } else {
+                        ESLogger.info("No master found.");
+                    }
+                }
+            }
+
+            if (isDroneBay(world, x, y, z)) {
+                if (getDebugMode("Drone Bay - Door control")) {
+                    TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
+                    droneBay.toggleDoor();
+                }
+
+                if (getDebugMode("Drone Bay - Spawn Drone")) {
+                    TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
+                    droneBay.addDroneToSpawnList(1, null);
+                }
             }
         }
 
-        if (isDroneBay(world, x, y, z)) {
-            if (getDebugMode("Drone Bay - Door control")) {
-                TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
-                droneBay.toggleDoor();
-            }
-
-            if (getDebugMode("Drone Bay - Spawn Drone")) {
-                TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
-                droneBay.addDroneToSpawnList(1, null);
-            }
-        }
-
-        if (getDebugMode("Console - Locate Master")) {
-            if (isConstructor(world, x, y, z)) {
-                TileAtomicConstructor tAC = (TileAtomicConstructor) world.getTileEntity(x, y, z);
-                if (tAC.hasConsole()) {
-                    TileConsole tC = tAC.getConsole();
-                    addChatMessage(player, "Found: " + new CoordSet(tC.xCoord, tC.yCoord, tC.zCoord));
+        if (getDebugMode("IMasterable - Locate Master")) {
+            if (isMasterable(world, x, y, z)) {
+                IMasterable masterable = (IMasterable) world.getTileEntity(x, y, z);
+                if (masterable.hasMaster()) {
+                    TileES tES = masterable.getMaster();
+                    addChatMessage(player, "Found: " + tES.getCoordSet());
                 } else {
-                    addChatMessage(player, "No console found.");
+                    addChatMessage(player, "No Master Found.");
                 }
             }
         }
 
         if (world.isRemote) {
-            if (getDebugMode("Console - Set master") && isConsole(world, x, y, z)) {
-                tileConsole = (TileConsole) world.getTileEntity(x, y, z);
-                addChatMessage(player, "Set Console" + new CoordSet(x, y, z));
-            }
             if (isConstructor(world, x, y, z)) {
                 if (getDebugMode("Constructor - Get Nearby Count")) {
                     ArrayList<TileAtomicConstructor> tempList = new ArrayList<TileAtomicConstructor>();
@@ -229,20 +228,24 @@ public class ItemDebugTool extends ItemES {
         UtilMethods.addChatMessage(player, string);
     }
 
-    private boolean isSolarLens(World world, int x, int y, int z) {
-        return world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileSolarLens;
-    }
-
     private boolean isConsole(World world, int x, int y, int z) {
-        return world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileConsole;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileConsole;
     }
 
     private boolean isConstructor(World world, int x, int y, int z) {
-        return world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileAtomicConstructor;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileAtomicConstructor;
     }
 
     private boolean isDroneBay(World world, int x, int y, int z) {
-        return world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileDroneBay;
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof TileDroneBay;
+    }
+
+    private boolean isMasterable(World world, int x, int y, int z) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof IMasterable;
     }
 
     @Override

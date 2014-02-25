@@ -29,8 +29,7 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
     public void updateEntity() {
         hasInventory = UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
         if (!hasInventory && !worldObj.isRemote) {
-            Item item = Item.getItemFromBlock(worldObj.getBlock(xCoord, yCoord, zCoord));
-            worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F, new ItemStack(item)));
+            worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F, new ItemStack(ModBlocks.inventoryScanner)));
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 
             return;

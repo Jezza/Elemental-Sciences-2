@@ -8,7 +8,7 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.drone.DroneTracker;
+import me.jezzadabomb.es2.common.drone.DroneBayTracker;
 import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.interfaces.IRotatable;
 import net.minecraft.entity.item.EntityItem;
@@ -28,14 +28,14 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
     ArrayList<TileAtomicConstructor> constructorList;
 
-    public DroneTracker droneTracker;
+    public DroneBayTracker droneTracker;
 
     BitSet renderCables;
     int direction, timeTicked;
 
     public TileConsole() {
         constructorList = new ArrayList<TileAtomicConstructor>();
-        droneTracker = new DroneTracker();
+        droneTracker = new DroneBayTracker();
 
         renderCables = new BitSet(4);
         direction = timeTicked = 0;
@@ -56,7 +56,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
             return;
         }
 
-        if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 30, 0)) {
+        if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 1, 0)) {
             droneBayMaintenance();
             timeTicked = 0;
         }
@@ -91,10 +91,10 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     public void testDatShit(TileAtomicConstructor tileAtomic) {
         if (constructorList.isEmpty())
             return;
+
         droneBayMaintenance();
 
-        int result = droneTracker.sendDronesToXYZ(5, new CoordSet(tileAtomic));
-        // ESLogger.info(result);
+        int result = droneTracker.sendDronesToXYZ(1, new CoordSet(tileAtomic).toCoordSetF());
     }
 
     public void updateRenderCables() {

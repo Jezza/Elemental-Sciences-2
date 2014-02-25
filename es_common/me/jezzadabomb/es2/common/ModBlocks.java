@@ -7,9 +7,12 @@ import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.blocks.BlockSolarLens;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 
 public class ModBlocks {
 
@@ -28,13 +31,14 @@ public class ModBlocks {
         console = new BlockConsole(Material.anvil, Strings.CONSOLE);
         droneBay = new BlockDroneBay(Material.anvil, Strings.DRONE_BAY);
 
-        initBlockRecipes();
-
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
         HUDBlackLists.addToHUDIgnoreList(droneBay);
     }
 
-    private static void initBlockRecipes() {
-        // TODO all the recipes.
+    public static void initBlockRecipes() {
+        CraftingManager craftingManager = CraftingManager.getInstance();
+
+        craftingManager.addShapelessRecipe(new ItemStack(atomicConstructor), new Object[] { ModItems.getPlaceHolderStack("atomicFrame"), ModItems.getPlaceHolderStack("strengthenedPlate") });
+
     }
 }

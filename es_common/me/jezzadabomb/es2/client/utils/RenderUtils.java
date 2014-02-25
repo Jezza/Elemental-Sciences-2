@@ -2,10 +2,12 @@ package me.jezzadabomb.es2.client.utils;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -212,20 +214,20 @@ public class RenderUtils {
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
             }
             glEnable(GL_BLEND);
-            glDisable(GL_LIGHTING);
         } else {
             glTranslated(-9, 5, 0);
 
             glScaled(2.8D, 2.8D, 2.8D);
-            
+
             //TODO Clean up this pile of shit.
             translateSpecialRender(indexNum, rowNum, false);
             if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
                 translateSpecialRender(indexNum, rowNum, true);
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+                glEnable(GL_ALPHA_TEST);
             }
-            glDisable(GL_LIGHTING);
         }
+        glDisable(GL_LIGHTING);
         resetHUDColour();
         glEnable(GL_CULL_FACE);
         glPopMatrix();

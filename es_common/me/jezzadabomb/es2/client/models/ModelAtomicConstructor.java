@@ -203,10 +203,10 @@ public class ModelAtomicConstructor extends ModelBase {
         Brace2.render(f5);
         Brace3.render(f5);
         Brace4.render(f5);
-        Wall1.render(f5);
-        Wall2.render(f5);
-        Wall3.render(f5);
-        Wall4.render(f5);
+//        Wall1.render(f5);
+//        Wall2.render(f5);
+//        Wall3.render(f5);
+//        Wall4.render(f5);
         TopCorner1.render(f5);
         TopCorner2.render(f5);
         TopCorner3.render(f5);
@@ -215,10 +215,43 @@ public class ModelAtomicConstructor extends ModelBase {
         BottomBrace2.render(f5);
         BottomBrace3.render(f5);
         BottomBrace4.render(f5);
-        // BottomCorner1.render(f5);
-        // BottomCorner2.render(f5);
-        // BottomCorner3.render(f5);
-        // BottomCorner4.render(f5);
+        BottomCorner1.render(f5);
+        BottomCorner2.render(f5);
+        BottomCorner3.render(f5);
+        BottomCorner4.render(f5);
+    }
+
+    public void renderFrame() {
+        float f5 = 0.0625F;
+
+        Pillars1.render(f5);
+        Pillars2.render(f5);
+        Pillars3.render(f5);
+        Pillars4.render(f5);
+        Brace1.render(f5);
+        Brace2.render(f5);
+        Brace3.render(f5);
+        Brace4.render(f5);
+        // Wall1.render(f5);
+        // Wall2.render(f5);
+        // Wall3.render(f5);
+        // Wall4.render(f5);
+        TopCorner1.render(f5);
+        TopCorner2.render(f5);
+        TopCorner3.render(f5);
+        TopCorner4.render(f5);
+        BottomBrace1.render(f5);
+        BottomBrace2.render(f5);
+        BottomBrace3.render(f5);
+        BottomBrace4.render(f5);
+        BottomCorner1.render(f5);
+        BottomCorner2.render(f5);
+        BottomCorner3.render(f5);
+        BottomCorner4.render(f5);
+    }
+
+    public void renderColumn() {
+        Pillars2.render(0.0625F);
     }
 
     public void render(boolean[] checkState) {

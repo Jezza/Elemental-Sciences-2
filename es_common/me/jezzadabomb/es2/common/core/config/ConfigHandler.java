@@ -17,7 +17,7 @@ public class ConfigHandler {
     private static Configuration config;
     private static String var = "Gameplay";
 
-    // Local dev environment.
+    // Local dev environment. Shh, I know this is a stupid way to do it, but it's also simple... :P
     private static final String debugString = "G:\\Minecraft\\forge\\eclipse\\config\\elementalsciences2.cfg";
 
     public static void init(File file) {
@@ -52,6 +52,7 @@ public class ConfigHandler {
 
     public static void getReferenceConstants() {
         Reference.GLASSES_WAIT_TIMER = getConstant(Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "How many ticks it waits before sending an update of an inventory.\n-Clientside");
+        Reference.DRONE_BAY_DOOR_TYPE = getConstant(Strings.DRONE_BAY_DOOR_TYPE, 0, "The way the drone bay opens.\n0: Default, which just slides back.\n1: Opens in a circluar direction, kind of cool, I guess.\n2: A cool look animation that looks cool... :P Try it and find out. \n-Clientside");
     }
 
     public static boolean getBoolean(String path, boolean defaultBoolean, String comment) {

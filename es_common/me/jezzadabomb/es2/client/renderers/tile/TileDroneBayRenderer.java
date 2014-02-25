@@ -6,6 +6,7 @@ import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.ModelDroneBay;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -26,7 +27,7 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
         glPushMatrix();
         glDisable(GL_ALPHA_TEST);
         glDisable(GL_CULL_FACE);
-        
+
         glTranslated(x + 0.5F, y + 0.0255F, z + 0.5F);
 
         if (droneBay.isOverChestRenderType()) {
@@ -38,9 +39,8 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_FRAME);
 
-
         modelDroneBay.renderPart("BaseFrame");
-        
+
         RenderUtils.bindTexture(TextureMaps.DRONE_BAY_DOOR);
 
         float progress = droneBay.getDoorProgress();
@@ -100,7 +100,12 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
     }
 
     private double getAnimationEquation(int door) {
-        float magicNum = 1.1F;
+         float magicNum = 0.1F;
+        if (Reference.DRONE_BAY_DOOR_TYPE == 1)
+            magicNum = 1.1F;
+        else if (Reference.DRONE_BAY_DOOR_TYPE == 2)
+            magicNum = 2.0F;
+
         if (RenderUtils.isPlayerRendering("ZimmyG"))
             magicNum = 2.0F;
         return Math.PI * door / 16 + magicNum;

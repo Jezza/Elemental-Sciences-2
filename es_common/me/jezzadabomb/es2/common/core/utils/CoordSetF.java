@@ -16,7 +16,7 @@ public class CoordSetF {
         this.y = y;
         this.z = z;
     }
-    
+
     public CoordSetF(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -118,6 +118,10 @@ public class CoordSetF {
         double y = tag.getDouble("coordY");
         double z = tag.getDouble("coordZ");
         return new CoordSetF(x, y, z);
+    }
+
+    public CoordSet toCoordSet() {
+        return new CoordSet((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
     }
 
     @Override

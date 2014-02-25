@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -161,18 +162,18 @@ public class UtilMethods {
         return isHoldingItem(ModItems.debugItem);
     }
 
-    public static boolean isRenderType(TileEntity tileEntity, int type) {
-        return tileEntity != null && tileEntity.getBlockType().getRenderType() == type;
+    public static boolean isRenderType(Block block, int type) {
+        return block != null && block.getRenderType() == type;
     }
 
     public static boolean isRenderType(World world, int x, int y, int z, int type) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && isRenderType(tileEntity, type);
+        Block block = world.getBlock(x, y, z);
+        return block != null && isRenderType(block, type);
     }
 
     public static boolean isRenderType(IBlockAccess world, int x, int y, int z, int type) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && isRenderType(tileEntity, type);
+        Block block = world.getBlock(x, y, z);
+        return block != null && isRenderType(block, type);
     }
 
     public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume, ItemStack replaceStack) {
@@ -191,6 +192,7 @@ public class UtilMethods {
         return false;
     }
 
+    // No NBT Comparision.
     public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1 != null && itemStack2 != null && itemStack1.getItemDamage() == itemStack2.getItemDamage() && itemStack1.getItem().equals(itemStack2.getItem());
     }
@@ -270,7 +272,7 @@ public class UtilMethods {
         return coord;
     }
 
-    public static void writeQueueToNBT(LinkedBlockingQueue<CoordSetF> targetSetQueue, NBTTagCompound tag) {
+    public static void writeQueueToNBT(ArrayList<CoordSetF> targetSetQueue, NBTTagCompound tag) {
         tag.setInteger("queueSize", targetSetQueue.size());
 
         int index = 0;
@@ -282,10 +284,10 @@ public class UtilMethods {
         }
     }
 
-    public static LinkedBlockingQueue<CoordSetF> readQueueFromNBT(NBTTagCompound tag) {
+    public static ArrayList<CoordSetF> readQueueFromNBT(NBTTagCompound tag) {
         int length = tag.getInteger("queueSize");
 
-        LinkedBlockingQueue<CoordSetF> coordSetQueue = new LinkedBlockingQueue<CoordSetF>(length);
+        ArrayList<CoordSetF> coordSetQueue = new ArrayList<CoordSetF>(length);
 
         for (int i = 0; i < length; i++) {
             double x = tag.getDouble("coordSetX" + i);
@@ -298,7 +300,7 @@ public class UtilMethods {
         return coordSetQueue;
     }
 
-    public static void writeQueueToBuffer(LinkedBlockingQueue<CoordSetF> targetSetQueue, ByteBuf buffer) {
+    public static void writeQueueToBuffer(ArrayList<CoordSetF> targetSetQueue, ByteBuf buffer) {
         buffer.writeInt(targetSetQueue.size());
 
         for (CoordSetF coordSet : targetSetQueue) {
@@ -308,10 +310,10 @@ public class UtilMethods {
         }
     }
 
-    public static LinkedBlockingQueue<CoordSetF> readQueueFromBuffer(ByteBuf buffer) {
+    public static ArrayList<CoordSetF> readQueueFromBuffer(ByteBuf buffer) {
         int length = buffer.readInt();
 
-        LinkedBlockingQueue<CoordSetF> coordSetQueue = new LinkedBlockingQueue<CoordSetF>(length);
+        ArrayList<CoordSetF> coordSetQueue = new ArrayList<CoordSetF>(length);
 
         for (int i = 0; i < length; i++) {
             double x = buffer.readDouble();
@@ -326,5 +328,47 @@ public class UtilMethods {
 
     public static boolean isEntityWithin(EntityLivingBase entity, CoordSet coordSet, double value) {
         return entity.getDistanceSq(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < (value * value);
+    }
+
+    public static boolean addItemStackToIInventory(IInventory inventory, ItemStack itemStack) {
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            if (inventory.getStackInSlot(i) == null) {
+                inventory.setInventorySlotContents(i, itemStack);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean addItemStackToInventory(ItemStack[] inventory, ItemStack stack, int startIndex) {
+
+        if (stack == null) {
+            return true;
+        }
+        int openSlot = -1;
+        for (int i = startIndex; i < inventory.length; i++) {
+            if (areItemStacksEqual(stack, inventory[i]) && inventory[i].getMaxStackSize() > inventory[i].stackSize) {
+                int hold = inventory[i].getMaxStackSize() - inventory[i].stackSize;
+                if (hold >= stack.stackSize) {
+                    inventory[i].stackSize += stack.stackSize;
+                    stack = null;
+                    return true;
+                } else {
+                    stack.stackSize -= hold;
+                    inventory[i].stackSize += hold;
+                }
+            } else if (inventory[i] == null && openSlot == -1) {
+                openSlot = i;
+            }
+        }
+        if (stack != null) {
+            if (openSlot > -1) {
+                inventory[openSlot] = stack;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 }

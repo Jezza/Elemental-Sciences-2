@@ -1,12 +1,12 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,7 +16,7 @@ public class BlockConsole extends BlockES {
     public BlockConsole(Material material, String name) {
         super(material, name);
         setHardness(5F);
-        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 7F / 8F, 1.0F);
+        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 6F / 8F, 1.0F);
     }
 
     @Override
@@ -48,22 +48,17 @@ public class BlockConsole extends BlockES {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectorX, float hitVectorY, float hitVectorZ) {
-        return false;
-    }
+        if (!world.isRemote) {
+            TileConsole tileConsole = (TileConsole) world.getTileEntity(x, y, z);
 
-    private TileConsole getNearbyMaster(World world, int x, int y, int z) {
-        for (int i = -1; i < 2; i++)
-            for (int j = -1; j < 2; j++)
-                for (int k = -1; k < 2; k++) {
-                    if (i == 0 && j == 0 && k == 0 || !(world.getTileEntity(x + i, y + j, z + k) != null))
-                        continue;
-                    if (world.getTileEntity(x + i, y + j, z + k) instanceof TileAtomicConstructor) {
-                        TileAtomicConstructor atomic = ((TileAtomicConstructor) world.getTileEntity(x + i, y + j, z + k));
-                        if (atomic.hasConsole())
-                            return atomic.getConsole();
-                    }
-                }
-        return null;
+            String[] consoleInfo = tileConsole.toString().split(System.lineSeparator());
+
+            for (String str : consoleInfo)
+                player.addChatComponentMessage(new ChatComponentText(str));
+        }
+
+        // TODO Interface.
+        return false;
     }
 
     @Override
@@ -80,5 +75,4 @@ public class BlockConsole extends BlockES {
     public TileEntity getTileEntity() {
         return new TileConsole();
     }
-
 }

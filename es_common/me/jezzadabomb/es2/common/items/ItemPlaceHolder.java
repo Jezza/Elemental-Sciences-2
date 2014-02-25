@@ -7,11 +7,13 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
+import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -27,57 +29,27 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemPlaceHolder extends ItemES {
+public class ItemPlaceHolder extends ItemMetaES {
 
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
-    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "glassesLens", "frameSegment", "ironBar", "spectrumSensor", "constructorDrone", "selectiveEMPTrigger", "empTrigger", "wrenchThing" };
+    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "constructorDrone", "wrenchThing", "atomicFrame" };
 
     public ItemPlaceHolder(String name) {
         super(name);
-        setHasSubtypes(true);
         setMaxStackSize(1);
     }
 
-    protected void addInformation(EntityPlayer player, ItemStack stack) {
-        switch (stack.getItemDamage()) {
-            case 0:
-                addToBothLists("You got it for getting");
-                addToBothLists("a perfect pacman game.");
-                break;
-            case 1:
-                addToBothLists("Just an ordinary coin.");
-                break;
-            case 2:
-                addToBothLists("A carefully crafted, highly fragile glass lens.");
-                break;
-            case 3:
-                addToBothLists("A tough piece of metal, could be used for a frame.");
-                break;
-            case 4:
-                addToBothLists("A solid iron rod.");
-                break;
-            case 5:
-                addToBothLists("A very fragile crystal.");
-                break;
-            case 6:
-                infoList.add("A shiny drone for shiny things.");
-                shiftList.add("He shall be called Geoff.");
-                break;
-            case 9:
-                if (!stack.hasTagCompound()) {
-                    stack.setTagCompound(new NBTTagCompound());
-                    stack.getTagCompound().setInteger("Durablity", 512);
-                }
-                int damage = stack.getTagCompound().getInteger("Durablity");
-                addToBothLists("Uses left: " + damage);
-                break;
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity par3Entity, int par4, boolean par5) {
+        super.onUpdate(stack, world, par3Entity, par4, par5);
+        if (ModItems.isPlaceHolderStack("wrenchThing", stack, true) && !stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setInteger("Durablity", 512);
         }
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (isDamageType("wrenchThing", stack) && UtilMethods.isDismantable(world, x, y, z)) {
+        if (ModItems.isPlaceHolderStack("wrenchThing", stack, true) && UtilMethods.isDismantable(world, x, y, z)) {
             IDismantleable dismantle = (IDismantleable) world.getTileEntity(x, y, z);
             if (dismantle.canDismantle(player, world, x, y, z)) {
                 ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, !player.capabilities.isCreativeMode);
@@ -92,77 +64,44 @@ public class ItemPlaceHolder extends ItemES {
             }
             player.swingItem();
         }
+
         return false;
-    }
-
-    @Override
-    public void onUpdate(ItemStack stack, World world, Entity par3Entity, int par4, boolean par5) {
-        super.onUpdate(stack, world, par3Entity, par4, par5);
-        if (isDamageType("wrenchThing", stack) && !stack.hasTagCompound()) {
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setInteger("Durablity", 512);
-        }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (isDamageType("empTrigger", stack)) {
-            float range = 5.0F; // Player at the centre.
-            List<Object> droneList = world.getEntitiesWithinAABB(EntityDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
-            for (Object object : droneList) {
-                if (object instanceof EntityDrone) {
-                    EntityDrone drone = (EntityDrone) object;
-                    drone.setDead();
-                    ItemStack droneStack = ModItems.getPlaceHolderStack("constructorDrone");
-                    if (!player.capabilities.isCreativeMode && !player.inventory.addItemStackToInventory(droneStack))
-                        world.spawnEntityInWorld(new EntityItem(world, drone.posX, drone.posY, drone.posZ, droneStack));
-                }
-            }
-            if (!world.isRemote)
-                UtilMethods.addChatMessage(player, "Removed " + droneList.size() + " drones.");
-            player.swingItem();
-            return droneList.size() > 0 ? player.capabilities.isCreativeMode ? stack : player.inventory.decrStackSize(player.inventory.currentItem, 1) : stack;
-        }
-        return stack;
-    }
-
-    public boolean isDamageType(String name, ItemStack stack) {
-        return stack.getItemDamage() == getDamageFromString(name);
-    }
-
-    public int getDamageFromString(String name) {
-        for (int i = 0; i < names.length; i++)
-            if (names[i].equals(name))
-                return i;
-        return -1;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        int start = 1;
-        if (Reference.isDebugMode)
-            start = 0;
-        for (int i = start; i < names.length; i++)
+        for (int i = 1; i < names.length; i++)
             list.add(new ItemStack(this, 1, i));
     }
-
+    
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[names.length];
-        for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
+    protected void addInformation(EntityPlayer player, ItemStack stack) {
+        switch(stack.getItemDamage()){
+            case 0:
+                addToBothLists("You got it for getting");
+                addToBothLists("a perfect pacman game.");
+                break;
+            case 1:
+                addToBothLists("Just an ordinary coin.");
+                break;
+            case 2:
+                infoList.add("A shiny drone for shiny things.");
+                shiftList.add("He shall be called Geoff.");
+                break;
+            case 3:
+                if (!stack.hasTagCompound()) {
+                    stack.setTagCompound(new NBTTagCompound());
+                    stack.getTagCompound().setInteger("Durablity", 512);
+                }
+                int damage = stack.getTagCompound().getInteger("Durablity");
+                addToBothLists("Uses left: " + damage);
+                break;
+        }
     }
 
     @Override
-    public IIcon getIconFromDamage(int damage) {
-        damage = MathHelper.clipInt(damage, names.length - 1);
-        return icons[damage];
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack itemStack) {
-        return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length - 1)];
+    public String[] getNames() {
+        return names;
     }
 }

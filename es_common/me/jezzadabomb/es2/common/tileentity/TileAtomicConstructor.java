@@ -6,8 +6,9 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
+import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.interfaces.IDismantleable;
+import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class TileAtomicConstructor extends TileES implements IDismantleable {
+public class TileAtomicConstructor extends TileES implements IDismantleable, IMasterable {
 
     boolean[] renderMatrix;
     TileConsole tileConsole;
@@ -47,7 +48,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
                 return;
             }
         } else {
-            canSearch = ++timeTicked >= 60;
+            canSearch = ++timeTicked >= UtilMethods.getTimeInTicks(0, 0, 5, 0);
             return;
         }
 
@@ -76,8 +77,8 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
                 for (int k = -1; k < 2; k++)
                     if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
-                        if (tile.hasConsole()) {
-                            tileConsole = tile.getConsole();
+                        if (tile.hasMaster()) {
+                            tileConsole = ((TileConsole) tile.getMaster());
                             return true;
                         }
                     }
@@ -94,57 +95,6 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
                         return true;
                     }
         return false;
-    }
-
-    public boolean hasConsole() {
-        return tileConsole != null;
-    }
-
-    public TileConsole getConsole() {
-        return tileConsole;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-
-        boolean flag = tag.getBoolean("hasTileConsole");
-
-        if (flag) {
-            String loc = tag.getString("consoleLoc");
-            int[] consoleLoc = UtilMethods.getArrayFromString(loc);
-
-            TileEntity tileEntity = worldObj.getTileEntity(consoleLoc[0], consoleLoc[1], consoleLoc[2]);
-            if (tileEntity instanceof TileConsole)
-                tileConsole = (TileConsole) tileEntity;
-        }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-
-        boolean flag = tileConsole != null;
-
-        tag.setBoolean("hasTileConsole", flag);
-
-        if (flag) {
-            String consoleLoc = UtilMethods.getLocFromXYZ(tileConsole.xCoord, tileConsole.yCoord, tileConsole.zCoord);
-            tag.setString("consoleLoc", consoleLoc);
-        }
-
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.func_148857_g());
-    }
-
-    @Override
-    public Packet getDescriptionPacket() {
-        NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
     }
 
     public boolean[] getRenderMatrix() {
@@ -178,13 +128,31 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
                     // Yoda conditions! No null check, because effort.
                     localArray[index++] = ModBlocks.atomicConstructor.equals(worldObj.getBlock(xCoord + i, yCoord + j, zCoord + k));
                 }
-        return renderMatrix = new boolean[] { (!(localArray[10])), (!(localArray[0] && localArray[1] && localArray[3] && localArray[4] && localArray[9] && localArray[10] && localArray[12])), (!(localArray[9] && localArray[10] && localArray[12] && localArray[17] && localArray[18] && localArray[20] && localArray[21])), (!(localArray[11] && localArray[13] && localArray[22] && localArray[19] && localArray[21] && localArray[18] && localArray[10])), (!(localArray[10] && localArray[11] && localArray[13] && localArray[2] && localArray[5] && localArray[1] && localArray[4])), (!(localArray[12] && localArray[14] && localArray[15])), (!(localArray[4] && localArray[7] && localArray[15])), (!(localArray[15] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[16] && localArray[13])), (!(localArray[21] && localArray[22] && localArray[13])), (!(localArray[12] && localArray[4] && localArray[3])), (!(localArray[4] && localArray[5] && localArray[13])), (!(localArray[12] && localArray[21] && localArray[20])), (!(localArray[15] && localArray[7] && localArray[4] && localArray[5] && localArray[13] && localArray[16] && localArray[8])), (!(localArray[4] && localArray[7] && localArray[15] && localArray[12] && localArray[3] && localArray[6] && localArray[14])), (!(localArray[15] && localArray[16] && localArray[13] && localArray[22] && localArray[25] && localArray[24] && localArray[21])), (!(localArray[15] && localArray[14] && localArray[12] && localArray[21] && localArray[20] && localArray[23] && localArray[24])), (!(localArray[10] && localArray[9] && localArray[12])), (!(localArray[10] && localArray[21] && localArray[18])), (!(localArray[10] && localArray[11] && localArray[13])), (!(localArray[10] && localArray[1] && localArray[4])) };
-    }
-
-    public boolean isPartRendering(int pos) {
-        if (renderMatrix != null)
-            return renderMatrix[pos];
-        return false;
+        // @formatter:off
+        return renderMatrix = new boolean[] {
+                (!(localArray[10])),
+                (!(localArray[0] && localArray[1] && localArray[3] && localArray[4] && localArray[9] && localArray[10] && localArray[12])),
+                (!(localArray[9] && localArray[10] && localArray[12] && localArray[17] && localArray[18] && localArray[20] && localArray[21])),
+                (!(localArray[11] && localArray[13] && localArray[22] && localArray[19] && localArray[21] && localArray[18] && localArray[10])),
+                (!(localArray[10] && localArray[11] && localArray[13] && localArray[2] && localArray[5] && localArray[1] && localArray[4])),
+                (!(localArray[12] && localArray[14] && localArray[15])),
+                (!(localArray[4] && localArray[7] && localArray[15])), 
+                (!(localArray[15] && localArray[24] && localArray[21])),
+                (!(localArray[15] && localArray[16] && localArray[13])),
+                (!(localArray[21] && localArray[22] && localArray[13])),
+                (!(localArray[12] && localArray[4] && localArray[3])),
+                (!(localArray[4] && localArray[5] && localArray[13])),
+                (!(localArray[12] && localArray[21] && localArray[20])),
+                (!(localArray[15] && localArray[7] && localArray[4] && localArray[5] && localArray[13] && localArray[16] && localArray[8])),
+                (!(localArray[4] && localArray[7] && localArray[15] && localArray[12] && localArray[3] && localArray[6] && localArray[14])),
+                (!(localArray[15] && localArray[16] && localArray[13] && localArray[22] && localArray[25] && localArray[24] && localArray[21])),
+                (!(localArray[15] && localArray[14] && localArray[12] && localArray[21] && localArray[20] && localArray[23] && localArray[24])),
+                (!(localArray[10] && localArray[9] && localArray[12])),
+                (!(localArray[10] && localArray[21] && localArray[18])),
+                (!(localArray[10] && localArray[11] && localArray[13])),
+                (!(localArray[10] && localArray[1] && localArray[4]))
+        };
+        // @formatter:on
     }
 
     @Override
@@ -203,5 +171,21 @@ public class TileAtomicConstructor extends TileES implements IDismantleable {
     @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
         return true;
+    }
+
+    @Override
+    public void setMaster(TileES tileES) {
+        if (tileES instanceof TileConsole)
+            tileConsole = (TileConsole) tileES;
+    }
+
+    @Override
+    public boolean hasMaster() {
+        return tileConsole != null;
+    }
+
+    @Override
+    public TileES getMaster() {
+        return tileConsole;
     }
 }

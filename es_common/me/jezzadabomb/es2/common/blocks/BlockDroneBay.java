@@ -36,6 +36,11 @@ public class BlockDroneBay extends BlockES {
     }
 
     @Override
+    public boolean canPlaceBlockAt(World world, int x, int y, int z) {
+        return UtilMethods.isIInventory(world, x, y - 1, z);
+    }
+    
+    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;
     }

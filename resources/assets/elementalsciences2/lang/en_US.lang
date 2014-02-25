@@ -8,10 +8,24 @@ item.lifeCoin.name=Inconspicuous Coin
 item.deadCoin.name=Inconspicuous Coin
 item.constructorDrone.name=Constructor Drone
 item.quantumStateDisrupterCatalyst.name=Quantum State Disrupter
+item.wrenchThing.name=[TEMP] Wrench
+item.atomicFrame.name=Atomic Constructor Frame
+item.glassesLens.name=Glass Lens
+item.ironStrip.name=Metal Strip
+item.ironBar.name=Iron Bar
+item.spectrumSensor.name=Spectrum Sensor
+item.selectiveEMPTrigger.name=Recall Device
+item.empTrigger.name=EMP Device
+item.strengthenedIron.name=Strengthened Iron Ingot
+item.strengthenedPlate.name=Strengthened Iron Plate
+item.strengthenedIronBar.name=Strengthened Iron Bar
+item.ironPlate.name=Iron Plating
 
 tile.inventoryScanner.name=Inventory Scanner
 tile.atomicConstructor.name=Atomic Constructor
 tile.quantumStateDisrupter.name=Quantum State Disrupter
+tile.console.name=Console
+tile.droneBay.name=Drone Bay
 
 death.attack.atomicWave0=%1$s had their atomic structure shifted.
 death.attack.atomicWave1=%1$s had their molecular bonds vapourized.

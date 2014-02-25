@@ -33,6 +33,10 @@ public class MathHelper {
         return value >= (target - tolerance) && value <= (target + tolerance);
     }
 
+    public static boolean withinRange(double value, double tolerance) {
+        return value >= (0.0D - tolerance) && value <= (0.0D + tolerance);
+    }
+
     public static boolean withinRange(float value, float target, float tolerance) {
         return value >= (target - tolerance) && value <= (target + tolerance);
     }
