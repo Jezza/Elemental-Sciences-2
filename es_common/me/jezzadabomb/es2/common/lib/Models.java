@@ -1,11 +1,11 @@
 package me.jezzadabomb.es2.common.lib;
 
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class Models {
-
-    public static final String MODEL_LOCATION = "/assets/" + Reference.MOD_ID.toLowerCase() + "/models/";
-
     public static final ResourceLocation ATOMIC_CATALYST_MAIN = getModelLocation("AtomicCatalystCube");
     public static final ResourceLocation ATOMIC_CATALYST_ELECTRON1 = ATOMIC_CATALYST_MAIN;
     public static final ResourceLocation ATOMIC_CATALYST_ELECTRON2 = ATOMIC_CATALYST_MAIN;
@@ -17,7 +17,7 @@ public class Models {
     public static final ResourceLocation CONSTRUCTOR_DRONE = getModelLocation("constructorDrone");
 
     private static ResourceLocation getModelLocation(String name) {
-        return new ResourceLocation(Reference.MOD_ID.toLowerCase(), "models\\" + name + ".obj");
+        return new ResourceLocation(Reference.MOD_ID.toLowerCase(), "models/" + name + ".obj");
     }
 
 }

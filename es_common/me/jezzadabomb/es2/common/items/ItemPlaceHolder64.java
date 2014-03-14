@@ -14,7 +14,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 public class ItemPlaceHolder64 extends ItemMetaES {
-    public static final String[] names = new String[] { "glassesLens", "ironStrip", "ironBar", "spectrumSensor", "selectiveEMPTrigger", "empTrigger", "strengthenedIron", "strengthenedPlate", "ironPlate", "strengthenedIronBar"};
+    public static final String[] names = new String[] { "glassesLens", "ironStrip", "ironBar", "spectrumSensor", "selectiveEMPTrigger", "empTrigger", "strengthenedIron", "strengthenedPlate", "ironPlate", "strengthenedIronBar", "atomicFrame"};
 
     public ItemPlaceHolder64(String name) {
         super(name);

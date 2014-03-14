@@ -9,6 +9,8 @@ import static org.lwjgl.opengl.GL11.glRotated;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.models.ModelPlate;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
@@ -16,6 +18,7 @@ import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
+@SideOnly(Side.CLIENT)
 public class ItemConsoleRenderer implements IItemRenderer {
 
     ModelPlate modelPlate;
@@ -72,7 +75,7 @@ public class ItemConsoleRenderer implements IItemRenderer {
         glPushMatrix();
         glTranslatef(0.5F, 1.5F - 0.625F, 0.5F);
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i <= 1; i++) {
             RenderUtils.bindTexture(TextureMaps.CONSOLE_BASE);
             modelPlate.render();
             glTranslatef(0.0F, -0.06F, 0.0F);

@@ -10,12 +10,12 @@ import io.netty.handler.codec.MessageToMessageCodec;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
-import me.jezzadabomb.es2.common.network.packet.client.InventoryRequestPacket;
-import me.jezzadabomb.es2.common.network.packet.client.SetBlockChunkPacket;
-import me.jezzadabomb.es2.common.network.packet.server.HoverHandlerPacket;
-import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.network.packet.server.NeighbourChangedPacket;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
+import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
+import me.jezzadabomb.es2.common.core.network.packet.client.SetBlockChunkPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.HoverHandlerPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

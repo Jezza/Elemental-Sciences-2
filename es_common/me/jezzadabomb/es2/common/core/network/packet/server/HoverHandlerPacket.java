@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network.packet.server;
+package me.jezzadabomb.es2.common.core.network.packet.server;
 
 import java.io.IOException;
 import java.util.Random;
@@ -15,7 +15,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler.HoveringPlayer;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 
 public class HoverHandlerPacket implements IPacket {
 

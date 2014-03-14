@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network.packet;
+package me.jezzadabomb.es2.common.core.network.packet;
 
 import java.io.IOException;
 

@@ -1,6 +1,8 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
 import static org.lwjgl.opengl.GL11.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import me.jezzadabomb.es2.client.models.ModelSolarLens;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -9,6 +11,7 @@ import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
+@SideOnly(Side.CLIENT)
 public class ItemSolarLensRenderer implements IItemRenderer {
 
     ModelSolarLens modelSolarLens;

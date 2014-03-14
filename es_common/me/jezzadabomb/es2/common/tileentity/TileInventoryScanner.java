@@ -2,15 +2,17 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.relauncher.Side;
+
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -85,5 +87,10 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
     @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
         return true;
+    }
+
+    @Override
+    public Object getGui(int id, Side side, EntityPlayer player) {
+        return null;
     }
 }

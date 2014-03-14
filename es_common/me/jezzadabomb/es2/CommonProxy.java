@@ -22,10 +22,9 @@ public class CommonProxy {
     public void runServerSide() {
         MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
         MinecraftForge.EVENT_BUS.register(new HoverHandler());
-
     }
 
-    public void registerTickHandlers() {
+    public void initServerHandlers() {
         FMLCommonHandler.instance().bus().register(quantumBomb);
         FMLCommonHandler.instance().bus().register(new CatalystTicker());
     }
@@ -40,9 +39,5 @@ public class CommonProxy {
     }
 
     public void runClientSide() {
-    }
-
-    public Side getSide(){
-        return Side.SERVER;
     }
 }

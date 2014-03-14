@@ -4,35 +4,42 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
+import me.jezzadabomb.es2.common.core.utils.CoordSetD;
+import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-
 public abstract class EntityDrone extends EntityES implements IEntityAdditionalSpawnData {
 
-    protected ArrayList<CoordSetF> targetQueue = new ArrayList<CoordSetF>();
+    protected ArrayList<CoordSetD> targetQueue;
     protected double xSpeed, ySpeed, zSpeed;
     protected boolean moving;
+    public int randomHoverSeed;
 
     public EntityDrone(World par1World) {
         super(par1World);
+        targetQueue = new ArrayList<CoordSetD>(30);
+        randomHoverSeed = new Random().nextInt(100);
 
-        setSize(0.15F, 0.15F);
+        setSize(0.3F, 0.3F);
         noClip = true;
     }
 
     @Override
     protected void updateTick() {
-        preTick();
+        if (worldObj == null)
+            if (preWorldProcessing())
+                return;
+
+        if (preTick())
+            return;
 
         droneTick();
 
@@ -42,6 +49,9 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
     }
 
     public void moveDrone() {
+        // if (worldObj.isRemote)
+        // return;
+
         if (targetQueue.isEmpty()) {
             if (moving) {
                 motionX = motionY = motionZ = 0.0F;
@@ -53,13 +63,13 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         if (!moving)
             moving = true;
 
-        CoordSetF targetSet = targetQueue.get(0);
+        CoordSetD targetSet = targetQueue.get(0);
 
         double xDisplace = targetSet.getX() - posX;
         double yDisplace = targetSet.getY() - posY;
         double zDisplace = targetSet.getZ() - posZ;
 
-        if (!MathHelper.withinRange(xDisplace, xSpeed)) {
+        if (!MathHelper.withinRange(xDisplace, getMovementXTolerance())) {
             if (xDisplace < 0) {
                 motionX = -xSpeed;
             } else if (xDisplace > 0) {
@@ -70,7 +80,7 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         } else {
             motionX = 0.0F;
         }
-        if (!MathHelper.withinRange(yDisplace, ySpeed)) {
+        if (!MathHelper.withinRange(yDisplace, getMovementYTolerance())) {
             if (yDisplace < 0) {
                 motionY = -ySpeed;
             } else if (yDisplace > 0) {
@@ -81,7 +91,7 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         } else {
             motionY = 0.0F;
         }
-        if (!MathHelper.withinRange(zDisplace, zSpeed)) {
+        if (!MathHelper.withinRange(zDisplace, getMovementZTolerance())) {
             if (zDisplace < 0) {
                 motionZ = -zSpeed;
             } else if (zDisplace > 0) {
@@ -99,12 +109,17 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         }
     }
 
-    public void replaceCoordSetQueue(CoordSetF... coordSets) {
+    public void replaceCoordSetQueue(CoordSetD... coordSets) {
         targetQueue.clear();
         targetQueue.addAll(Arrays.asList(coordSets));
     }
 
-    public boolean addCoordSetFToQueue(CoordSetF coordSet, int pos) {
+    public void addCoordSetDToQueue(CoordSetD... coordSet) {
+        if (coordSet.length > 0)
+            targetQueue.addAll(Arrays.asList(coordSet));
+    }
+
+    public boolean addCoordSetDToQueue(CoordSetD coordSet, int pos) {
         if (coordSet == null)
             return false;
 
@@ -112,11 +127,11 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         return targetQueue.contains(coordSet);
     }
 
-    public boolean addCoordSetFToHead(CoordSetF coordSet) {
-        return addCoordSetFToQueue(coordSet, 0);
+    public boolean addCoordSetDToHead(CoordSetD coordSet) {
+        return addCoordSetDToQueue(coordSet, 0);
     }
 
-    public boolean addCoordSetFToQueue(CoordSetF coordSet) {
+    public boolean addCoordSetDToQueue(CoordSetD coordSet) {
         if (coordSet == null)
             return false;
 
@@ -187,7 +202,21 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
         return par1 < 103 * d1;
     }
 
-    public abstract void preTick();
+    public double getMovementXTolerance() {
+        return xSpeed;
+    }
+
+    public double getMovementYTolerance() {
+        return ySpeed;
+    }
+
+    public double getMovementZTolerance() {
+        return zSpeed;
+    }
+
+    public abstract boolean preWorldProcessing();
+
+    public abstract boolean preTick();
 
     public abstract void droneTick();
 

@@ -38,27 +38,26 @@ public class CatalystTicker {
 
                 if (vb != null) {
                     Block block = world.getBlock(vb.x, vb.y, vb.z);
-                    int bi = Block.getIdFromBlock(block);
                     int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
 
-                    boolean skip = block.isWood(world, vb.x, vb.y, vb.z);
-                    if ((vb.id == bi) && ((vb.meta == md) || skip)) {
+                    boolean skip = vb.block.isWood(world, vb.x, vb.y, vb.z);
+                    if ((vb.block.equals(block)) && ((vb.meta == md) || skip)) {
                         if (limit++ > vb.speed * 3)
                             didSomething = true;
-                        ArrayList<ItemStack> ret = block.getDrops(world, vb.x, vb.y, vb.z, md, vb.fortune);
+                        ArrayList<ItemStack> ret = vb.block.getDrops(world, vb.x, vb.y, vb.z, md, vb.fortune);
                         for (ItemStack is : ret)
                             if (!vb.player.capabilities.isCreativeMode)
                                 if (!vb.player.inventory.addItemStackToInventory(is))
                                     world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
-                        UtilMethods.breakBlock(world, vb.x, vb.y, vb.z, block, vb.meta);
-                        world.setBlockToAir(vb.x, vb.y, vb.z);
+                        UtilMethods.breakBlock(world, vb.x, vb.y, vb.z, vb.block, vb.meta);
+
                         if (vb.lifespan > 0)
                             for (int xx = -1; xx <= 1; xx++)
                                 for (int yy = -1; yy <= 1; yy++)
                                     for (int zz = -1; zz <= 1; zz++) {
-                                        if (((xx == 0) && (yy == 0) && (zz == 0)) || ((Block.getIdFromBlock(world.getBlock(vb.x + xx, vb.y + yy, vb.z + zz)) != vb.id) && ((world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.meta) || !skip)))
+                                        if (((xx == 0) && (yy == 0) && (zz == 0)) || (!(world.getBlock(vb.x + xx, vb.y + yy, vb.z + zz).equals(vb.block)) && ((world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.meta) || !skip)))
                                             continue;
-                                        queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.id, vb.meta, vb.lifespan - 1, vb.player, vb.fortune, vb.speed));
+                                        queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.block, vb.meta, vb.lifespan - 1, vb.player, vb.fortune, vb.speed));
                                     }
 
                     }
@@ -80,26 +79,26 @@ public class CatalystTicker {
             breakList.put(Integer.valueOf(dim), new LinkedBlockingQueue<VirtualBreaker>());
             queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
         }
-        queue.offer(new VirtualBreaker(x, y, z, Block.getIdFromBlock(block), meta, life, player, fortune, speed - 1));
+        queue.offer(new VirtualBreaker(x, y, z, block, meta, life, player, fortune, speed - 1));
         breakList.put(Integer.valueOf(dim), queue);
     }
 
     public static class VirtualBreaker {
+        Block block;
         int x = 0;
         int y = 0;
         int z = 0;
-        int id = 0;
         int meta = 0;
         int lifespan = 0;
         int fortune = 0;
         int speed = 0;
         EntityPlayer player = null;
 
-        VirtualBreaker(int x, int y, int z, int id, int meta, int life, EntityPlayer p, int fortune, int speed) {
+        VirtualBreaker(int x, int y, int z, Block block, int meta, int life, EntityPlayer p, int fortune, int speed) {
             this.x = x;
             this.y = y;
             this.z = z;
-            this.id = id;
+            this.block = block;
             this.meta = meta;
             this.lifespan = life;
             this.fortune = fortune;

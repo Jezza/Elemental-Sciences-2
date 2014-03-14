@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Random;
 
+import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.ModBlocks;
+import me.jezzadabomb.es2.common.containers.ContainerConsole;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
+import me.jezzadabomb.es2.common.core.interfaces.IRotatable;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.drone.DroneBayTracker;
-import me.jezzadabomb.es2.common.interfaces.IDismantleable;
-import me.jezzadabomb.es2.common.interfaces.IRotatable;
+import me.jezzadabomb.es2.common.gui.GuiConsole;
+import me.jezzadabomb.es2.common.gui.GuiConsoleTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -18,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -28,26 +34,58 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
     ArrayList<TileAtomicConstructor> constructorList;
 
-    public DroneBayTracker droneTracker;
+    public DroneBayTracker droneBayTracker;
+    public GuiConsoleTracker guiTracker;
+
+    public int randomHoverSeed;
 
     BitSet renderCables;
     int direction, timeTicked;
 
+    // Relative to the console.
+    float guiX, guiY, guiZ;
+    boolean notified;
+
     public TileConsole() {
         constructorList = new ArrayList<TileAtomicConstructor>();
-        droneTracker = new DroneBayTracker();
+        droneBayTracker = new DroneBayTracker();
+        guiTracker = new GuiConsoleTracker();
 
         renderCables = new BitSet(4);
         direction = timeTicked = 0;
+        notified = false;
+        randomHoverSeed = new Random().nextInt(100);
 
         updateRenderCables();
         droneBayMaintenance();
     }
 
+    public void openGui(World world, EntityPlayer player) {
+        guiTracker.openGui(world, player);
+    }
+
+    public void closeGui(World world, EntityPlayer player) {
+        guiTracker.closeGui(world, player);
+    }
+
+    public boolean isGuiOpened() {
+        return !guiTracker.getPlayerList().isEmpty();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        return AxisAlignedBB.getAABBPool().getAABB(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 2.0F, zCoord + 1.0F);
+    }
+
     @Override
     public void updateEntity() {
-        if (!droneTracker.hasMaster())
-            droneTracker.setMaster(this);
+        if (!notified && worldObj != null) {
+            notifyNearbyConstructors();
+            notified = true;
+        }
+        // notifyNearbyConstructors();
+        if (!droneBayTracker.hasMaster())
+            droneBayTracker.setMaster(this);
 
         atomicMaintenance();
 
@@ -56,15 +94,32 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
             return;
         }
 
-        if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 1, 0)) {
-            droneBayMaintenance();
-            timeTicked = 0;
-        }
+        // if (++timeTicked > UtilMethods.getTimeInTicks(0, 0, 1, 0)) {
+        droneBayMaintenance();
+        // timeTicked = 0;
+        // }
     }
 
     private void droneBayMaintenance() {
         if (worldObj != null && !worldObj.isRemote)
-            droneTracker.updateTick();
+            droneBayTracker.updateTick();
+    }
+
+    private void notifyNearbyConstructors() {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                for (int k = -1; k <= 1; k++) {
+                    if (i == 0 && j == 0 && k == 0)
+                        continue;
+                    if (UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
+                        TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                        if (atomic.hasMaster())
+                            continue;
+                        atomic.setMaster(this);
+                    }
+                }
+            }
+        }
     }
 
     public TileAtomicConstructor getRandomConstructor() {
@@ -94,7 +149,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         droneBayMaintenance();
 
-        int result = droneTracker.sendDronesToXYZ(1, new CoordSet(tileAtomic).toCoordSetF());
+        int result = droneBayTracker.sendDronesToXYZ(1, new CoordSet(tileAtomic).toCoordSetD());
     }
 
     public void updateRenderCables() {
@@ -179,8 +234,19 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         stringBuilder.append("Pos " + getCoordSet() + System.lineSeparator());
         stringBuilder.append("Connected Constructors: " + constructorList.size() + System.lineSeparator());
-        stringBuilder.append(droneTracker.toString());
+        stringBuilder.append(droneBayTracker.toString());
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public Object getGui(int id, Side side, EntityPlayer player) {
+        if (side.isClient()) {
+            return new GuiConsole(player.inventory, this);
+        }
+        if (side.isServer()) {
+            return new ContainerConsole(player.inventory, this);
+        }
+        return null;
     }
 }

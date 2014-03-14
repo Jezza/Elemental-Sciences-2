@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.interfaces.IDismantleable;
+import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.items.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -272,11 +272,11 @@ public class UtilMethods {
         return coord;
     }
 
-    public static void writeQueueToNBT(ArrayList<CoordSetF> targetSetQueue, NBTTagCompound tag) {
+    public static void writeQueueToNBT(ArrayList<CoordSetD> targetSetQueue, NBTTagCompound tag) {
         tag.setInteger("queueSize", targetSetQueue.size());
 
         int index = 0;
-        for (CoordSetF coordSet : targetSetQueue) {
+        for (CoordSetD coordSet : targetSetQueue) {
             tag.setDouble("coordSetX" + index, coordSet.getX());
             tag.setDouble("coordSetY" + index, coordSet.getY());
             tag.setDouble("coordSetZ" + index, coordSet.getZ());
@@ -284,43 +284,43 @@ public class UtilMethods {
         }
     }
 
-    public static ArrayList<CoordSetF> readQueueFromNBT(NBTTagCompound tag) {
+    public static ArrayList<CoordSetD> readQueueFromNBT(NBTTagCompound tag) {
         int length = tag.getInteger("queueSize");
 
-        ArrayList<CoordSetF> coordSetQueue = new ArrayList<CoordSetF>(length);
+        ArrayList<CoordSetD> coordSetQueue = new ArrayList<CoordSetD>(length);
 
         for (int i = 0; i < length; i++) {
             double x = tag.getDouble("coordSetX" + i);
             double y = tag.getDouble("coordSetY" + i);
             double z = tag.getDouble("coordSetZ" + i);
 
-            coordSetQueue.add(new CoordSetF(x, y, z));
+            coordSetQueue.add(new CoordSetD(x, y, z));
         }
 
         return coordSetQueue;
     }
 
-    public static void writeQueueToBuffer(ArrayList<CoordSetF> targetSetQueue, ByteBuf buffer) {
+    public static void writeQueueToBuffer(ArrayList<CoordSetD> targetSetQueue, ByteBuf buffer) {
         buffer.writeInt(targetSetQueue.size());
 
-        for (CoordSetF coordSet : targetSetQueue) {
+        for (CoordSetD coordSet : targetSetQueue) {
             buffer.writeDouble(coordSet.getX());
             buffer.writeDouble(coordSet.getY());
             buffer.writeDouble(coordSet.getZ());
         }
     }
 
-    public static ArrayList<CoordSetF> readQueueFromBuffer(ByteBuf buffer) {
+    public static ArrayList<CoordSetD> readQueueFromBuffer(ByteBuf buffer) {
         int length = buffer.readInt();
 
-        ArrayList<CoordSetF> coordSetQueue = new ArrayList<CoordSetF>(length);
+        ArrayList<CoordSetD> coordSetQueue = new ArrayList<CoordSetD>(length);
 
         for (int i = 0; i < length; i++) {
             double x = buffer.readDouble();
             double y = buffer.readDouble();
             double z = buffer.readDouble();
 
-            coordSetQueue.add(new CoordSetF(x, y, z));
+            coordSetQueue.add(new CoordSetD(x, y, z));
         }
 
         return coordSetQueue;
@@ -370,5 +370,25 @@ public class UtilMethods {
             }
         }
         return true;
+    }
+
+    public static String getLocFromXYZ(CoordSet coordSet) {
+        return getLocFromXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+    }
+
+    public static int removeItemStackFromIInventory(IInventory inventory, ItemStack itemStack, int count) {
+
+        int index = 0;
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack tempStack = inventory.getStackInSlot(i);
+            if (areItemStacksEqual(itemStack, itemStack)) {
+                inventory.setInventorySlotContents(i, (ItemStack) null);
+                if (++index >= count)
+                    return index;
+            }
+        }
+
+        return index;
     }
 }

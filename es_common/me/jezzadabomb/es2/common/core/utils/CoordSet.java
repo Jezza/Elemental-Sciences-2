@@ -2,7 +2,7 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -113,8 +113,12 @@ public class CoordSet {
         return new CoordSet(x, y, z);
     }
 
-    public CoordSetF toCoordSetF(){
+    public CoordSetF toCoordSetF() {
         return new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F);
+    }
+
+    public CoordSetD toCoordSetD() {
+        return new CoordSetD(x + 0.5D, y + 0.5D, z + 0.5D);
     }
     
     /*
@@ -136,6 +140,10 @@ public class CoordSet {
 
     public String toPacketString() {
         return x + ":" + y + ":" + z;
+    }
+
+    public double distanceFrom(float i, float j, float k) {
+        return MathHelper.pythagoras(MathHelper.pythagoras(((float) x) - i, ((float) y) - j), ((float) z) - k);
     }
 
     @Override

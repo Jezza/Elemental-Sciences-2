@@ -5,11 +5,13 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.config.ConfigHandler;
+import me.jezzadabomb.es2.common.core.handlers.GuiHandler;
 import me.jezzadabomb.es2.common.core.network.PacketHandler;
 import me.jezzadabomb.es2.common.core.network.PacketPipeline;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -19,6 +21,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -40,15 +43,19 @@ public class ElementalSciences2 {
     };
 
     public static final PacketPipeline packetPipeline = new PacketPipeline();
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ESLogger.init();
+
         ConfigHandler.init(event.getSuggestedConfigurationFile());
+
         ModBlocks.init();
         ModItems.init();
+
         ModBlocks.initBlockRecipes();
         ModItems.initItemRecipes();
+
         proxy.runClientSide();
         proxy.runServerSide();
     }
@@ -56,8 +63,13 @@ public class ElementalSciences2 {
     @EventHandler
     public void load(FMLInitializationEvent event) {
         proxy.registerTileEntities();
+
         Entities.init();
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+
         packetPipeline.initalise();
+
         PacketHandler.init();
     }
 
@@ -68,7 +80,7 @@ public class ElementalSciences2 {
 
     @EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
-        proxy.registerTickHandlers();
+        proxy.initServerHandlers();
     }
 
 }

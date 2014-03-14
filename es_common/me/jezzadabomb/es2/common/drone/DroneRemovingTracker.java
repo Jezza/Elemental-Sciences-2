@@ -2,11 +2,10 @@ package me.jezzadabomb.es2.common.drone;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.utils.CoordSetD;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.world.World;
@@ -33,7 +32,7 @@ public class DroneRemovingTracker implements IMasterable {
         for (EntityConstructorDrone drone : utilList) {
             if (drone.reachedFinalTarget()) {
                 droneBay.openHatch();
-                drone.addCoordSetFToHead(droneBay.getCoordSet().toCoordSetF().subtractY(0.5F));
+                drone.addCoordSetDToHead(droneBay.getCoordSet().toCoordSetD().subtractY(1.5F));
                 removingList.remove(drone);
                 waitingList.add(drone);
             }
@@ -49,7 +48,7 @@ public class DroneRemovingTracker implements IMasterable {
                 droneBay.addDroneToChest(drone);
             }
             if (removingList.isEmpty() && waitingList.isEmpty())
-                droneBay.planToClose(UtilMethods.getTimeInTicks(0, 0, 1, 10));
+                droneBay.planToClose(UtilMethods.getTimeInTicks(0, 0, 1, 0));
         }
     }
 
@@ -63,16 +62,14 @@ public class DroneRemovingTracker implements IMasterable {
         ArrayList<EntityConstructorDrone> utilList = new ArrayList<EntityConstructorDrone>();
         utilList.addAll(droneBay.droneTracker.droneList);
 
-        ESLogger.info(utilList);
-
         if (utilList.isEmpty())
             return;
 
-        CoordSetF droneSet = droneBay.getCoordSet().toCoordSetF();
+        CoordSetD droneSet = droneBay.getCoordSet().toCoordSetD();
 
         int index = 0;
         for (EntityConstructorDrone drone : utilList) {
-            drone.replaceCoordSetQueue(droneSet.addY(1.5F));
+            drone.replaceCoordSetQueue(droneSet);
             removingList.add(drone);
             if (++index >= count)
                 break;

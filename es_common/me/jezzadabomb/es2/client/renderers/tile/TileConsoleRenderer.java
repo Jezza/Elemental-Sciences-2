@@ -12,15 +12,21 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 
 import java.util.BitSet;
 
-import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.ModelPixel;
 import me.jezzadabomb.es2.client.models.ModelPlate;
+import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.CoordSetD;
+import me.jezzadabomb.es2.common.gui.GuiConsoleTracker.PlayerState;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
     private ModelPlate modelPlate;
@@ -42,7 +48,7 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
         glPushMatrix();
         glTranslatef(0.5F, 1.5F - 0.625F, 0.5F);
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i <= 1; i++) {
             RenderUtils.bindTexture(TextureMaps.CONSOLE_BASE);
             modelPlate.render();
             glTranslatef(0.0F, -0.06F, 0.0F);
@@ -73,7 +79,7 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
             glTranslatef(0.5F, 0.5F, 0.5F);
             glRotatef(90F * tempNum, 0.0F, 1.0F, 0.0F);
 
-            glTranslatef(0.0F, (float) ((0.4 * (Math.sin((24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL)))) / 8), -0.6F);
+            glTranslatef(0.0F, (float) ((0.4 * (Math.sin((24 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL) + tileConsole.randomHoverSeed))) / 8), -0.6F);
             glRotatef(90F / 2F, 1.0F, 0.0F, 0.0F);
         } else {
             glTranslatef(0.5F, 0.125F, 0.5F);
@@ -85,8 +91,8 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
         BitSet check = tileConsole.getRenderCables();
 
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 2; j++) {
+        for (int i = 0; i <= 1; i++)
+            for (int j = 0; j <= 1; j++) {
                 if (check.get(0))
                     renderPixelAt(i, 1, 7 + j);
                 if (check.get(1))
@@ -97,8 +103,19 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
                     renderPixelAt(7 + j, 1, 14 + i);
             }
 
+        renderScreen(tileConsole, x, y, z, tick);
+
         glEnable(GL_LIGHTING);
         glPopMatrix();
+    }
+
+    public void renderScreen(TileConsole tileConsole, double x, double y, double z, float tick) {
+        if (!tileConsole.isGuiOpened())
+            return;
+        
+        for (PlayerState player : tileConsole.guiTracker.getPlayerList()) {
+            ESLogger.info(player.name);
+        }
     }
 
     private void renderPixelAt(int x, int y, int z) {

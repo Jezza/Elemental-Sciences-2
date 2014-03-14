@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.models.ModelAtomicCatalyst;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -10,6 +12,7 @@ import net.minecraftforge.client.IItemRenderer;
 
 import static org.lwjgl.opengl.GL11.*;
 
+@SideOnly(Side.CLIENT)
 public class ItemAtomicCatalystRenderer implements IItemRenderer {
 
     private ModelAtomicCatalyst modelAtomicCatalyst;

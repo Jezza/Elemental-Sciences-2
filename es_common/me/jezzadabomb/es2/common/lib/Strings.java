@@ -34,4 +34,5 @@ public class Strings {
 
     // Entity Constants
     public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
+    public static final String COMBAT_DRONE = "EntityConstructorDrone";
 }

@@ -1,7 +1,13 @@
 package me.jezzadabomb.es2.common.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,17 +54,23 @@ public class BlockConsole extends BlockES {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectorX, float hitVectorY, float hitVectorZ) {
-        if (!world.isRemote) {
-            TileConsole tileConsole = (TileConsole) world.getTileEntity(x, y, z);
+        TileConsole tileConsole = (TileConsole) world.getTileEntity(x, y, z);
 
-            String[] consoleInfo = tileConsole.toString().split(System.lineSeparator());
+        if (player.isSneaking()) {
+            if (!world.isRemote) {
+                String[] consoleInfo = tileConsole.toString().split(System.lineSeparator());
 
-            for (String str : consoleInfo)
-                player.addChatComponentMessage(new ChatComponentText(str));
+                for (String str : consoleInfo)
+                    player.addChatComponentMessage(new ChatComponentText(str));
+            }
+            return true;
         }
 
-        // TODO Interface.
-        return false;
+        tileConsole.openGui(world, player);
+
+        player.openGui(ElementalSciences2.instance, 0, world, x, y, z);
+
+        return true;
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -48,5 +49,10 @@ public class TileQuantumStateDisruptor extends TileES {
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         invalidate();
         worldObj.createExplosion(null, xCoord, yCoord, zCoord, 2.5F, true);
+    }
+
+    @Override
+    public Object getGui(int id, Side side, EntityPlayer player) {
+        return null;
     }
 }

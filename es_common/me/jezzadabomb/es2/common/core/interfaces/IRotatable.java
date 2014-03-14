@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.interfaces;
+package me.jezzadabomb.es2.common.core.interfaces;
 
 public interface IRotatable {
 

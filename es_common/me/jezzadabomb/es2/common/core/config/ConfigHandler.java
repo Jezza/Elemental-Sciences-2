@@ -42,7 +42,7 @@ public class ConfigHandler {
 
     public static void getStrings() {
         BlackList.putValues(getString(Strings.BLACKLIST_DEFAULT, BlackList.blackListDefault, "The blacklist on what blocks the atomic catalyst can break.\nNote: Some blocks you cant break on purpose, such as bedrock.\nTo add to it simply put a comma then follow it with the id:meta of the block you want to protect.\n-Serverside."));
-        QuantumBombTicker.parseTime(getString(Strings.QUANTUM_WAIT_TIMING, QuantumBombTicker.DEFAULT_TIMING, "The time it takes for the Quantum State Disrupter to explode.\nFormat: <hours> <minutes> <seconds> <ticks>\neg, 0 2 5 0 would be 0 hours, 2 minutes, 5 seconds, and 0 ticks.\nWrite default for random intervals between 5 and 20 minutes.\n-Serverside"));
+        QuantumBombTicker.parseTime(getString(Strings.QUANTUM_WAIT_TIMING, QuantumBombTicker.DEFAULT_TIMING, "The time it takes for the Quantum State Disrupter to explode.\nFormat: <hours>,<minutes>,<seconds>,<ticks>\neg, 0,2,5,0 would be 0 hours, 2 minutes, 5 seconds, and 0 ticks.\nWrite default for random intervals between 5 and 20 minutes.\n-Serverside"));
     }
 
     public static void getBooleanValues() {
@@ -52,7 +52,7 @@ public class ConfigHandler {
 
     public static void getReferenceConstants() {
         Reference.GLASSES_WAIT_TIMER = getConstant(Strings.PACKET_TIMING, Reference.GLASSES_WAIT_TIMER_DEFAULT, "How many ticks it waits before sending an update of an inventory.\n-Clientside");
-        Reference.DRONE_BAY_DOOR_TYPE = getConstant(Strings.DRONE_BAY_DOOR_TYPE, 0, "The way the drone bay opens.\n0: Default, which just slides back.\n1: Opens in a circluar direction, kind of cool, I guess.\n2: A cool look animation that looks cool... :P Try it and find out. \n-Clientside");
+        Reference.DRONE_BAY_DOOR_TYPE = getConstant(Strings.DRONE_BAY_DOOR_TYPE, 0, "The way the drone bay opens.\n0: Default,Opens in a circluar direction.\n1:Which just slides back.\n2: A cool look animation that looks cool... :P Try it and find out. \n-Clientside");
     }
 
     public static boolean getBoolean(String path, boolean defaultBoolean, String comment) {

@@ -1,14 +1,17 @@
 package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
+import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
+import me.jezzadabomb.es2.client.renderers.HoverRenderer;
 import me.jezzadabomb.es2.client.renderers.entity.EntityDroneRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemConsoleRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemDroneBayRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemSolarLensRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
@@ -19,6 +22,7 @@ import me.jezzadabomb.es2.client.renderers.tile.TileSolarLensRenderer;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
@@ -26,7 +30,9 @@ import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -54,7 +60,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void initEntityHandler() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityConstructorDrone.class, new EntityDroneRenderer());
+        RenderingRegistry.registerEntityRenderingHandler(EntityConstructorDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
+        // TODO Make a model for the combat drone.
+        RenderingRegistry.registerEntityRenderingHandler(EntityCombatDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
     }
 
     private void initTileRenderers() {
@@ -63,19 +71,19 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileSolarLens.class, new TileSolarLensRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileConsole.class, new TileConsoleRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
-        // TODO Make an item renderer.
         ClientRegistry.bindTileEntitySpecialRenderer(TileDroneBay.class, new TileDroneBayRenderer());
     }
 
     private void initItemRenderer() {
-        MinecraftForgeClient.registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModItems.placeHolders, new ItemPlaceHolderRenderer());
-        MinecraftForgeClient.registerItemRenderer(ModItems.placeHolders64, new ItemPlaceHolder64Renderer());
+        registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
+        registerItemRenderer(ModItems.placeHolders, new ItemPlaceHolderRenderer());
+        registerItemRenderer(ModItems.placeHolders64, new ItemPlaceHolder64Renderer());
 
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.inventoryScanner), new ItemInventoryScannerRenderer());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.atomicConstructor), new ItemAtomicConstructorRenderer());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.console), new ItemConsoleRenderer());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.solarLens), new ItemSolarLensRenderer());
+        registerItemRenderer(ModBlocks.inventoryScanner, new ItemInventoryScannerRenderer());
+        registerItemRenderer(ModBlocks.atomicConstructor, new ItemAtomicConstructorRenderer());
+        registerItemRenderer(ModBlocks.console, new ItemConsoleRenderer());
+        registerItemRenderer(ModBlocks.solarLens, new ItemSolarLensRenderer());
+        registerItemRenderer(ModBlocks.droneBay, new ItemDroneBayRenderer());
     }
 
     private void initTickHandlers() {
@@ -84,10 +92,14 @@ public class ClientProxy extends CommonProxy {
 
     public void initEventHandlers() {
         MinecraftForge.EVENT_BUS.register(hudRenderer);
+        MinecraftForge.EVENT_BUS.register(new HoverRenderer());
     }
 
-    @Override
-    public Side getSide() {
-        return Side.CLIENT;
+    private void registerItemRenderer(Item item, IItemRenderer renderer) {
+        MinecraftForgeClient.registerItemRenderer(item, renderer);
+    }
+
+    private void registerItemRenderer(Block block, IItemRenderer renderer) {
+        registerItemRenderer(Item.getItemFromBlock(block), renderer);
     }
 }

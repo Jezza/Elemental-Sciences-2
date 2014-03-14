@@ -1,26 +1,28 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
 import static org.lwjgl.opengl.GL11.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import me.jezzadabomb.es2.client.models.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.ModelDroneBay;
+import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 
+@SideOnly(Side.CLIENT)
 public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
     ModelDroneBay modelDroneBay;
-    ModelConstructorDrone modelDrone;
 
     public TileDroneBayRenderer() {
         modelDroneBay = new ModelDroneBay();
-        modelDrone = new ModelConstructorDrone();
     }
 
     public void renderDroneBayAt(TileDroneBay droneBay, double x, double y, double z, double f) {
@@ -29,6 +31,12 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
         glDisable(GL_CULL_FACE);
 
         glTranslated(x + 0.5F, y + 0.0255F, z + 0.5F);
+
+        if (RenderUtils.isPlayerRendering("ASB2")) {
+            float healthNum = Minecraft.getMinecraft().thePlayer.getHealth() / 5F;
+
+            glRotatef(-(float) (720.0 * Math.floor(healthNum) * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 1.0F, 0.0F);
+        }
 
         if (droneBay.isOverChestRenderType()) {
             glTranslatef(0.0F, -0.125F, 0.0F);
@@ -50,25 +58,6 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_ALPHA_TEST);
-        glPopMatrix();
-    }
-
-    private void renderDrone() {
-        glPushMatrix();
-
-        glTranslatef(0.0F, 5.3F, 0.0F);
-
-        float scale = 1.0F;
-        glScalef(scale, scale, scale);
-
-        glRotatef(-(float) (720.0 * 1 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 1.0F, 0.0F);
-
-        RenderUtils.bindTexture(TextureMaps.CONSTRUCTOR_DRONE);
-
-        glDisable(GL_LIGHTING);
-        modelDrone.render();
-        glEnable(GL_LIGHTING);
-
         glPopMatrix();
     }
 
@@ -100,9 +89,9 @@ public class TileDroneBayRenderer extends TileEntitySpecialRenderer {
     }
 
     private double getAnimationEquation(int door) {
-         float magicNum = 0.1F;
+        float magicNum = 1.1F;
         if (Reference.DRONE_BAY_DOOR_TYPE == 1)
-            magicNum = 1.1F;
+            magicNum = 0.1F;
         else if (Reference.DRONE_BAY_DOOR_TYPE == 2)
             magicNum = 2.0F;
 

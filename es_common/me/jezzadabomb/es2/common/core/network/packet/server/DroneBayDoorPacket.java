@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network.packet.server;
+package me.jezzadabomb.es2.common.core.network.packet.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -6,9 +6,9 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

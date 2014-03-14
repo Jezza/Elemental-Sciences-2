@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;

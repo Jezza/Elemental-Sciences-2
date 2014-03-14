@@ -2,11 +2,12 @@ package me.jezzadabomb.es2.client.utils;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import me.jezzadabomb.es2.common.network.packet.server.InventoryPacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -60,21 +61,17 @@ public class RenderUtils {
         tessellator.draw();
     }
 
-    public static void resetHUDColour() {
-        glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
-    }
-
-    public static float[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
+    public static double[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
         double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
         double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
         double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
 
         GL11.glTranslated(-interpPosX + x, -interpPosY + y, -interpPosZ + z);
 
-        float[] temp = new float[3];
-        temp[0] = (float) (interpPosX - (x + 0.5D));
-        temp[1] = (float) (interpPosZ - (z + 0.5D));
-        temp[2] = (float) (interpPosY - (y + 1.8D));
+        double[] temp = new double[3];
+        temp[0] = interpPosX - (x + 0.5D);
+        temp[1] = interpPosZ - (z + 0.5D);
+        temp[2] = interpPosY - (y + 1.8D);
         return temp;
     }
 
@@ -87,27 +84,27 @@ public class RenderUtils {
         glPopMatrix();
     }
 
-    public static float[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
+    public static double[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
         double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
         double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
         double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
 
-        float[] temp = new float[3];
-        temp[0] = (float) (interpPosX - (x + 0.5D));
-        temp[1] = (float) (interpPosZ - (z + 0.5D));
-        temp[2] = (float) (interpPosY - (y + 1.8D));
+        double[] temp = new double[3];
+        temp[0] = interpPosX - (x + 0.5D);
+        temp[1] = interpPosZ - (z + 0.5D);
+        temp[2] = interpPosY - (y + 1.8D);
         return temp;
     }
-    
-    public static boolean isPlayerRendering(String username){
+
+    public static boolean isPlayerRendering(String username) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         return (player != null && player.getDisplayName().equals(username));
     }
 
     // Individual translations if I want.
-    private static void translateWithRowAndColumn(int indexNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
+    private static void translateWithRowAndColumn(int columnNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
         if (itemBlock) {
-            switch (indexNum) {
+            switch (columnNum) {
                 case 0:
                     glTranslated(2.0D, 0.0D, 0.0D);
                     break;
@@ -133,7 +130,7 @@ public class RenderUtils {
                     return;
             }
         } else {
-            switch (indexNum) {
+            switch (columnNum) {
                 case 0:
                     glTranslated(1.0D, 0.0D, 0.0D);
                     break;
@@ -149,7 +146,6 @@ public class RenderUtils {
                 case 0:
                     break;
                 case 1:
-                    // glTranslated(0.0D, -2.0D, 0.0D);
                     break;
                 case 2:
                     break;
@@ -160,32 +156,16 @@ public class RenderUtils {
 
     }
 
-    private static void translateSpecialRender(int indexRow, int rowNum, boolean neg) {
-        int tempNeg = neg ? 1 : -1;
-        switch (rowNum) {
-            case 0:
-                glTranslated(0.0D, -1.0D * tempNeg, 0.0D);
-                break;
-            case 2:
-                glTranslated(0.0D, 1.0D * tempNeg, 0.0D);
-                break;
-            default:
-                return;
-        }
-        switch (indexRow) {
-            case 0:
-                glTranslated(-1.0D * tempNeg, 0.0D, 0.0D);
-                break;
-            case 2:
-                glTranslated(0.0D, 0.0D, 1.0D * tempNeg);
-                break;
-            default:
-                return;
-        }
+    private static void translateSpecialRender(int indexNum, int rowNum) {
+        indexNum -= 1.0D;
+        glTranslated(indexNum < 0.0D ? indexNum : 0.0D, 0.0D, indexNum > 0.0D ? indexNum : 0.0D);
+
+        rowNum -= 1.0D;
+        glTranslated(0.0D, rowNum, 0.0D);
     }
 
     public static void drawItemStack(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
-        if (itemStack == null)
+        if (itemStack == null || customItemRenderer == null)
             return;
 
         Minecraft mc = Minecraft.getMinecraft();
@@ -199,11 +179,16 @@ public class RenderUtils {
 
         glScalef(0.96F, 1.2F, -1.2F);
 
-        translateWithRowAndColumn(indexNum, rowNum, itemStack.getItem() instanceof ItemBlock, false);
+        boolean flag = itemStack.getItem() instanceof ItemBlock;
 
-        if (itemStack.getItem() instanceof ItemBlock) {
+        translateWithRowAndColumn(indexNum, rowNum, flag, false);
+
+        if (flag) {
             glTranslated(-3.0D, 8.0D, 0.0D);
-            glScaled(2.2D, 2.2D, 2.2D);
+
+            double scale = 2.2D;
+
+            glScaled(scale, scale, scale);
 
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
             entityItem.setEntityItemStack(itemStack);
@@ -212,23 +197,31 @@ public class RenderUtils {
             if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
                 glEnable(GL_BLEND);
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
+                glEnable(GL_ALPHA_TEST);
             }
             glEnable(GL_BLEND);
         } else {
             glTranslated(-9, 5, 0);
 
-            glScaled(2.8D, 2.8D, 2.8D);
+            double scale = 2.8D;
 
-            //TODO Clean up this pile of shit.
-            translateSpecialRender(indexNum, rowNum, false);
+            glScaled(scale, scale, scale);
+
+            glPushMatrix();
+
+            boolean pop = false;
+            translateSpecialRender(indexNum, rowNum);
             if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
-                translateSpecialRender(indexNum, rowNum, true);
+                pop = true;
+                glPopMatrix();
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
                 glEnable(GL_ALPHA_TEST);
             }
+            if (!pop)
+                glPopMatrix();
         }
+        HUDRenderer.hudColour.doGL();
         glDisable(GL_LIGHTING);
-        resetHUDColour();
         glEnable(GL_CULL_FACE);
         glPopMatrix();
     }
@@ -284,13 +277,16 @@ public class RenderUtils {
         }
     }
 
-    public static void renderColouredBox(RenderWorldLastEvent event, InventoryPacket p, boolean underBlock){
-        renderColouredBox(event, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), underBlock);
+    public static void renderColouredBox(double partialTicks, InventoryPacket p, boolean underBlock) {
+        renderColouredBox(partialTicks, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), underBlock ? 1 : 0);
     }
-    
+
+    public static void renderDebugBox(double partialTicks, InventoryPacket p) {
+        renderColouredBox(partialTicks, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), 2);
+    }
+
     // Thanks to Player for this. :D
-    public static void renderColouredBox(RenderWorldLastEvent event, int posX, int posY, int posZ, boolean underBlock) {
-        double partialTicks = event.partialTicks;
+    public static void renderColouredBox(double partialTicks, int posX, int posY, int posZ, int type) {
 
         EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
         double px = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
@@ -314,11 +310,18 @@ public class RenderUtils {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
 
-        if (underBlock) {
-            tessellator.setColorRGBA(0, 255, 0, 75);
-        } else {
-            tessellator.setColorRGBA(255, 0, 0, 150);
+        switch (type) {
+            case 0:
+                tessellator.setColorRGBA(255, 0, 0, 150);
+                break;
+            case 1:
+                tessellator.setColorRGBA(0, 255, 0, 75);
+                break;
+            case 2:
+                tessellator.setColorRGBA(0, 0, 255, 75);
+                break;
         }
+
         // BOTTOM
         tessellator.addVertex(x, y, z);
         tessellator.addVertex(x + delta, y, z);

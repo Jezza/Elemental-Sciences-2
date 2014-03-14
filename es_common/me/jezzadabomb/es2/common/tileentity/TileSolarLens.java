@@ -2,6 +2,10 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.relauncher.Side;
+
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 
@@ -20,9 +24,12 @@ public class TileSolarLens extends TileES {
 
     @Override
     public void updateEntity() {
-        worldObj.setRainStrength(0.0F);
-        worldObj.setWorldTime(1500);
-        
+        if (worldObj == null)
+            return;
+
+//        worldObj.setWorldTime(1500);
+//        worldObj.setRainStrength(0.0F);
+
         boolean tru = true;
         if (worldObj.isRemote || !worldObj.canBlockSeeTheSky(xCoord, yCoord, zCoord) || tru) {
             return;
@@ -84,5 +91,10 @@ public class TileSolarLens extends TileES {
 
     public ArrayList<TileAtomicConstructor> getConstructorList() {
         return constructorList;
+    }
+
+    @Override
+    public Object getGui(int id, Side side, EntityPlayer player) {
+        return null;
     }
 }

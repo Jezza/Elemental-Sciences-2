@@ -1,7 +1,7 @@
 package me.jezzadabomb.es2.common.entities;
 
 import io.netty.buffer.ByteBuf;
-import me.jezzadabomb.es2.common.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,9 +22,9 @@ public class EntityConstructorDrone extends EntityDrone implements IMasterable {
     }
 
     @Override
-    public void setMaster(TileES tileES) {
-        if (tileES instanceof TileDroneBay)
-            droneBay = (TileDroneBay) tileES;
+    public void setMaster(TileES object) {
+        if (object instanceof TileDroneBay)
+            droneBay = (TileDroneBay) object;
     }
 
     @Override
@@ -38,8 +38,8 @@ public class EntityConstructorDrone extends EntityDrone implements IMasterable {
     }
 
     @Override
-    public void preTick() {
-
+    public boolean preTick() {
+        return false;
     }
 
     @Override
@@ -86,4 +86,8 @@ public class EntityConstructorDrone extends EntityDrone implements IMasterable {
 
     }
 
+    @Override
+    public boolean preWorldProcessing() {
+        return false;
+    }
 }

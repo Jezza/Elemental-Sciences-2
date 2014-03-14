@@ -86,24 +86,22 @@ public class ModItems {
 
         craftingManager.addRecipe(new ItemStack(Items.gold_ingot), new Object[] { "i", Character.valueOf('i'), new ItemStack(placeHolders, 1, 1) });
 
-        craftingManager.addRecipe(getPlaceHolderStack("ironBar"), new Object[] { "i ", " i", Character.valueOf('i'), Blocks.heavy_weighted_pressure_plate });
-        craftingManager.addRecipe(getPlaceHolderStack("ironBar"), new Object[] { " i", "i ", Character.valueOf('i'), Blocks.heavy_weighted_pressure_plate });
-
+        craftingManager.addShapelessRecipe(getPlaceHolderStack("ironBar", 16), new Object[] { Blocks.heavy_weighted_pressure_plate, Blocks.heavy_weighted_pressure_plate });
         craftingManager.addRecipe(getPlaceHolderStack("strengthenedIron"), new Object[] { " i ", "isi", " i ", Character.valueOf('i'), getPlaceHolderStack("ironBar"), Character.valueOf('s'), Items.iron_ingot });
-        craftingManager.addRecipe(getPlaceHolderStack("ironPlate"), new Object[] { "iii", "isi", "iii", Character.valueOf('i'), Items.iron_ingot, Character.valueOf('s'), getPlaceHolderStack("strengthenedIron") });
-        
-        craftingManager.addRecipe(getPlaceHolderStack("strengthenedPlate"), new Object[] { "isi", "sxs", "isi", Character.valueOf('i'), getPlaceHolderStack("ironPlate"), Character.valueOf('s'), getPlaceHolderStack("strengthenedIron"), Character.valueOf('x'), Items.iron_ingot });
-        craftingManager.addRecipe(getPlaceHolderStack("strengthenedPlate"), new Object[] { "isi", "sxs", "isi", Character.valueOf('s'), getPlaceHolderStack("ironPlate"), Character.valueOf('i'), getPlaceHolderStack("strengthenedIron"), Character.valueOf('x'), Items.iron_ingot });
-        
-        craftingManager.addRecipe(getPlaceHolderStack("strengthenedIronBar"), new Object[] { "i", "i", "i", Character.valueOf('i'), getPlaceHolderStack("strengthenedIron") });
+
+        craftingManager.addRecipe(getPlaceHolderStack("ironPlate"), new Object[] { " i ", "isi", " i ", Character.valueOf('i'), Items.iron_ingot, Character.valueOf('s'), getPlaceHolderStack("strengthenedIron") });
+
+        craftingManager.addRecipe(getPlaceHolderStack("strengthenedPlate"), new Object[] { " s ", "sxs", " s ", Character.valueOf('x'), getPlaceHolderStack("ironPlate"), Character.valueOf('s'), getPlaceHolderStack("strengthenedIron") });
+
+        craftingManager.addRecipe(getPlaceHolderStack("strengthenedIronBar", 2), new Object[] { "i", "i", "i", Character.valueOf('i'), getPlaceHolderStack("strengthenedIron") });
         craftingManager.addRecipe(getPlaceHolderStack("atomicFrame", 4), new Object[] { "iii", "isi", "iii", Character.valueOf('i'), getPlaceHolderStack("strengthenedIronBar"), Character.valueOf('s'), Blocks.glass });
 
         craftingManager.addRecipe(getPlaceHolderStack("ironStrip"), new Object[] { "iii", Character.valueOf('i'), getPlaceHolderStack("strengthenedIron") });
         craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('i'), getPlaceHolderStack("ironStrip"), Character.valueOf('x'), getPlaceHolderStack("ironBar"), Character.valueOf('y'), Blocks.glass });
         craftingManager.addRecipe(getPlaceHolderStack("glassesLens"), new Object[] { "xix", "iyi", "xix", Character.valueOf('x'), getPlaceHolderStack("ironStrip"), Character.valueOf('i'), getPlaceHolderStack("ironBar"), Character.valueOf('y'), Blocks.glass });
-        //TODO Proper way to get this.
+        // TODO Proper way to get this.
         craftingManager.addRecipe(getPlaceHolderStack("spectrumSensor"), new Object[] { "xix", "xyx", "xzx", Character.valueOf('i'), Blocks.glass_pane, Character.valueOf('x'), Blocks.redstone_block, Character.valueOf('y'), Items.diamond, Character.valueOf('z'), Blocks.daylight_detector });
 
-        craftingManager.addRecipe(new ItemStack(glasses), new Object[] { "isi","xix", "a a", Character.valueOf('i'), getPlaceHolderStack("ironStrip"), Character.valueOf('s'), getPlaceHolderStack("spectrumSensor"), Character.valueOf('x'), getPlaceHolderStack("glassesLens"), Character.valueOf('a'), getPlaceHolderStack("ironBar") });
+        craftingManager.addRecipe(new ItemStack(glasses), new Object[] { "isi", "xix", "a a", Character.valueOf('i'), getPlaceHolderStack("ironStrip"), Character.valueOf('s'), getPlaceHolderStack("spectrumSensor"), Character.valueOf('x'), getPlaceHolderStack("glassesLens"), Character.valueOf('a'), getPlaceHolderStack("ironBar") });
     }
 }

@@ -1,30 +1,20 @@
 package me.jezzadabomb.es2.common.core.handlers;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.HoverHandlerPacket;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.lib.TextureMaps;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
-import me.jezzadabomb.es2.common.network.packet.server.HoverHandlerPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.Packet;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class HoverHandler {
 
-    ArrayList<HoveringPlayer> playerList;
+    public ArrayList<HoveringPlayer> playerList;
 
     static HoverHandler INSTANCE;
 
@@ -98,59 +88,6 @@ public class HoverHandler {
         return new HoverHandlerPacket(hoveringPlayer);
     }
 
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onRenderWorldLast(RenderWorldLastEvent event) {
-        EntityPlayer renderView = Minecraft.getMinecraft().thePlayer;
-        if (renderView == null || playerList.isEmpty())
-            return;
-        ArrayList<HoveringPlayer> tempList = new ArrayList<HoveringPlayer>();
-        if (playerList.size() < 0)
-            return;
-        tempList.addAll(playerList);
-        for (HoveringPlayer player : tempList) {
-            if (player != null && player.isHovering()) {
-                glPushMatrix();
-                glDisable(GL_LIGHTING);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                glDisable(GL_CULL_FACE);
-                // TODO Fix the reused methods.
-                if (player.equals(renderView.getDisplayName())) {
-                    glRotated(90, 1.0D, 0.0D, 0.0D);
-                    glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
-
-                    glTranslated(-1.291D, -1.281D, 0.0D);
-
-                    glScaled(0.01D, 0.01D, 0.01D);
-
-                    glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
-
-                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURES[player.getTexture()], 0, 0, 0, 0, 256, 256, 161);
-                } else {
-                    RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
-
-                    glTranslated(0.0D, 1.55D, 0.0D);
-
-                    glRotated(90, 1.0D, 0.0D, 0.0D);
-                    glRotatef(-(float) (2880.0 * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL), 0.0F, 0.0F, 1.0F);
-
-                    glTranslated(-1.3D, -1.3D, 0.0D);
-
-                    glScaled(0.01D, 0.01D, 0.01D);
-
-                    glColor4f(1.0F, 1.0F, 1.0F, ((float) player.timeLeft / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
-
-                    RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURES[player.getTexture()], 0, 0, 0, 0, 256, 256, 161);
-
-                }
-                glEnable(GL_CULL_FACE);
-                glDisable(GL_BLEND);
-                glPopMatrix();
-            }
-        }
-    }
-
     public void updatePlayer(EntityPlayer player, int time, boolean hovering, boolean waiting, int texture) {
         if (player == null)
             return;
@@ -176,7 +113,7 @@ public class HoverHandler {
     }
 
     public static class HoveringPlayer {
-        int MAX_HOVER_TIME = 80;
+        public static final int MAX_HOVER_TIME = 80;
 
         EntityPlayer player;
         int timeLeft, texture;

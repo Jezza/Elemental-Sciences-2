@@ -5,17 +5,13 @@ import io.netty.buffer.ByteBuf;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
+import me.jezzadabomb.es2.common.core.ESLogger;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CoordSetF {
 
-    private double x, y, z;
-
-    public CoordSetF(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+    private float x, y, z;
 
     public CoordSetF(float x, float y, float z) {
         this.x = x;
@@ -29,15 +25,15 @@ public class CoordSetF {
         this.z = coordSet.getZ();
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public double getZ() {
+    public float getZ() {
         return z;
     }
 
@@ -95,28 +91,28 @@ public class CoordSetF {
     }
 
     public void writeToStream(ByteBuf out) {
-        out.writeDouble(x);
-        out.writeDouble(y);
-        out.writeDouble(z);
+        out.writeFloat(x);
+        out.writeFloat(y);
+        out.writeFloat(z);
     }
 
     public static CoordSetF readFromStream(ByteBuf in) {
-        double x = in.readDouble();
-        double y = in.readDouble();
-        double z = in.readDouble();
+        float x = in.readFloat();
+        float y = in.readFloat();
+        float z = in.readFloat();
         return new CoordSetF(x, y, z);
     }
 
     public void writeToNBT(NBTTagCompound tag) {
-        tag.setDouble("coordX", x);
-        tag.setDouble("coordY", y);
-        tag.setDouble("coordZ", z);
+        tag.setFloat("coordX", x);
+        tag.setFloat("coordY", y);
+        tag.setFloat("coordZ", z);
     }
 
     public static CoordSetF readFromNBT(NBTTagCompound tag) {
-        double x = tag.getDouble("coordX");
-        double y = tag.getDouble("coordY");
-        double z = tag.getDouble("coordZ");
+        float x = tag.getFloat("coordX");
+        float y = tag.getFloat("coordY");
+        float z = tag.getFloat("coordZ");
         return new CoordSetF(x, y, z);
     }
 
@@ -127,5 +123,13 @@ public class CoordSetF {
     @Override
     public String toString() {
         return "X: " + x + ", Y:" + y + ", Z:" + z;
+    }
+
+    public double distanceTo(CoordSetF otherSet) {
+        float dX = otherSet.x - x;
+        float dY = otherSet.y - y;
+        float dZ = otherSet.z - z;
+
+        return MathHelper.pythagoras(MathHelper.pythagoras(dX, dY), dZ);
     }
 }

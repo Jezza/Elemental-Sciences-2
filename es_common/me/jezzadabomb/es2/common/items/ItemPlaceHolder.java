@@ -1,37 +1,27 @@
 package me.jezzadabomb.es2.common.items;
 
 import java.util.List;
+import java.util.Random;
 
-import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.interfaces.IDismantleable;
-import me.jezzadabomb.es2.common.items.framework.ItemES;
+import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
-import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPlaceHolder extends ItemMetaES {
 
-    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "constructorDrone", "wrenchThing", "atomicFrame" };
+    public static final String[] names = new String[] { "lifeCoin", "deadCoin", "constructorDrone", "wrenchThing", "combatDrone" };
 
     public ItemPlaceHolder(String name) {
         super(name);
@@ -45,6 +35,26 @@ public class ItemPlaceHolder extends ItemMetaES {
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setInteger("Durablity", 512);
         }
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (ModItems.isPlaceHolderStack("combatDrone", stack, true)) {
+            if(!world.isRemote){                
+                EntityCombatDrone combatDrone = new EntityCombatDrone(world);
+                Random rand = new Random();
+                
+                float dX = rand.nextFloat() - 0.5F;
+                float dZ = rand.nextFloat() - 0.5F;
+                
+                combatDrone.setPosition(player.posX - dX, player.posY + 1.5, player.posZ - dZ);
+                combatDrone.setOwner(player);
+                
+                world.spawnEntityInWorld(combatDrone);
+            }
+            return UtilMethods.decrCurrentItem(player);
+        }
+        return super.onItemRightClick(stack, world, player);
     }
 
     @Override
@@ -74,10 +84,10 @@ public class ItemPlaceHolder extends ItemMetaES {
         for (int i = 1; i < names.length; i++)
             list.add(new ItemStack(this, 1, i));
     }
-    
+
     @Override
     protected void addInformation(EntityPlayer player, ItemStack stack) {
-        switch(stack.getItemDamage()){
+        switch (stack.getItemDamage()) {
             case 0:
                 addToBothLists("You got it for getting");
                 addToBothLists("a perfect pacman game.");

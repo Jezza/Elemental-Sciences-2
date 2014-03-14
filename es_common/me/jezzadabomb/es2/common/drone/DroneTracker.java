@@ -2,9 +2,9 @@ package me.jezzadabomb.es2.common.drone;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.utils.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 
@@ -63,12 +63,8 @@ public class DroneTracker implements IMasterable {
         return flag;
     }
 
-    public int addDrones(int dronesToSpawn, CoordSetF coordSetF) {
-        return spawningTracker.addDronesToSpawnList(dronesToSpawn, coordSetF);
-    }
-
-    public int getTotalSpawnableDrones() {
-        return spawningTracker.itemList.size();
+    public int addDrones(int dronesToSpawn, CoordSetD coordSetD) {
+        return spawningTracker.addDronesToSpawnList(dronesToSpawn, coordSetD);
     }
 
     public void spawnDrones() {
@@ -77,10 +73,6 @@ public class DroneTracker implements IMasterable {
 
     public boolean needsToSpawn() {
         return spawningTracker.spawnList.size() > 0;
-    }
-
-    public boolean canSpawn() {
-        return !spawningTracker.itemList.isEmpty();
     }
 
     @Override

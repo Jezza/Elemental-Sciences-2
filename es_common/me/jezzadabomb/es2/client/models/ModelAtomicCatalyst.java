@@ -6,7 +6,10 @@ import me.jezzadabomb.es2.common.lib.Models;
 import net.minecraft.client.model.ModelBase;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ModelAtomicCatalyst extends ModelBase{
     
     public ArrayList<IModelCustom> parts = new ArrayList<IModelCustom>();

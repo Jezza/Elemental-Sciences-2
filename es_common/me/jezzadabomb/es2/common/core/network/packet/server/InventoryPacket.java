@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network.packet.server;
+package me.jezzadabomb.es2.common.core.network.packet.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -76,7 +78,7 @@ public class InventoryPacket implements IPacket {
     public void executeServerSide(EntityPlayer player) {
         ESLogger.severe("Tried to send a packet to the wrong side!");
     }
-    
+
     public String getItemStacksInfo() {
         StringBuilder temp = new StringBuilder();
         for (ItemStack tempStack : getItemStacks()) {
@@ -87,18 +89,16 @@ public class InventoryPacket implements IPacket {
 
     public ArrayList<ItemStack> getItemStacks() {
         ArrayList<ItemStack> tempStacks = new ArrayList<ItemStack>();
-        boolean added = false;
         for (ItemStack itemStack : itemStacks) {
+            boolean added = false;
             for (ItemStack tempStack : tempStacks) {
                 if (UtilMethods.areItemStacksEqual(itemStack, tempStack)) {
-                    UtilMethods.mergeItemStacks(tempStacks.get(tempStacks.indexOf(tempStack)), itemStack, true);
+                    UtilMethods.mergeItemStacks(tempStack, itemStack, true);
                     added = true;
                 }
             }
-            if (!added) {
+            if (!added)
                 tempStacks.add(itemStack);
-            }
-            added = false;
         }
         return tempStacks;
     }
@@ -123,9 +123,12 @@ public class InventoryPacket implements IPacket {
         return coordSet.equals(tempPacket.coordSet) && this.itemStacks.equals(tempPacket.itemStacks);
     }
 
-    public boolean isCloserThan(InventoryPacket tempP, EntityPlayer player) {
-        CoordSet externalSet = tempP.coordSet;
-        return player.getDistance(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < player.getDistance(externalSet.getX(), externalSet.getY(), externalSet.getZ());
+    public double distanceToPlayer() {
+        EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
+
+        CoordSetF playerSet = new CoordSet(player).toCoordSetF();
+
+        return Math.abs(playerSet.distanceTo(coordSet.toCoordSetF()));
     }
-    
+
 }

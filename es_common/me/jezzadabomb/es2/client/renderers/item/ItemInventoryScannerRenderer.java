@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -13,6 +15,7 @@ import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 
 import static org.lwjgl.opengl.GL11.*;
 
+@SideOnly(Side.CLIENT)
 public class ItemInventoryScannerRenderer implements IItemRenderer {
     private ModelInventoryScanner modelInventoryScanner;
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.utils.CoordSetD;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileES;
 import net.minecraft.inventory.IInventory;
@@ -18,13 +18,10 @@ public class DroneSpawningTracker implements IMasterable {
 
     TileDroneBay droneBay;
     World world;
-    int xCoord, yCoord, zCoord, spawnTimer;
-    public ArrayList<ItemStack> itemList;
+    int xCoord, yCoord, zCoord, spawnTimer, droneCount;
     ArrayList<EntityConstructorDrone> spawnList, utilList, spawnedList;
 
     public DroneSpawningTracker() {
-        itemList = new ArrayList<ItemStack>();
-
         spawnList = new ArrayList<EntityConstructorDrone>();
         spawnedList = new ArrayList<EntityConstructorDrone>();
         utilList = new ArrayList<EntityConstructorDrone>();
@@ -36,56 +33,33 @@ public class DroneSpawningTracker implements IMasterable {
      * Do this at some point.
      */
     public void processingTick() {
-        if (itemList.size() < 32)
-            getDronesFromInventory();
+
     }
 
-    public int addDronesToSpawnList(int dronesToSpawn, CoordSetF... coordSetF) {
-        if (itemList.isEmpty())
-            return 0;
+    public int addDronesToSpawnList(int dronesToSpawn, CoordSetD... coordSetD) {
+        updateDroneCountFromInventory();
 
-        if (itemList.size() < dronesToSpawn)
-            dronesToSpawn = itemList.size();
+        if (droneCount < dronesToSpawn)
+            dronesToSpawn = droneCount;
 
         if (world.isRemote)
             return dronesToSpawn;
 
-        ArrayList<ItemStack> utilList = new ArrayList<ItemStack>();
-        utilList.addAll(itemList);
-
-        int index = 0;
-        for (ItemStack item : utilList) {
+        for (int i = 0; i < dronesToSpawn; i++) {
             EntityConstructorDrone drone = new EntityConstructorDrone(world);
-            if (coordSetF.length > 0)
-                for (CoordSetF coordSet : coordSetF)
-                    drone.addCoordSetFToQueue(coordSet);
+
+            drone.addCoordSetDToQueue(coordSetD);
 
             spawnList.add(drone);
-            itemList.remove(0);
-            if (++index >= dronesToSpawn)
-                break;
+            droneBay.removeItemDrones(1);
+            droneCount--;
         }
 
-        return index;
+        return dronesToSpawn;
     }
 
-    public void getDronesFromInventory() {
-        ArrayList<ItemStack> tempList = new ArrayList<ItemStack>();
-        tempList.addAll(itemList);
-
-        IInventory inventory = (IInventory) world.getTileEntity(xCoord, yCoord - 1, zCoord);
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack itemStack = inventory.getStackInSlot(i);
-            if (itemStack != null && ItemStack.areItemStacksEqual(itemStack, ModItems.getPlaceHolderStack("constructorDrone"))) {
-                tempList.add(itemStack);
-                // inventory.setInventorySlotContents(i, (ItemStack) null);
-            }
-        }
-
-        inventory.markDirty();
-
-        itemList.clear();
-        itemList.addAll(tempList);
+    public void updateDroneCountFromInventory() {
+        droneCount = droneBay.getItemDroneCount();
     }
 
     public void spawnDronesFromList() {
@@ -100,7 +74,7 @@ public class DroneSpawningTracker implements IMasterable {
             drone.posY = yCoord - 0.5F;
             drone.posZ = zCoord + 0.5F;
 
-            drone.addCoordSetFToHead(droneBay.getCoordSet().toCoordSetF());
+            drone.addCoordSetDToHead(droneBay.getCoordSet().toCoordSetD());
             drone.setMaster(droneBay);
 
             if (world.spawnEntityInWorld(drone)) {

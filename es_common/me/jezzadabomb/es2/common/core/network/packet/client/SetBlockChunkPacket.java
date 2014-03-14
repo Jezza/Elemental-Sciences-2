@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.network.packet.client;
+package me.jezzadabomb.es2.common.core.network.packet.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -6,8 +6,8 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.network.packet.IPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
