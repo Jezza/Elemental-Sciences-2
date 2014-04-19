@@ -4,11 +4,11 @@ import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,13 +29,13 @@ public class PlayerTicker {
 
     public PlayerTicker() {
         dis = Reference.HUD_BLOCK_RANGE;
-        storedQueues = new StoredQueues();
+        storedQueues = StoredQueues.getInstance();
     }
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        if (UtilMethods.isPlayerWearing(player, ModItems.glasses)) {
+        if (PlayerHelper.isPlayerWearing(player, ModItems.glasses)) {
             World world = player.worldObj;
             int playerX = (int) Math.round(player.posX);
             int playerY = (int) Math.round(player.posY);
@@ -49,7 +49,7 @@ public class PlayerTicker {
                             int tempX = playerX + x;
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;
-                            if (UtilMethods.isIInventory(world, tempX, tempY, tempZ)) {
+                            if (Identifier.isIInventory(world, tempX, tempY, tempZ)) {
                                 TileEntity tileEntity = world.getTileEntity(tempX, tempY, tempZ);
                                 if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType()))
                                     break;

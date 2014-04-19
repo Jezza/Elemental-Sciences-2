@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import me.jezzadabomb.es2.common.tileentity.TileES;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 
 @SideOnly(Side.CLIENT)
 public class TileQuantumStateDisruptorRenderer extends TileEntitySpecialRenderer {

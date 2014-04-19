@@ -2,14 +2,16 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.DroneBayDoorPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSetD;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
+import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.drone.DroneTracker;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +25,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
 
 public class TileDroneBay extends TileES implements IDismantleable {
 
@@ -139,7 +140,7 @@ public class TileDroneBay extends TileES implements IDismantleable {
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
-            if (itemStack == null || !(UtilMethods.areItemStacksEqual(itemStack, ModItems.getPlaceHolderStack("constructorDrone"))))
+            if (itemStack == null || !(InventoryHelper.areItemStacksEqual(itemStack, ModItems.getPlaceHolderStack("constructorDrone"))))
                 continue;
             count++;
         }
@@ -148,14 +149,14 @@ public class TileDroneBay extends TileES implements IDismantleable {
     }
 
     public int removeItemDrones(int count) {
-        return UtilMethods.removeItemStackFromIInventory(getInventory(), ModItems.getPlaceHolderStack("constructorDrone"), count);
+        return InventoryHelper.removeItemStackFromIInventory(getInventory(), ModItems.getPlaceHolderStack("constructorDrone"), count);
     }
 
     public boolean addDroneToChest(EntityConstructorDrone drone) {
         ItemStack itemStack = ModItems.getPlaceHolderStack("constructorDrone");
 
         IInventory inventory = getInventory();
-        boolean flag = UtilMethods.addItemStackToIInventory(inventory, itemStack);
+        boolean flag = InventoryHelper.addItemStackToIInventory(inventory, itemStack);
 
         return flag;
     }
@@ -261,10 +262,5 @@ public class TileDroneBay extends TileES implements IDismantleable {
     @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
         return true;
-    }
-
-    @Override
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        return null;
     }
 }

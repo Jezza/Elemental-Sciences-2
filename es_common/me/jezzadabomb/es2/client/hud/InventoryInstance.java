@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.client.hud;
 
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.tileentity.TileEntity;
 
 public class InventoryInstance {

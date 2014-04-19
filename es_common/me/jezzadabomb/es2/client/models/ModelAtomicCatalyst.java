@@ -10,11 +10,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelAtomicCatalyst extends ModelBase{
-    
+public class ModelAtomicCatalyst extends ModelBase {
+
     public ArrayList<IModelCustom> parts = new ArrayList<IModelCustom>();
 
-    
+    // TODO Clean up this model
+
     public ModelAtomicCatalyst() {
         parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_MAIN));
         parts.add(AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_ELECTRON1));
@@ -23,13 +24,12 @@ public class ModelAtomicCatalyst extends ModelBase{
     }
 
     public void renderAll() {
-        for(IModelCustom m : parts){
+        for (IModelCustom m : parts)
             m.renderAll();
-        }
     }
-    
-    public void renderPart(String part){
-        switch(part){
+
+    public void renderPart(String part) {
+        switch (part) {
             case "Main":
                 parts.get(0).renderAll();
                 break;

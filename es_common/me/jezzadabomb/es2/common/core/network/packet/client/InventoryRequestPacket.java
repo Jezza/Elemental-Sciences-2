@@ -1,25 +1,22 @@
 package me.jezzadabomb.es2.common.core.network.packet.client;
 
-import java.io.IOException;
-
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
-import net.minecraftforge.common.DimensionManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.io.IOException;
+
 import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
-import me.jezzadabomb.es2.common.core.network.PacketPipeline;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
 
 public class InventoryRequestPacket implements IPacket {
 
@@ -51,13 +48,13 @@ public class InventoryRequestPacket implements IPacket {
     public void executeServerSide(EntityPlayer player) {
         World world = player.worldObj;
 
-        int[] coords = UtilMethods.getArrayFromString(loc);
+        CoordSet coordSet = UtilMethods.getArrayFromString(loc);
 
-        int x = coords[0];
-        int y = coords[1];
-        int z = coords[2];
+        int x = coordSet.getX();
+        int y = coordSet.getY();
+        int z = coordSet.getZ();
 
-        if (UtilMethods.isIInventory(world, x, y, z))
+        if (Identifier.isIInventory(world, x, y, z))
             PacketDispatcher.sendTo(new InventoryPacket(world.getTileEntity(x, y, z), loc), (EntityPlayerMP) player);
     }
 }

@@ -2,11 +2,12 @@ package me.jezzadabomb.es2.client.hud;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 
 public class StoredQueues {
 
-    private static StoredQueues INSTANCE;
+    private static StoredQueues INSTANCE = new StoredQueues();
 
     // Previously stored blocks from the last tick. Used with tempInv.
     private ArrayList<InventoryInstance> inventories;
@@ -21,7 +22,6 @@ public class StoredQueues {
         inventories = new ArrayList<InventoryInstance>();
         tempInv = new ArrayList<InventoryInstance>();
         requestedList = new ArrayList<InventoryInstance>();
-        INSTANCE = this;
     }
 
     public static StoredQueues getInstance() {

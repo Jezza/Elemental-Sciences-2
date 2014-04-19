@@ -1,8 +1,8 @@
 package me.jezzadabomb.es2.common.containers;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.tileentity.TileES;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

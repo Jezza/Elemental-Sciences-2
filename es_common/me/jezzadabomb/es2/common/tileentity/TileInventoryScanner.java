@@ -2,21 +2,19 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import java.util.ArrayList;
 
-import cpw.mods.fml.relauncher.Side;
-
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -29,7 +27,7 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
 
     @Override
     public void updateEntity() {
-        hasInventory = UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
+        hasInventory = Identifier.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
         if (!hasInventory && !worldObj.isRemote) {
             worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F, new ItemStack(ModBlocks.inventoryScanner)));
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
@@ -53,11 +51,9 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
         return playerList;
     }
 
-    
-    
     @Override
     public void onNeighbourBlockChange(CoordSet coordSet) {
-        hasInventory = UtilMethods.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
+        hasInventory = Identifier.isIInventory(worldObj, xCoord, yCoord - 1, zCoord);
 
         if (!hasInventory)
             ClientProxy.getHUDRenderer().removePacketAtXYZ(xCoord, yCoord - 1, zCoord);
@@ -67,11 +63,8 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
         if (players == null)
             return;
         for (EntityPlayer player : players) {
-            int[] coords = new int[3];
-            coords[0] = xCoord;
-            coords[1] = yCoord - 1;
-            coords[2] = zCoord;
-            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getTileEntity(coords[0], coords[1], coords[2]), UtilMethods.getLocFromArray(coords)), (EntityPlayerMP) player);
+            CoordSet coordSet = getCoordSet().addY(-1);
+            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ()), UtilMethods.getLocFromArray(coordSet)), (EntityPlayerMP) player);
         }
     }
 
@@ -87,10 +80,5 @@ public class TileInventoryScanner extends TileES implements IDismantleable {
     @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
         return true;
-    }
-
-    @Override
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        return null;
     }
 }

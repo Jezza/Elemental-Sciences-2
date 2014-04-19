@@ -1,13 +1,13 @@
 package me.jezzadabomb.es2.common;
 
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
-import me.jezzadabomb.es2.common.items.ItemDebugTool;
+import me.jezzadabomb.es2.common.items.ItemBlockHolder;
 import me.jezzadabomb.es2.common.items.ItemGlasses;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder64;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.items.debug.ItemDebugTool;
 import me.jezzadabomb.es2.common.items.framework.ItemArmourES.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -23,19 +23,19 @@ public class ModItems {
 
     public static Item atomicCatalyst;
     public static Item glasses;
-    public static Item debugItem;
     public static Item hoverBoots;
     public static Item quantumStateDisrupter;
     public static Item placeHolders;
     public static Item placeHolders64;
+    public static Item atomicShredderHolder;
+    public static Item atomicShredderDummy;
 
-    // Recipe items.
-    public static Item recipeItems;
+    public static Item debugItem;
+    public static Item ringControl;
 
     private static int ironRenderIndex = 2;
 
     public static void init() {
-        // // Bohr model. Bite me :P
         atomicCatalyst = new ItemAtomicCatalyst(Strings.ATOMIC_CATALYST);
         glasses = new ItemGlasses(ArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.HEAD, Strings.GLASSES, TextureMaps.GLASSES_LOCATION);
         hoverBoots = new ItemHoverBoots(ArmorMaterial.IRON, ironRenderIndex, ArmourSlotIndex.BOOTS, Strings.HOVER_BOOTS, TextureMaps.HOVER_BOOTS_LOCATION);
@@ -43,8 +43,12 @@ public class ModItems {
         placeHolders = new ItemPlaceHolder(Strings.PLACEHOLDER);
         placeHolders64 = new ItemPlaceHolder64(Strings.PLACEHOLDER_64);
 
-        if (Reference.isDebugMode)
+        atomicShredderHolder = new ItemBlockHolder(ModBlocks.atomicShredderDummy);
+        atomicShredderDummy = new ItemBlockHolder(ModBlocks.atomicShredderDummyCore);
+
+        if (Reference.isDebugMode) {
             debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);
+        }
     }
 
     public static ItemStack getPlaceHolderStack(String item, int size) {

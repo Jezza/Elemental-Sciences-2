@@ -1,15 +1,11 @@
 package me.jezzadabomb.es2.common.tileentity;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.Side;
-
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -69,7 +65,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
                 for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
+                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (tile.hasMaster()) {
                             setMaster((TileConsole) tile.getMaster());
@@ -83,7 +79,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
                 for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
+                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileConsole tile = (TileConsole) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         setMaster(tile);
                         return true;
@@ -95,7 +91,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
                 for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
+                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (atomic.hasMaster())
                             continue;
@@ -191,10 +187,5 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
     @Override
     public TileES getMaster() {
         return tileConsole;
-    }
-
-    @Override
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        return null;
     }
 }

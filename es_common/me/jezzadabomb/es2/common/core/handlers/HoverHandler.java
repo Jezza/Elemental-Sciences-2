@@ -6,7 +6,7 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.HoverHandlerPacket;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -16,11 +16,10 @@ public class HoverHandler {
 
     public ArrayList<HoveringPlayer> playerList;
 
-    static HoverHandler INSTANCE;
+    static HoverHandler INSTANCE = new HoverHandler();
 
     public HoverHandler() {
         playerList = new ArrayList<HoveringPlayer>();
-        INSTANCE = this;
     }
 
     public static HoverHandler getInstance() {
@@ -33,7 +32,7 @@ public class HoverHandler {
             return;
         EntityPlayer player = (EntityPlayer) event.entity;
 
-        if (!UtilMethods.isPlayerWearing(player, ModItems.hoverBoots)) {
+        if (!PlayerHelper.isPlayerWearing(player, ModItems.hoverBoots)) {
             if (isInList(player))
                 playerList.remove(getHoveringPlayer(player));
             return;
@@ -201,8 +200,6 @@ public class HoverHandler {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
             if (obj instanceof HoveringPlayer) {
                 HoveringPlayer hoveringPlayer = (HoveringPlayer) obj;
                 return equals(hoveringPlayer.getUsername());

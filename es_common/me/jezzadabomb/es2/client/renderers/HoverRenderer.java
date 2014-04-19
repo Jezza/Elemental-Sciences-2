@@ -32,10 +32,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HoverRenderer {
 
-    static HoverRenderer INSTANCE;
+    static HoverRenderer INSTANCE = new HoverRenderer();
 
     public HoverRenderer() {
-        INSTANCE = this;
     }
 
     public static HoverRenderer getInstance() {
@@ -57,11 +56,10 @@ public class HoverRenderer {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glDisable(GL_CULL_FACE);
 
-                boolean flag = false;
-                if (!player.equals(renderView.getDisplayName())) {
+                boolean flag = !player.equals(renderView.getDisplayName());
+                if (flag) {
                     RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
                     glTranslated(0.0D, 1.55D, 0.0D);
-                    flag = true;
                 }
 
                 glRotated(90, 1.0D, 0.0D, 0.0D);
@@ -73,7 +71,7 @@ public class HoverRenderer {
                     glTranslated(-1.291D, -1.281D, 0.0D);
 
                 glScaled(0.01D, 0.01D, 0.01D);
-                glColor4f(1.0F, 1.0F, 1.0F, ((float) player.tickCount() / ((float) player.MAX_HOVER_TIME * 2)) + 0.1F);
+                glColor4f(1.0F, 1.0F, 1.0F, ((float) player.tickCount() / ((float) player.MAX_HOVER_TIME)) + 0.1F);
 
                 RenderUtils.drawTexturedQuadAtPlayer(TextureMaps.HOVER_TEXTURES[player.getTexture()], 0, 0, 0, 0, 256, 256, 161);
 

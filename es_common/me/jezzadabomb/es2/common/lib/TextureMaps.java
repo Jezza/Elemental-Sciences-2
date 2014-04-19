@@ -35,6 +35,12 @@ public class TextureMaps {
     public static final ResourceLocation CABLE_PIXEL = getResource("cable");
     public static final ResourceLocation DRONE_BAY_FRAME = getResource("droneBayFrame");
     public static final ResourceLocation DRONE_BAY_DOOR = getResource("droneBayDoor");
+    public static final ResourceLocation ATOMIC_SHREDDER = getResource("atomicShredder");
+    public static final ResourceLocation ATOMIC_SHREDDER_CASING = getResource("atomicShredderCasing");
+    public static final ResourceLocation ATOMIC_SHREDDER_RINGS = getResource("atomicShredderRing");
+    public static final ResourceLocation ATOMIC_SHREDDER_PLATES = getResource("atomicShredderPlate");
+    public static final ResourceLocation ATOMIC_SHREDDER_HOVER_PLATE = getResource("basePlate");
+    public static final ResourceLocation ATOMIC_SHREDDER_HOVER_RING = getResource("baseRing");
 
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";

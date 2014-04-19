@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.common.core.handlers;
 
-import me.jezzadabomb.es2.common.tileentity.TileES;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

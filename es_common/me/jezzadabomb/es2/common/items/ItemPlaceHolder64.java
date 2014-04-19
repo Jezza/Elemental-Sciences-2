@@ -3,7 +3,9 @@ package me.jezzadabomb.es2.common.items;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -41,7 +43,7 @@ public class ItemPlaceHolder64 extends ItemMetaES {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            if (ModItems.isPlaceHolderStack("selectiveEMPTrigger", stack, true) && UtilMethods.isDroneBay(world, x, y, z)) {
+            if (ModItems.isPlaceHolderStack("selectiveEMPTrigger", stack, true) && Identifier.isDroneBay(world, x, y, z)) {
                 TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
                 droneBay.recallDrones(-1);
             }
@@ -72,7 +74,7 @@ public class ItemPlaceHolder64 extends ItemMetaES {
             if (flag) {
                 player.swingItem();
                 if (!player.capabilities.isCreativeMode)
-                    UtilMethods.decrCurrentItem(player);
+                    PlayerHelper.decrCurrentItem(player);
             }
             return stack;
         }

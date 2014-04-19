@@ -16,9 +16,6 @@ import me.jezzadabomb.es2.client.models.ModelPixel;
 import me.jezzadabomb.es2.client.models.ModelPlate;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSetD;
-import me.jezzadabomb.es2.common.gui.GuiConsoleTracker.PlayerState;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -103,19 +100,8 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
                     renderPixelAt(7 + j, 1, 14 + i);
             }
 
-        renderScreen(tileConsole, x, y, z, tick);
-
         glEnable(GL_LIGHTING);
         glPopMatrix();
-    }
-
-    public void renderScreen(TileConsole tileConsole, double x, double y, double z, float tick) {
-        if (!tileConsole.isGuiOpened())
-            return;
-        
-        for (PlayerState player : tileConsole.guiTracker.getPlayerList()) {
-            ESLogger.info(player.name);
-        }
     }
 
     private void renderPixelAt(int x, int y, int z) {

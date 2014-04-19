@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.common.core.interfaces;
 
-import me.jezzadabomb.es2.common.tileentity.TileES;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 
 public interface IMasterable {
 

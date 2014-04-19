@@ -3,7 +3,7 @@ package me.jezzadabomb.es2.common.entities;
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.TileES;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 

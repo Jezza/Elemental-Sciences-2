@@ -2,13 +2,11 @@ package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.sound.Sounds;
-import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.blocks.framework.BlockES;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +27,7 @@ public class BlockInventoryScanner extends BlockES {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return UtilMethods.isIInventory(world, x, y - 1, z);
+        return Identifier.isIInventory(world, x, y - 1, z);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class BlockInventoryScanner extends BlockES {
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public TileEntity getTileEntity(int metadata) {
         return new TileInventoryScanner();
     }
 }

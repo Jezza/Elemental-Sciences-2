@@ -8,15 +8,14 @@ import java.util.Random;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -27,16 +26,11 @@ public class QuantumBombTicker {
     public static String DEFAULT_TIMING = "default";
     public static int customTiming = -1;
 
-    private static HashSet<QuantumBombState> watchList, watchUtilList;
-    private static ArrayList<EntityItem> itemList, utilList;
+    private static HashSet<QuantumBombState> watchList = new HashSet<QuantumBombState>();
+    private static HashSet<QuantumBombState> watchUtilList = new HashSet<QuantumBombState>();
 
-    public QuantumBombTicker() {
-        itemList = new ArrayList<EntityItem>();
-        utilList = new ArrayList<EntityItem>();
-
-        watchList = new HashSet<QuantumBombState>();
-        watchUtilList = new HashSet<QuantumBombState>();
-    }
+    private static ArrayList<EntityItem> itemList = new ArrayList<EntityItem>();
+    private static ArrayList<EntityItem> utilList = new ArrayList<EntityItem>();
 
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent event) {
@@ -70,7 +64,7 @@ public class QuantumBombTicker {
                 if (entity instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) entity;
 
-                    if (UtilMethods.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), false, null))
+                    if (PlayerHelper.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), false, null))
                         continue;
 
                     if (player.capabilities.isFlying)
@@ -99,7 +93,7 @@ public class QuantumBombTicker {
         for (Object object : playerEntities) {
             if (object instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) object;
-                if (UtilMethods.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), true, ModItems.getPlaceHolderStack("deadCoin"))) {
+                if (PlayerHelper.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), true, ModItems.getPlaceHolderStack("deadCoin"))) {
                     UtilMethods.addChatMessage(player, "You're lucky you managed to play a perfect game.");
                     continue;
                 }

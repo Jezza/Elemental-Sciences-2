@@ -4,6 +4,7 @@ import java.util.List;
 
 import cpw.mods.fml.common.Loader;
 
+import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -114,7 +115,7 @@ public class BlockAtomicConstructor extends BlockES {
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public TileEntity getTileEntity(int metadata) {
         return new TileAtomicConstructor();
     }
 

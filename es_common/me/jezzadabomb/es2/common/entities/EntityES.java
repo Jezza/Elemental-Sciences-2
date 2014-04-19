@@ -1,8 +1,8 @@
 package me.jezzadabomb.es2.common.entities;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.CoordSetD;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 

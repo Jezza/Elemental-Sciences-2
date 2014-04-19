@@ -1,13 +1,9 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import java.util.List;
-
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.blocks.framework.BlockES;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
@@ -37,7 +33,7 @@ public class BlockDroneBay extends BlockES {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return UtilMethods.isIInventory(world, x, y - 1, z);
+        return Identifier.isIInventory(world, x, y - 1, z);
     }
     
     @Override
@@ -51,7 +47,7 @@ public class BlockDroneBay extends BlockES {
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public TileEntity getTileEntity(int metadata) {
         return new TileDroneBay();
     }
 

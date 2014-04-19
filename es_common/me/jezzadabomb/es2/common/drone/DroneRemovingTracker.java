@@ -3,11 +3,11 @@ package me.jezzadabomb.es2.common.drone;
 import java.util.ArrayList;
 
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
-import me.jezzadabomb.es2.common.core.utils.CoordSetD;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.TileES;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.world.World;
 
 public class DroneRemovingTracker implements IMasterable {

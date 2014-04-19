@@ -49,7 +49,7 @@ public class CatalystTicker {
                             if (!vb.player.capabilities.isCreativeMode)
                                 if (!vb.player.inventory.addItemStackToInventory(is))
                                     world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
-                        UtilMethods.breakBlock(world, vb.x, vb.y, vb.z, vb.block, vb.meta);
+                        world.func_147480_a(vb.x, vb.y, vb.z, false);
 
                         if (vb.lifespan > 0)
                             for (int xx = -1; xx <= 1; xx++)

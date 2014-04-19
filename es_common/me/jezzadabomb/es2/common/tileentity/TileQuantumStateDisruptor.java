@@ -1,14 +1,13 @@
 package me.jezzadabomb.es2.common.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
-import net.minecraft.block.Block;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileQuantumStateDisruptor extends TileES {
 
@@ -21,6 +20,8 @@ public class TileQuantumStateDisruptor extends TileES {
     @Override
     public void updateEntity() {
         invalidate();
+        if (worldObj == null)
+            return;
         if (worldObj != null && !worldObj.isRemote && !registered) {
             registered = true;
             QuantumBombTicker.addToWatchList(this);
@@ -49,10 +50,5 @@ public class TileQuantumStateDisruptor extends TileES {
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         invalidate();
         worldObj.createExplosion(null, xCoord, yCoord, zCoord, 2.5F, true);
-    }
-
-    @Override
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        return null;
     }
 }

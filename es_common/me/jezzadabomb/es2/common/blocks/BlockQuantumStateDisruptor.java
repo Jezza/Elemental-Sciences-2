@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.common.blocks;
 
+import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
@@ -28,7 +29,7 @@ public class BlockQuantumStateDisruptor extends BlockES {
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public TileEntity getTileEntity(int metadata) {
         return new TileQuantumStateDisruptor();
     }
 

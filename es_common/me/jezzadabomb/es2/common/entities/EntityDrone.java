@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import me.jezzadabomb.es2.common.core.utils.CoordSetD;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;

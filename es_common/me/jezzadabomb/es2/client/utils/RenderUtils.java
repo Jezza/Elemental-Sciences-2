@@ -5,15 +5,17 @@ import static org.lwjgl.opengl.GL11.*;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
@@ -35,6 +38,24 @@ public class RenderUtils {
 
     static RenderBlocks renderBlocksInstance = new RenderBlocks();
 
+    public static double hoverEquation(float inAmplitude, float scale, float exAmplitude) {
+        return hoverEquation(inAmplitude, scale, exAmplitude, 0.0F);
+    }
+
+    public static double hoverEquation(float inAmplitude, float scale, float exAmplitude, float translation) {
+        return ((inAmplitude * (Math.sin((scale * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL) + translation))) / exAmplitude);
+    }
+
+    public static double rotationEquation(int speed, float externalAddition) {
+        return (Math.PI * 114.591559F * speed * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL) + externalAddition;
+    }
+
+    public static RenderItem createItemRenderer() {
+        RenderItem renderItem = new RenderItem();
+        renderItem.setRenderManager(RenderManager.instance);
+        return renderItem;
+    }
+
     public static void bindTexture(ResourceLocation rl) {
         Minecraft.getMinecraft().renderEngine.bindTexture(rl);
     }
@@ -47,6 +68,21 @@ public class RenderUtils {
     public static void drawTexturedQuadAtPlayer(ResourceLocation rl, int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
         bindTexture(rl);
         drawTexturedQuad(x, y, u, v, uLength, vLength, zLevel);
+    }
+
+    public static void addBlockDestroyEffects(IBlockAccess world, int x, int y, int z) {
+        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+
+        if (world == null || effectRenderer == null)
+            return;
+
+        Block block = world.getBlock(x, y, z);
+        int meta = world.getBlockMetadata(x, y, z);
+
+        if (block == null)
+            return;
+
+        effectRenderer.addBlockDestroyEffects(x, y, z, block, meta);
     }
 
     public static void drawTexturedQuad(int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
@@ -71,7 +107,7 @@ public class RenderUtils {
         double[] temp = new double[3];
         temp[0] = interpPosX - (x + 0.5D);
         temp[1] = interpPosZ - (z + 0.5D);
-        temp[2] = interpPosY - (y + 1.8D);
+        temp[2] = interpPosY - (y + entity.getEyeHeight());
         return temp;
     }
 
@@ -92,7 +128,7 @@ public class RenderUtils {
         double[] temp = new double[3];
         temp[0] = interpPosX - (x + 0.5D);
         temp[1] = interpPosZ - (z + 0.5D);
-        temp[2] = interpPosY - (y + 1.8D);
+        temp[2] = interpPosY - (y + entity.getEyeHeight());
         return temp;
     }
 
@@ -164,13 +200,15 @@ public class RenderUtils {
         glTranslated(0.0D, rowNum, 0.0D);
     }
 
-    public static void drawItemStack(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
-        if (itemStack == null || customItemRenderer == null)
+    public static void drawItemStack(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
+        if (itemStack == null)
             return;
 
         Minecraft mc = Minecraft.getMinecraft();
         TextureManager textureManager = mc.getTextureManager();
         FontRenderer fontRenderer = mc.fontRenderer;
+
+        RenderItem customItemRenderer = createItemRenderer();
 
         glPushMatrix();
         glDisable(GL_CULL_FACE);
@@ -197,7 +235,6 @@ public class RenderUtils {
             if (!ForgeHooksClient.renderInventoryItem(renderBlocksInstance, textureManager, itemStack, true, zLevel, 0, 0)) {
                 glEnable(GL_BLEND);
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-                glEnable(GL_ALPHA_TEST);
             }
             glEnable(GL_BLEND);
         } else {
@@ -215,11 +252,11 @@ public class RenderUtils {
                 pop = true;
                 glPopMatrix();
                 customItemRenderer.renderItemIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-                glEnable(GL_ALPHA_TEST);
             }
             if (!pop)
                 glPopMatrix();
         }
+        glEnable(GL_ALPHA_TEST);
         HUDRenderer.hudColour.doGL();
         glDisable(GL_LIGHTING);
         glEnable(GL_CULL_FACE);
@@ -233,11 +270,11 @@ public class RenderUtils {
         glPopMatrix();
     }
 
-    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, RenderItem customItemRenderer, int zLevel, int indexNum, int rowNum) {
+    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
         glDisable(GL_LIGHTING);
         if (Reference.DRAW_TEXTURED_SLOTS)
             drawTextureSlot(x, y, zLevel + 1);
-        drawItemStack(x, y, itemStack, customItemRenderer, zLevel, indexNum, rowNum);
+        drawItemStack(x, y, itemStack, zLevel, indexNum, rowNum);
     }
 
     public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {

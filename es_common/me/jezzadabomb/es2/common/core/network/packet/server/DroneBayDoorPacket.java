@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -47,7 +47,7 @@ public class DroneBayDoorPacket implements IPacket {
         int y = coordSet.getY();
         int z = coordSet.getZ();
 
-        if (UtilMethods.isDroneBay(world, x, y, z)) {
+        if (Identifier.isDroneBay(world, x, y, z)) {
             TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
             if (open) {
                 droneBay.openHatch();
@@ -66,7 +66,7 @@ public class DroneBayDoorPacket implements IPacket {
         int y = coordSet.getY();
         int z = coordSet.getZ();
 
-        if (UtilMethods.isDroneBay(world, x, y, z)) {
+        if (Identifier.isDroneBay(world, x, y, z)) {
             TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
             ESLogger.info("Toggle");
             droneBay.toggleDoor();

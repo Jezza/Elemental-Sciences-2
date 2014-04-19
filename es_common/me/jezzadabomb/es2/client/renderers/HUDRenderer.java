@@ -1,6 +1,20 @@
 package me.jezzadabomb.es2.client.renderers;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslated;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,14 +27,15 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.helpers.DebugHelper;
+import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
+import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -36,14 +51,9 @@ public class HUDRenderer {
     private ArrayList<PacketTimeout> ignoreList;
     public static final Colour hudColour = new Colour(1.0F, 1.0F, 1.0F, 0.6F);
 
-    private final RenderItem customItemRenderer;
-
     public HUDRenderer() {
         packetList = new ArrayList<InventoryPacket>();
         ignoreList = new ArrayList<PacketTimeout>();
-
-        customItemRenderer = new RenderItem();
-        customItemRenderer.setRenderManager(RenderManager.instance);
     }
 
     public void addPacketToList(InventoryPacket p) {
@@ -53,7 +63,7 @@ public class HUDRenderer {
             return;
 
         CoordSet packetSet = p.coordSet;
-        if (!UtilMethods.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ()) || isIgnoring(p))
+        if (!Identifier.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ()) || isIgnoring(p))
             return;
 
         if (isPacketAtXYZ(p))
@@ -85,10 +95,10 @@ public class HUDRenderer {
     }
 
     public InventoryPacket getPacketAtXYZ(String loc) {
-        int[] coord = UtilMethods.getArrayFromString(loc);
-        if (coord == null)
+        CoordSet coordSet = UtilMethods.getArrayFromString(loc);
+        if (coordSet == null)
             return null;
-        return getPacketAtXYZ(coord[0], coord[1], coord[2]);
+        return getPacketAtXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
     }
 
     public void removePacketAtXYZ(int x, int y, int z) {
@@ -126,7 +136,7 @@ public class HUDRenderer {
         packetUtilList.addAll(packetList);
 
         for (InventoryPacket packet : packetUtilList) {
-            if (UtilMethods.isWearingItem(ModItems.glasses)) {
+            if (PlayerHelper.isWearingItem(ModItems.glasses)) {
                 if (!StoredQueues.getInstance().isAtXYZ(packet.coordSet))
                     packetList.remove(packet);
             } else {
@@ -179,7 +189,7 @@ public class HUDRenderer {
                 glDisable(GL_BLEND);
                 glPopMatrix();
 
-                if (UtilMethods.canShowDebugHUD())
+                if (DebugHelper.canShowDebugHUD())
                     RenderUtils.renderDebugBox(partialTicks, p);
                 return;
             }
@@ -225,7 +235,7 @@ public class HUDRenderer {
             glPopMatrix();
         }
         if (underBlock) {
-            if (UtilMethods.canShowDebugHUD())
+            if (DebugHelper.canShowDebugHUD())
                 RenderUtils.renderColouredBox(partialTicks, p, underBlock);
         }
     }
@@ -247,7 +257,7 @@ public class HUDRenderer {
                 rowNum++;
             }
 
-            RenderUtils.drawItemAndSlot(indexNum * xOffset, rowNum * yOffset, itemStack, customItemRenderer, -2, indexNum, rowNum);
+            RenderUtils.drawItemAndSlot(indexNum * xOffset, rowNum * yOffset, itemStack, -2, indexNum, rowNum);
             totalSlots++;
         }
     }

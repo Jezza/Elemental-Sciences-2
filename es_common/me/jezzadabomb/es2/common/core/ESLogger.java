@@ -1,14 +1,12 @@
 package me.jezzadabomb.es2.common.core;
 
-import java.util.Locale;
-
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.helpers.DebugHelper;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class ESLogger {
@@ -41,13 +39,13 @@ public class ESLogger {
     }
 
     public static void debug(Object object, int mode) {
-        if (UtilMethods.canShowDebugHUD() && UtilMethods.correctMode(mode))
-            log(Level.WARN, "[DEBUG] " + object);
+        log(Level.WARN, "[DEBUG] " + object);
     }
 
     public static void debugFlood(Object object) {
-        if (UtilMethods.canShowDebugHUD() && UtilMethods.canFlood())
-            log(Level.WARN, "[DEBUG] " + object);
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            if (DebugHelper.canShowDebugHUD() && DebugHelper.canFlood())
+                log(Level.WARN, "[DEBUG] " + object);
     }
 
     public static void severe(Object object) {

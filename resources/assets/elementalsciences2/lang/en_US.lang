@@ -17,8 +17,9 @@ item.spectrumSensor.name=Spectrum Sensor
 item.selectiveEMPTrigger.name=Recall Device
 item.empTrigger.name=EMP Device
 item.strengthenedIron.name=Strengthened Iron Ingot
-item.strengthenedPlate.name=Strengthened Iron Plate
 item.strengthenedIronBar.name=Strengthened Iron Bar
+item.strengthenedPlate.name=Strengthened Iron Plate
+item.shredderCore.name=Atomic Shredder NanoPack
 item.ironPlate.name=Iron Plating
 
 tile.inventoryScanner.name=Inventory Scanner

@@ -1,24 +1,30 @@
 package me.jezzadabomb.es2.common.lib;
 
-import java.util.ArrayList;
-
 public class Strings {
     // Block Name Constants
     public static final String INVENTORY_SCANNER = "inventoryScanner";
+    public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
+    public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
+    public static final String CONSOLE = "console";
+    public static final String DRONE_BAY = "droneBay";
+    public static final String ATOMIC_SHREDDER = "atomicShredder";
+    public static final String BLOCK_PLACE_HOLDER = "blockPlaceHolder";
+    public static final String ATOMIC_SHREDDER_DUMMY = "atomicShredderDummy";
+    public static final String ATOMIC_SHREDDER_DUMMY_CORE = "atomicShredderDummyCore";
+
+    public static final String OKU_TROLL = "okuTroll";
+    public static final String BLOCK_TUTORIAL = "tutorialBlock";
 
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
     public static final String GLASSES = "spectralGlasses";
     public static final String DEBUG_TOOL = "debugTool";
+    public static final String RING_CONTROL = "ringControl";
     public static final String HOVER_BOOTS = "hoverBoots";
+    public static final String DOUBLE_JUMP_BOOTS = "doubleJump";
     public static final String PLACEHOLDER = "placeHolder";
     public static final String PLACEHOLDER_64 = "placeHolder64";
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
-    public static final String QUANTUM_STATE_DISRUPTER = "quantumStateDisrupter";
-    public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
-    public static final String SOLAR_LENS = "solarLens";
-    public static final String CONSOLE = "console";
-    public static final String DRONE_BAY = "droneBay";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";
@@ -35,4 +41,7 @@ public class Strings {
     // Entity Constants
     public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
     public static final String COMBAT_DRONE = "EntityConstructorDrone";
+
+    // Inventory Constants
+    public static final String ATOMIC_SHREDDER_NAME = "container." + ATOMIC_SHREDDER;
 }

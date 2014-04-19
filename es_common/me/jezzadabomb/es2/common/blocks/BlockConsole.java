@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
@@ -66,8 +67,6 @@ public class BlockConsole extends BlockES {
             return true;
         }
 
-        tileConsole.openGui(world, player);
-
         player.openGui(ElementalSciences2.instance, 0, world, x, y, z);
 
         return true;
@@ -84,7 +83,7 @@ public class BlockConsole extends BlockES {
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public TileEntity getTileEntity(int metadata) {
         return new TileConsole();
     }
 }

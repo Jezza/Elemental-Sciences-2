@@ -12,13 +12,12 @@ import me.jezzadabomb.es2.client.renderers.item.ItemDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemSolarLensRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TileAtomicShredderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileQuantumStateDisruptorRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileSolarLensRenderer;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
@@ -29,7 +28,7 @@ import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
-import me.jezzadabomb.es2.common.tileentity.TileSolarLens;
+import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.IItemRenderer;
@@ -68,10 +67,10 @@ public class ClientProxy extends CommonProxy {
     private void initTileRenderers() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileSolarLens.class, new TileSolarLensRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileConsole.class, new TileConsoleRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileDroneBay.class, new TileDroneBayRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
     }
 
     private void initItemRenderer() {
@@ -82,7 +81,6 @@ public class ClientProxy extends CommonProxy {
         registerItemRenderer(ModBlocks.inventoryScanner, new ItemInventoryScannerRenderer());
         registerItemRenderer(ModBlocks.atomicConstructor, new ItemAtomicConstructorRenderer());
         registerItemRenderer(ModBlocks.console, new ItemConsoleRenderer());
-        registerItemRenderer(ModBlocks.solarLens, new ItemSolarLensRenderer());
         registerItemRenderer(ModBlocks.droneBay, new ItemDroneBayRenderer());
     }
 

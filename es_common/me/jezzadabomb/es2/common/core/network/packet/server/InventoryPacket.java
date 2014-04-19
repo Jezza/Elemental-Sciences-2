@@ -10,9 +10,10 @@ import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
+import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,8 +21,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import cpw.mods.fml.relauncher.Side;
 
 public class InventoryPacket implements IPacket {
 
@@ -66,10 +65,10 @@ public class InventoryPacket implements IPacket {
     @Override
     public void executeClientSide(EntityPlayer player) {
         World world = player.worldObj;
-        int[] coord = UtilMethods.getArrayFromString(loc);
-        if (coord == null)
+        CoordSet tempSet = UtilMethods.getArrayFromString(loc);
+        if (tempSet == null)
             return;
-        coordSet = new CoordSet(coord[0], coord[1], coord[2]);
+        coordSet = tempSet;
         ClientProxy.getHUDRenderer().addPacketToList(this);
         tickTiming = 0;
     }
@@ -92,8 +91,8 @@ public class InventoryPacket implements IPacket {
         for (ItemStack itemStack : itemStacks) {
             boolean added = false;
             for (ItemStack tempStack : tempStacks) {
-                if (UtilMethods.areItemStacksEqual(itemStack, tempStack)) {
-                    UtilMethods.mergeItemStacks(tempStack, itemStack, true);
+                if (InventoryHelper.areItemStacksEqual(itemStack, tempStack)) {
+                    InventoryHelper.mergeItemStacks(tempStack, itemStack, true);
                     added = true;
                 }
             }
@@ -130,5 +129,4 @@ public class InventoryPacket implements IPacket {
 
         return Math.abs(playerSet.distanceTo(coordSet.toCoordSetF()));
     }
-
 }

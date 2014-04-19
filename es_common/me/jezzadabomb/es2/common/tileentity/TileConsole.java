@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Random;
 
-import me.jezzadabomb.es2.client.ClientProxy;
+import me.jezzadabomb.es2.client.gui.GuiConsole;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.containers.ContainerConsole;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IRotatable;
-import me.jezzadabomb.es2.common.core.utils.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.drone.DroneBayTracker;
-import me.jezzadabomb.es2.common.gui.GuiConsole;
-import me.jezzadabomb.es2.common.gui.GuiConsoleTracker;
-import net.minecraft.client.Minecraft;
+import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +22,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -35,7 +30,6 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     ArrayList<TileAtomicConstructor> constructorList;
 
     public DroneBayTracker droneBayTracker;
-    public GuiConsoleTracker guiTracker;
 
     public int randomHoverSeed;
 
@@ -49,7 +43,6 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     public TileConsole() {
         constructorList = new ArrayList<TileAtomicConstructor>();
         droneBayTracker = new DroneBayTracker();
-        guiTracker = new GuiConsoleTracker();
 
         renderCables = new BitSet(4);
         direction = timeTicked = 0;
@@ -58,18 +51,6 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         updateRenderCables();
         droneBayMaintenance();
-    }
-
-    public void openGui(World world, EntityPlayer player) {
-        guiTracker.openGui(world, player);
-    }
-
-    public void closeGui(World world, EntityPlayer player) {
-        guiTracker.closeGui(world, player);
-    }
-
-    public boolean isGuiOpened() {
-        return !guiTracker.getPlayerList().isEmpty();
     }
 
     @SideOnly(Side.CLIENT)
@@ -111,7 +92,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
                 for (int k = -1; k <= 1; k++) {
                     if (i == 0 && j == 0 && k == 0)
                         continue;
-                    if (UtilMethods.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
+                    if (Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (atomic.hasMaster())
                             continue;
@@ -167,7 +148,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     }
 
     private boolean isMatch(int x, int y, int z) {
-        return worldObj != null && (UtilMethods.isConsole(worldObj, x, y, z) || UtilMethods.isConstructor(worldObj, x, y, z));
+        return worldObj != null && (Identifier.isConsole(worldObj, x, y, z) || Identifier.isConstructor(worldObj, x, y, z));
     }
 
     public BitSet getRenderCables() {

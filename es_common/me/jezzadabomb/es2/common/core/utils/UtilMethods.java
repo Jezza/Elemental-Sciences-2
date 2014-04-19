@@ -4,31 +4,30 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
-import me.jezzadabomb.es2.common.items.ItemDebugTool;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
+import me.jezzadabomb.es2.common.items.debug.ItemDebugTool;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 
 import org.lwjgl.input.Keyboard;
 
@@ -38,6 +37,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class UtilMethods {
 
     public static void addChatMessage(EntityPlayer player, String string) {
+        if (player == null)
+            return;
         player.addChatMessage(new ChatComponentText(string));
     }
 
@@ -52,77 +53,12 @@ public class UtilMethods {
         return ticks;
     }
 
-    public static ItemStack mergeItemStacks(ItemStack itemStack1, ItemStack itemStack2, boolean overflow) {
-        if ((itemStack1 == null && itemStack2 == null) || !ItemStack.areItemStacksEqual(itemStack1, itemStack2))
-            return null;
-        itemStack1.stackSize += itemStack2.stackSize;
-        itemStack2.stackSize = 0;
-        if (!overflow && itemStack1.stackSize > 64)
-            itemStack1.stackSize = 64;
-        return itemStack1;
-    }
-
-    public static boolean isPlayerWearing(EntityPlayer player, Item item) {
-        if (player == null || item == null || !(item instanceof ItemArmor))
-            return false;
-        int index = getSlotFromIndex(((ItemArmor) item).armorType);
-        if (index == -1)
-            return false;
-        ItemStack tempStack = player.inventory.armorItemInSlot(index);
-        if (tempStack != null)
-            return item.equals(tempStack.getItem());
-
-        return false;
-    }
-
-    public static boolean isPlayerWearing(EntityPlayer player, ItemStack itemStack) {
-        return isPlayerWearing(player, itemStack.getItem());
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isWearingItem(Item item) {
-        return isPlayerWearing(Minecraft.getMinecraft().thePlayer, item);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isWearingItemStack(ItemStack itemStack) {
-        return isWearingItem(itemStack.getItem());
-    }
-
-    public static ItemStack decrCurrentItem(EntityPlayer player) {
-        return player.inventory.decrStackSize(player.inventory.currentItem, 1);
-    }
-
-    public static boolean isConsole(World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && tileEntity instanceof TileConsole;
-    }
-
-    public static boolean isConstructor(World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && tileEntity instanceof TileAtomicConstructor;
-    }
-
-    public static boolean isScanner(World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && tileEntity instanceof TileInventoryScanner;
-    }
-
-    public static boolean isDismantable(World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && tileEntity instanceof IDismantleable;
-    }
-
-    public static boolean isIInventory(World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && (tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory);
-    }
-
-    public static boolean isDroneBay(World world, int x, int y, int z) {
-        if (world == null)
-            return false;
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        return tileEntity != null && tileEntity instanceof TileDroneBay;
+    public static void listAllParts(IModelCustom customModel) {
+        if (customModel instanceof WavefrontObject) {
+            WavefrontObject waveFrontObject = (WavefrontObject) customModel;
+            for (GroupObject object : waveFrontObject.groupObjects)
+                ESLogger.info(object.name);
+        }
     }
 
     public static boolean hasPressedShift() {
@@ -156,12 +92,6 @@ public class UtilMethods {
         return ticks / 20;
     }
 
-    public static boolean canShowDebugHUD() {
-        if (!Reference.isDebugMode)
-            return false;
-        return isHoldingItem(ModItems.debugItem);
-    }
-
     public static boolean isRenderType(Block block, int type) {
         return block != null && block.getRenderType() == type;
     }
@@ -176,81 +106,18 @@ public class UtilMethods {
         return block != null && isRenderType(block, type);
     }
 
-    public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume, ItemStack replaceStack) {
-        if (shouldConsume)
-            ESLogger.info("Hitting");
-        int index = 0;
-        for (ItemStack tempStack : player.inventory.mainInventory) {
-            if (tempStack != null && ItemStack.areItemStacksEqual(itemStack, tempStack)) {
-                if (shouldConsume) {
-                    player.inventory.mainInventory[index] = replaceStack;
-                }
-                return true;
-            }
-            index++;
-        }
-        return false;
-    }
-
-    // No NBT Comparision.
-    public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.getItemDamage() == itemStack2.getItemDamage() && itemStack1.getItem().equals(itemStack2.getItem());
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean canFlood() {
-        if (canShowDebugHUD()) {
-            ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-            return ((ItemDebugTool) tempStack.getItem()).canFlood;
-        }
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean correctMode(int mode) {
-        if (canShowDebugHUD()) {
-            ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-            return ((ItemDebugTool) tempStack.getItem()).debugMode == mode;
-        }
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isHoldingItem(Item item) {
-        return isHoldingItemStack(new ItemStack(item));
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static boolean isHoldingItemStack(ItemStack itemStack) {
-        if (Minecraft.getMinecraft().thePlayer == null)
-            return false;
-        ItemStack tempStack = Minecraft.getMinecraft().thePlayer.getCurrentEquippedItem();
-        if (itemStack != null && tempStack != null)
-            return tempStack.getItem().equals(itemStack.getItem());
-        return false;
-    }
-
-    public static int getSlotFromIndex(int index) {
-        switch (index) {
-            case 0:
-                return 3;
-            case 1:
-                return 2;
-            case 2:
-                return 1;
-            case 3:
-                return 0;
-            default:
-                return -1;
-        }
-    }
-
     public static void destroyBlock(World world, int x, int y, int z, Block block, int meta) {
         world.setBlockToAir(x, y, z);
-        Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(x, y, z, block, meta);
+        if (world.isRemote)
+            Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(x, y, z, block, meta);
     }
 
-    public static void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+    public static void breakBlock(World world, int x, int y, int z, Block block, int meta, boolean drop) {
+        if (drop) {
+            ArrayList<ItemStack> drops = block.getDrops(world, x, y, z, meta, 0);
+            for (ItemStack is : drops)
+                world.spawnEntityInWorld(new EntityItem(world, x + 0.5D, y + 0.5D, z + 0.5D, is));
+        }
         destroyBlock(world, x, y, z, block, meta);
     }
 
@@ -258,18 +125,26 @@ public class UtilMethods {
         return x + ":" + y + ":" + z;
     }
 
-    public static String getLocFromArray(int[] coords) {
-        return coords[0] + ":" + coords[1] + ":" + coords[2];
+    public static String getLocFromArray(CoordSet coordSet) {
+        return coordSet.getX() + ":" + coordSet.getY() + ":" + coordSet.getZ();
     }
 
-    public static int[] getArrayFromString(String loc) {
+    public static CoordSet getArrayFromString(String loc) {
         if (!loc.matches("-?\\d*:-?\\d*:-?\\d*"))
             return null;
-        int[] coord = new int[3];
-        coord[0] = Integer.parseInt(loc.substring(0, loc.indexOf(":")));
-        coord[1] = Integer.parseInt(loc.substring(loc.indexOf(":") + 1, loc.indexOf(":", loc.indexOf(":") + 1)));
-        coord[2] = Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1));
-        return coord;
+
+        int firstIndex = loc.indexOf(":");
+        CoordSet coordSet = new CoordSet(0, 0, 0);
+
+        try {
+            coordSet.setX(Integer.parseInt(loc.substring(0, firstIndex)));
+            coordSet.setY(Integer.parseInt(loc.substring(firstIndex + 1, loc.indexOf(":", firstIndex + 1))));
+            coordSet.setZ(Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1)));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return coordSet;
     }
 
     public static void writeQueueToNBT(ArrayList<CoordSetD> targetSetQueue, NBTTagCompound tag) {
@@ -330,65 +205,7 @@ public class UtilMethods {
         return entity.getDistanceSq(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < (value * value);
     }
 
-    public static boolean addItemStackToIInventory(IInventory inventory, ItemStack itemStack) {
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            if (inventory.getStackInSlot(i) == null) {
-                inventory.setInventorySlotContents(i, itemStack);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean addItemStackToInventory(ItemStack[] inventory, ItemStack stack, int startIndex) {
-
-        if (stack == null) {
-            return true;
-        }
-        int openSlot = -1;
-        for (int i = startIndex; i < inventory.length; i++) {
-            if (areItemStacksEqual(stack, inventory[i]) && inventory[i].getMaxStackSize() > inventory[i].stackSize) {
-                int hold = inventory[i].getMaxStackSize() - inventory[i].stackSize;
-                if (hold >= stack.stackSize) {
-                    inventory[i].stackSize += stack.stackSize;
-                    stack = null;
-                    return true;
-                } else {
-                    stack.stackSize -= hold;
-                    inventory[i].stackSize += hold;
-                }
-            } else if (inventory[i] == null && openSlot == -1) {
-                openSlot = i;
-            }
-        }
-        if (stack != null) {
-            if (openSlot > -1) {
-                inventory[openSlot] = stack;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static String getLocFromXYZ(CoordSet coordSet) {
         return getLocFromXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
-    }
-
-    public static int removeItemStackFromIInventory(IInventory inventory, ItemStack itemStack, int count) {
-
-        int index = 0;
-
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack tempStack = inventory.getStackInSlot(i);
-            if (areItemStacksEqual(itemStack, itemStack)) {
-                inventory.setInventorySlotContents(i, (ItemStack) null);
-                if (++index >= count)
-                    return index;
-            }
-        }
-
-        return index;
     }
 }
