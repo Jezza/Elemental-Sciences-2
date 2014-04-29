@@ -1,17 +1,10 @@
 package me.jezzadabomb.es2.common.tileentity.multi;
 
-import me.jezzadabomb.es2.client.gui.GuiAtomicShredder;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.containers.ContainerAtomicShredder;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
-import me.jezzadabomb.es2.common.shredder.RingController;
 import me.jezzadabomb.es2.common.shredder.AtomicShredderItemHandler;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

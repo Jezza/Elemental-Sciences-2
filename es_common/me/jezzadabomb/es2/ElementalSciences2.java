@@ -5,11 +5,9 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.config.ConfigHandler;
-import me.jezzadabomb.es2.common.core.handlers.GuiHandler;
 import me.jezzadabomb.es2.common.core.network.PacketHandler;
 import me.jezzadabomb.es2.common.core.network.PacketPipeline;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import cpw.mods.fml.common.Mod;
@@ -65,7 +63,7 @@ public class ElementalSciences2 {
 
         Entities.init();
 
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
         packetPipeline.initalise();
 

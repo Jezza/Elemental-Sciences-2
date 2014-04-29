@@ -219,15 +219,4 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         return stringBuilder.toString();
     }
-
-    @Override
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        if (side.isClient()) {
-            return new GuiConsole(player.inventory, this);
-        }
-        if (side.isServer()) {
-            return new ContainerConsole(player.inventory, this);
-        }
-        return null;
-    }
 }

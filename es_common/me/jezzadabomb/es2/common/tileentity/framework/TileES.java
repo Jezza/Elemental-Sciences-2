@@ -28,12 +28,4 @@ public abstract class TileES extends TileEntity {
     public String toString() {
         return getClass().getSimpleName() + getCoordSet();
     }
-
-    public Object getGui(int id, Side side, EntityPlayer player) {
-        return null;
-    };
-
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F) < 64;
-    }
 }

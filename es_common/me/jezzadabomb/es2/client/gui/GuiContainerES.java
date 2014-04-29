@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.client.gui;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -15,7 +16,7 @@ public abstract class GuiContainerES extends GuiContainer {
     public GuiContainerES(Container par1Container) {
         super(par1Container);
     }
-    
+
     protected void drawTextureAt(ResourceLocation texture, int x, int y) {
         RenderUtils.bindTexture(texture);
 
@@ -29,8 +30,25 @@ public abstract class GuiContainerES extends GuiContainer {
         drawTextureAt(texture, x, y);
     }
 
+    protected void drawCentredText(int xOffset, int yOffset, String text) {
+        int x = (xSize - fontRendererObj.getStringWidth(text)) / 2;
+        int y = ySize / 2;
+
+        fontRendererObj.drawString(text, x + xOffset, y + yOffset, Colour.WHITE.getInt());
+    }
+
+    protected void drawCentredText(int xOffset, int yOffset, String text, Colour colour) {
+        int x = (xSize - fontRendererObj.getStringWidth(text)) / 2;
+        int y = ySize / 2;
+
+        fontRendererObj.drawString(text, x + xOffset, y + yOffset, colour.getInt());
+    }
+
     protected int addButton(int xPos, int yPos, int width, int height, String displayName) {
         buttonList.add(new GuiButton(nextId++, xPos, yPos, width, height, displayName));
         return nextId;
     }
+
+    @Override
+    protected abstract void actionPerformed(GuiButton p_146284_1_);
 }

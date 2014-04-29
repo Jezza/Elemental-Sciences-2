@@ -46,18 +46,17 @@ public class CatalystTicker {
                             didSomething = true;
                         ArrayList<ItemStack> ret = vb.block.getDrops(world, vb.x, vb.y, vb.z, md, vb.fortune);
                         for (ItemStack is : ret)
-                            if (!vb.player.capabilities.isCreativeMode)
-                                if (!vb.player.inventory.addItemStackToInventory(is))
-                                    world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
+                            if (!vb.player.capabilities.isCreativeMode && !vb.player.inventory.addItemStackToInventory(is))
+                                world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
                         world.func_147480_a(vb.x, vb.y, vb.z, false);
 
-                        if (vb.lifespan > 0)
+                        if (vb.strength > 0)
                             for (int xx = -1; xx <= 1; xx++)
                                 for (int yy = -1; yy <= 1; yy++)
                                     for (int zz = -1; zz <= 1; zz++) {
                                         if (((xx == 0) && (yy == 0) && (zz == 0)) || (!(world.getBlock(vb.x + xx, vb.y + yy, vb.z + zz).equals(vb.block)) && ((world.getBlockMetadata(vb.x + xx, vb.y + yy, vb.z + zz) != vb.meta) || !skip)))
                                             continue;
-                                        queue.offer(new VirtualBreaker(vb.x + xx, vb.y + yy, vb.z + zz, vb.block, vb.meta, vb.lifespan - 1, vb.player, vb.fortune, vb.speed));
+                                        queue.offer(new VirtualBreaker(vb.player, vb.x + xx, vb.y + yy, vb.z + zz, vb.block, vb.meta, vb.strength - 1, vb.fortune, vb.speed));
                                     }
 
                     }
@@ -70,7 +69,7 @@ public class CatalystTicker {
 
     }
 
-    public static void addBreaker(World world, int x, int y, int z, Block block, int meta, int life, EntityPlayer player, int fortune, int speed) {
+    public static void addBreaker(World world, int x, int y, int z, Block block, int meta, int strength, EntityPlayer player, int fortune, int speed) {
         int dim = world.provider.dimensionId;
         if ((block == null) || (block.getBlockHardness(world, x, y, z) < 0.0F))
             return;
@@ -79,7 +78,7 @@ public class CatalystTicker {
             breakList.put(Integer.valueOf(dim), new LinkedBlockingQueue<VirtualBreaker>());
             queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
         }
-        queue.offer(new VirtualBreaker(x, y, z, block, meta, life, player, fortune, speed - 1));
+        queue.offer(new VirtualBreaker(player, x, y, z, block, meta, strength, fortune, speed - 1));
         breakList.put(Integer.valueOf(dim), queue);
     }
 
@@ -89,18 +88,18 @@ public class CatalystTicker {
         int y = 0;
         int z = 0;
         int meta = 0;
-        int lifespan = 0;
+        int strength = 0;
         int fortune = 0;
         int speed = 0;
         EntityPlayer player = null;
 
-        VirtualBreaker(int x, int y, int z, Block block, int meta, int life, EntityPlayer p, int fortune, int speed) {
+        VirtualBreaker(EntityPlayer p, int x, int y, int z, Block block, int meta, int strength, int fortune, int speed) {
             this.x = x;
             this.y = y;
             this.z = z;
             this.block = block;
             this.meta = meta;
-            this.lifespan = life;
+            this.strength = strength;
             this.fortune = fortune;
             this.speed = speed;
             this.player = p;

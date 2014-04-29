@@ -1,6 +1,8 @@
 package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
+import me.jezzadabomb.es2.client.gui.GuiAtomicCatalystDebug;
+import me.jezzadabomb.es2.client.gui.GuiConsole;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.HoverRenderer;
@@ -30,7 +32,11 @@ import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -99,5 +105,20 @@ public class ClientProxy extends CommonProxy {
 
     private void registerItemRenderer(Block block, IItemRenderer renderer) {
         registerItemRenderer(Item.getItemFromBlock(block), renderer);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        switch (ID) {
+            case 0:
+                TileEntity tileEntity = world.getTileEntity(x, y, z);
+                if (tileEntity instanceof TileConsole)
+                    return new GuiConsole(player.inventory, (TileConsole) tileEntity);
+            case 32:
+                ItemStack itemStack = player.getCurrentEquippedItem();
+                if (itemStack.getItem() == ModItems.atomicCatalyst)
+                    return new GuiAtomicCatalystDebug(player, itemStack);
+        }
+        return null;
     }
 }

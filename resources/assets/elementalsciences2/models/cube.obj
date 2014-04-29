@@ -1,6 +1,6 @@
 # Blender v2.68 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib AtomicCatalystCube.mtl
+mtllib cube.mtl
 o Cube
 v 0.500000 -0.500000 -0.500000
 v 0.500000 -0.500000 0.500000

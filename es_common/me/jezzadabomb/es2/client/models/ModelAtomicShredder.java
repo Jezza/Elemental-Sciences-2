@@ -23,7 +23,6 @@ public class ModelAtomicShredder extends ModelBase {
     }
 
     public void renderCasing(int casingNumber) {
-        casingNumber = MathHelper.clamp_int(casingNumber, 1, 8);
         modelAtomicShredder.renderPart("InnerCasing" + casingNumber);
     }
 

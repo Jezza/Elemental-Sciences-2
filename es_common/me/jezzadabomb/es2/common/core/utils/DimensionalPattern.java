@@ -24,8 +24,10 @@ public class DimensionalPattern {
         for (IPatternComponent component : components) {
             if (component instanceof Layer)
                 layers.add((Layer) component);
-            if (component instanceof BlockState)
-                comparisonMap.put(((BlockState) component).getType(), ((BlockState) component));
+            if (component instanceof BlockState) {
+                BlockState blockState = (BlockState) component;
+                comparisonMap.put(blockState.getType(), blockState);
+            }
         }
     }
 
@@ -110,7 +112,6 @@ public class DimensionalPattern {
         return true;
     }
 
-    // TODO Convert to a pattern.
     public boolean convert(World world, int x, int y, int z, Flag flag) {
         if (world == null)
             return false;
@@ -143,13 +144,11 @@ public class DimensionalPattern {
                             continue;
                         }
                     }
-
                 }
                 rowPos++;
             }
             layerPos++;
         }
-
         return true;
     }
 

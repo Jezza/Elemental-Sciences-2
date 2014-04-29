@@ -8,14 +8,14 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
 @SideOnly(Side.CLIENT)
-public class ModelPixel extends ModelBase {
-	IModelCustom pixel;
+public class ModelCube extends ModelBase {
+    IModelCustom cube;
 
-	public ModelPixel() {
-		pixel = AdvancedModelLoader.loadModel(Models.ATOMIC_CATALYST_MAIN);
-	}
+    public ModelCube() {
+        cube = AdvancedModelLoader.loadModel(Models.CUBE);
+    }
 
-	public void renderAll() {
-		pixel.renderAll();
-	}
+    public void renderAll() {
+        cube.renderAll();
+    }
 }

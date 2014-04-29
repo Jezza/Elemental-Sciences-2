@@ -1,5 +1,10 @@
 package me.jezzadabomb.es2;
 
+import me.jezzadabomb.es2.client.gui.GuiConsole;
+import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.containers.ContainerAtomicCatalystDebug;
+import me.jezzadabomb.es2.common.containers.ContainerConsole;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -15,12 +20,17 @@ import me.jezzadabomb.es2.common.tileentity.ee.TileTutorialBlock;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderDummy;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderDummyCore;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventBus;
+import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CommonProxy {
+public class CommonProxy implements IGuiHandler {
 
     public QuantumBombTicker quantumBomb = new QuantumBombTicker();
 
@@ -52,7 +62,19 @@ public class CommonProxy {
     public void runClientSide() {
     }
 
-    private static class TileEntityState {
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        switch (ID) {
+            case 0:
+                TileEntity tileEntity = world.getTileEntity(x, y, z);
+                if (tileEntity instanceof TileConsole)
+                    return new ContainerConsole(player.inventory, (TileConsole) tileEntity);
+        }
+        return null;
+    }
 
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return null;
     }
 }

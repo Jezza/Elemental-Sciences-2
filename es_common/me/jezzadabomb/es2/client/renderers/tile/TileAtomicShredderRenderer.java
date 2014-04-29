@@ -72,6 +72,7 @@ public class TileAtomicShredderRenderer extends TileEntitySpecialRenderer {
 
         RenderUtils.bindTexture(TextureMaps.ATOMIC_SHREDDER_HOVER_PLATE);
         modelAtomicShredder.renderPart("BasePlate");
+
         RenderUtils.bindTexture(TextureMaps.ATOMIC_SHREDDER_HOVER_RING);
         modelAtomicShredder.renderPart("BaseRing");
 

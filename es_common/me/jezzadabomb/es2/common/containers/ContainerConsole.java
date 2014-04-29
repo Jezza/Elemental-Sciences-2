@@ -6,7 +6,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 public class ContainerConsole extends ContainerES {
 
     public ContainerConsole(InventoryPlayer inventory, TileConsole console) {
-        super(console);
+        super(console.getCoordSet());
     }
 
 }

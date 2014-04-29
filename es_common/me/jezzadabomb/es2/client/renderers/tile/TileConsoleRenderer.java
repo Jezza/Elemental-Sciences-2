@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 
 import java.util.BitSet;
 
-import me.jezzadabomb.es2.client.models.ModelPixel;
+import me.jezzadabomb.es2.client.models.ModelCube;
 import me.jezzadabomb.es2.client.models.ModelPlate;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
@@ -27,12 +27,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
     private ModelPlate modelPlate;
-    private ModelPixel modelPixel;
+    private ModelCube modelPixel;
     private ModelConstructorDrone modelConstructorDrone;
 
     public TileConsoleRenderer() {
         modelPlate = new ModelPlate();
-        modelPixel = new ModelPixel();
+        modelPixel = new ModelCube();
         modelConstructorDrone = new ModelConstructorDrone();
     }
 

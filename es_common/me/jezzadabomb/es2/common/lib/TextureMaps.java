@@ -14,10 +14,9 @@ public class TextureMaps {
     public static final String HOVER_BOOTS_LOCATION = getFullLocation(Strings.HOVER_BOOTS);
 
     // Resource Location Constants
-    public static final ResourceLocation MODEL_ATOMIC_CATALYST_MAIN = getResource("mainCube");
-    public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_1 = getResource("electronCube1");
-    public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_2 = getResource("electronCube2");
-    public static final ResourceLocation MODEL_ATOMIC_CATALYST_ELECTRON_3 = getResource("electronCube3");
+    public static final ResourceLocation ATOMIC_CATALYST_MAIN = getResource("mainCube");
+    public static final ResourceLocation ATOMIC_CATALYST_ELECTRON = getResource("electronCube");
+
     public static final ResourceLocation HUD_INVENTORY = getResource("inventoryRender");
 
     public static final ResourceLocation[] HOVER_TEXTURES = getResources("hoverGlow1", "hoverGlow2", "hoverGlow3");
@@ -26,8 +25,6 @@ public class TextureMaps {
     public static final ResourceLocation ATOMIC_CONSTRUCTOR = getResource("atomicConstructor");
     public static final ResourceLocation CONSTRUCTOR_DRONE = getResource("constructorDrone");
     public static final ResourceLocation BLANK_PIXEL = getResource("blankPixel");
-    public static final ResourceLocation SOLAR_LENS = getResource("solarLens");
-    public static final ResourceLocation SOLAR_LOOP = getResource("solarLoop");
     public static final ResourceLocation INVENTORY_SCANNER = getResource("inventoryScanner");
     public static final ResourceLocation CONSOLE_BASE = getResource("consolePlate");
     public static final ResourceLocation CONSOLE_SCREEN = getResource("consoleScreen");
@@ -35,6 +32,7 @@ public class TextureMaps {
     public static final ResourceLocation CABLE_PIXEL = getResource("cable");
     public static final ResourceLocation DRONE_BAY_FRAME = getResource("droneBayFrame");
     public static final ResourceLocation DRONE_BAY_DOOR = getResource("droneBayDoor");
+
     public static final ResourceLocation ATOMIC_SHREDDER = getResource("atomicShredder");
     public static final ResourceLocation ATOMIC_SHREDDER_CASING = getResource("atomicShredderCasing");
     public static final ResourceLocation ATOMIC_SHREDDER_RINGS = getResource("atomicShredderRing");

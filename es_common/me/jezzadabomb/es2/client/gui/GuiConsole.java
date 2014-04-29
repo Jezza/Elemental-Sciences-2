@@ -21,13 +21,10 @@ public class GuiConsole extends GuiContainerES {
     public void initGui() {
         super.initGui();
 
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-
-        addButton(x + 20, y + 10, 20, 20, "<");
-        addButton(x + xSize - 40, y + 10, 20, 20, ">");
-        addButton(x + xSize / 2 - 20, y + ySize - 30, 40, 20, "Done");
-        addButton(x + xSize / 2 - 20, y + ySize - 30, 40, 20, "Search");
+        addButton(guiLeft + 20, guiTop + 10, 20, 20, "<");
+        addButton(guiLeft + xSize - 40, guiTop + 10, 20, 20, ">");
+        addButton(guiLeft + xSize / 2 - 20, guiTop + ySize - 30, 40, 20, "Done");
+        addButton(guiLeft + xSize / 2 - 20, guiTop + ySize - 30, 40, 20, "Search");
     }
 
     @Override
@@ -44,20 +41,14 @@ public class GuiConsole extends GuiContainerES {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int x = (xSize - fontRendererObj.getStringWidth("asd")) / 2;
-        int y = ySize / 2;
-
-        fontRendererObj.drawString("asd", x, y, new Colour(1.0F, 0.0F, 0.0F, 1.0F).getInt());
+        drawCentredText(0, 0, "asd");
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
-        int x = (width - xSize) / 2;
-        int y = (height - ySize) / 2;
-
         RenderUtils.bindTexture(GuiTextureMaps.GUI_CONSOLE_TEXTURE);
 
-        drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 
     @Override
