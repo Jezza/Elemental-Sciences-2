@@ -27,6 +27,7 @@ tile.atomicConstructor.name=Atomic Constructor
 tile.quantumStateDisrupter.name=Quantum State Disrupter
 tile.console.name=Console
 tile.droneBay.name=Drone Bay
+tile.plasticBlock.name=Block of Plastic
 
 death.attack.atomicWave0=%1$s had their atomic structure shifted.
 death.attack.atomicWave1=%1$s had their molecular bonds vapourized.

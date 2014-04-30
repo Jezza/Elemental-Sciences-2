@@ -14,6 +14,8 @@ public class Strings {
 
     public static final String OKU_TROLL = "okuTroll";
     public static final String BLOCK_TUTORIAL = "tutorialBlock";
+    
+    public static final String PLASTIC_BLOCK = "plasticBlock";
 
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";

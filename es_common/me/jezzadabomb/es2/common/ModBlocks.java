@@ -8,6 +8,7 @@ import me.jezzadabomb.es2.common.blocks.BlockAtomicShredderDummyCore;
 import me.jezzadabomb.es2.common.blocks.BlockConsole;
 import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
+import me.jezzadabomb.es2.common.blocks.BlockPlastic;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
@@ -26,6 +27,8 @@ public class ModBlocks {
 
     public static Block atomicShredderDummy;
     public static Block atomicShredderDummyCore;
+    
+    public static Block plastic;
 
     public static void init() {
         inventoryScanner = new BlockInventoryScanner(Material.anvil, Strings.INVENTORY_SCANNER);
@@ -37,6 +40,8 @@ public class ModBlocks {
 
         atomicShredderDummy = new BlockAtomicShredderDummy(Material.anvil, Strings.ATOMIC_SHREDDER_DUMMY);
         atomicShredderDummyCore = new BlockAtomicShredderDummyCore(Material.anvil, Strings.BLOCK_PLACE_HOLDER);
+        
+        plastic = new BlockPlastic(Material.anvil, Strings.PLASTIC_BLOCK);
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
         HUDBlackLists.addToHUDIgnoreList(droneBay);
