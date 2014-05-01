@@ -12,6 +12,7 @@ import me.jezzadabomb.es2.common.tickers.CatalystTicker;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
@@ -54,6 +55,7 @@ public class CommonProxy implements IGuiHandler {
         GameRegistry.registerTileEntity(TileAtomicShredderCore.class, Strings.ATOMIC_SHREDDER);
         GameRegistry.registerTileEntity(TileAtomicShredderDummy.class, Strings.ATOMIC_SHREDDER_DUMMY);
         GameRegistry.registerTileEntity(TileAtomicShredderDummyCore.class, Strings.ATOMIC_SHREDDER_DUMMY_CORE);
+        GameRegistry.registerTileEntity(TileCrystalObelisk.class, Strings.CRYSTAL_OBELISK);
 
         GameRegistry.registerTileEntity(TileCreeperManager.class, Strings.OKU_TROLL);
         GameRegistry.registerTileEntity(TileTutorialBlock.class, Strings.BLOCK_TUTORIAL);

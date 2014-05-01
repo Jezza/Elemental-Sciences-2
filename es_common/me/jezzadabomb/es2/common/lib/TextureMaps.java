@@ -40,6 +40,9 @@ public class TextureMaps {
     public static final ResourceLocation ATOMIC_SHREDDER_HOVER_PLATE = getResource("basePlate");
     public static final ResourceLocation ATOMIC_SHREDDER_HOVER_RING = getResource("baseRing");
 
+    public static final ResourceLocation CRYSTAL_OBELISK = getResource("crystalObelisk");
+    public static final ResourceLocation CRYSTAL_TOP_OBELISK = getResource("crystalTopObelisk");
+
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";
     }

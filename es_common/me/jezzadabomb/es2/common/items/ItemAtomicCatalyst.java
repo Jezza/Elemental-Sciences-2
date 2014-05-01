@@ -102,6 +102,7 @@ public class ItemAtomicCatalyst extends ItemES {
 
     @Override
     public void onUpdate(ItemStack itemStack, World world, Entity entity, int par4, boolean par5) {
+        world.setRainStrength(0.0F);
         if (!world.isRemote && !itemStack.hasTagCompound())
             setTag(itemStack);
 

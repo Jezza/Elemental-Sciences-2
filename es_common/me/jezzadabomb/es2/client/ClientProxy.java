@@ -17,6 +17,7 @@ import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicShredderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TileCrystalObeliskRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileQuantumStateDisruptorRenderer;
@@ -27,6 +28,7 @@ import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
@@ -77,6 +79,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileDroneBay.class, new TileDroneBayRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalObelisk.class, new TileCrystalObeliskRenderer());
     }
 
     private void initItemRenderer() {

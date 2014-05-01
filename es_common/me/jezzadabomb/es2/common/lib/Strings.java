@@ -11,6 +11,7 @@ public class Strings {
     public static final String BLOCK_PLACE_HOLDER = "blockPlaceHolder";
     public static final String ATOMIC_SHREDDER_DUMMY = "atomicShredderDummy";
     public static final String ATOMIC_SHREDDER_DUMMY_CORE = "atomicShredderDummyCore";
+    public static final String CRYSTAL_OBELISK = "crystalObelisk";
 
     public static final String OKU_TROLL = "okuTroll";
     public static final String BLOCK_TUTORIAL = "tutorialBlock";

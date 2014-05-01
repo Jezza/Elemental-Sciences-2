@@ -7,6 +7,7 @@ import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.entity.item.EntityItem;

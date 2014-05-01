@@ -50,10 +50,10 @@ public class PlayerTicker {
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;
                             if (Identifier.isIInventory(world, tempX, tempY, tempZ)) {
-                                TileEntity tileEntity = world.getTileEntity(tempX, tempY, tempZ);
-                                if (HUDBlackLists.scannerBlackListContains(tileEntity.getBlockType()))
+                                if (HUDBlackLists.scannerBlackListContains(world.getBlock(tempX, tempY, tempZ)))
                                     break;
 
+                                TileEntity tileEntity = world.getTileEntity(tempX, tempY, tempZ);
                                 InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInventoryName(), tempX, tempY, tempZ);
 
                                 storedQueues.putTempInventory(tempInstance);
