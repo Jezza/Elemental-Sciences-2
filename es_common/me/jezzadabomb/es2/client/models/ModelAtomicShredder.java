@@ -1,6 +1,6 @@
 package me.jezzadabomb.es2.client.models;
 
-import me.jezzadabomb.es2.common.lib.Models;
+import me.jezzadabomb.es2.client.lib.Models;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.AdvancedModelLoader;

@@ -6,6 +6,7 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -75,7 +76,7 @@ public class DroneSpawningTracker implements IMasterable {
             drone.posZ = zCoord + 0.5F;
 
             drone.addCoordSetDToHead(droneBay.getCoordSet().toCoordSetD());
-            drone.setMaster(droneBay);
+            drone.setMaster(droneBay.getCoordSet(), world);
 
             if (world.spawnEntityInWorld(drone)) {
                 spawnList.remove(drone);
@@ -103,14 +104,11 @@ public class DroneSpawningTracker implements IMasterable {
     }
 
     @Override
-    public void setMaster(TileES tileES) {
-        if (tileES instanceof TileDroneBay) {
-            droneBay = (TileDroneBay) tileES;
-            world = droneBay.getWorldObj();
-            xCoord = droneBay.xCoord;
-            yCoord = droneBay.yCoord;
-            zCoord = droneBay.zCoord;
-        }
+    public void setMaster(CoordSet coordSet, World world) {
+        this.world = world;
+        xCoord = coordSet.getX();
+        yCoord = coordSet.getY();
+        zCoord = coordSet.getZ();
     }
 
     @Override
@@ -119,7 +117,7 @@ public class DroneSpawningTracker implements IMasterable {
     }
 
     @Override
-    public TileES getMaster() {
-        return droneBay;
+    public CoordSet getMaster() {
+        return droneBay.getCoordSet();
     }
 }

@@ -66,7 +66,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
         }
         // notifyNearbyConstructors();
         if (!droneBayTracker.hasMaster())
-            droneBayTracker.setMaster(this);
+            droneBayTracker.setMaster(getCoordSet(), worldObj);
 
         atomicMaintenance();
 
@@ -96,7 +96,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
                         TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (atomic.hasMaster())
                             continue;
-                        atomic.setMaster(this);
+                        atomic.setMaster(getCoordSet(), worldObj);
                     }
                 }
             }

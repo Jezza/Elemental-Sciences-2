@@ -43,9 +43,9 @@ public class PlayerTicker {
 
             if (playerMoved(playerX, playerY, playerZ) || notMoveTick++ == Reference.GLASSES_WAIT_TIMER) {
                 notMoveTick = 0;
-                for (int x = -dis; x < dis; x++)
-                    for (int y = -dis; y < dis; y++)
-                        for (int z = -dis; z < dis; z++) {
+                for (int x = -dis; x <= dis; x++)
+                    for (int y = -dis; y <= dis; y++)
+                        for (int z = -dis; z <= dis; z++) {
                             int tempX = playerX + x;
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;

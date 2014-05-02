@@ -76,7 +76,7 @@ public class TileDroneBay extends TileES implements IDismantleable {
 
     private void trackerMaintenance() {
         if (!registeredSpawn && !droneTracker.hasMaster()) {
-            droneTracker.setMaster(this);
+            droneTracker.setMaster(getCoordSet(), worldObj);
             registeredSpawn = droneTracker.hasMaster();
         }
 

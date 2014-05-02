@@ -2,6 +2,8 @@ package me.jezzadabomb.es2.common.entities;
 
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,14 +24,14 @@ public class EntityConstructorDrone extends EntityDrone implements IMasterable {
     }
 
     @Override
-    public void setMaster(TileES object) {
-        if (object instanceof TileDroneBay)
-            droneBay = (TileDroneBay) object;
+    public void setMaster(CoordSet coordSet, World world) {
+        if (Identifier.isDroneBay(world, coordSet.getX(), coordSet.getY(), coordSet.getZ()))
+            droneBay = (TileDroneBay) worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ());
     }
 
     @Override
-    public TileES getMaster() {
-        return droneBay;
+    public CoordSet getMaster() {
+        return droneBay.getCoordSet();
     }
 
     @Override

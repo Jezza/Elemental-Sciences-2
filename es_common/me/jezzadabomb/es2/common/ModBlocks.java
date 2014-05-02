@@ -10,6 +10,7 @@ import me.jezzadabomb.es2.common.blocks.BlockCrystalObelisk;
 import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
 import me.jezzadabomb.es2.common.blocks.BlockPlastic;
+import me.jezzadabomb.es2.common.blocks.BlockPylonCrystal;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
@@ -28,9 +29,10 @@ public class ModBlocks {
 
     public static Block atomicShredderDummy;
     public static Block atomicShredderDummyCore;
-    
+
     public static Block plastic;
     public static Block crystalObelisk;
+    public static Block pylonCrystal;
 
     public static void init() {
         inventoryScanner = new BlockInventoryScanner(Material.anvil, Strings.INVENTORY_SCANNER);
@@ -41,9 +43,10 @@ public class ModBlocks {
         atomicShredder = new BlockAtomicShredder(Material.anvil, Strings.ATOMIC_SHREDDER);
         atomicShredderDummy = new BlockAtomicShredderDummy(Material.anvil, Strings.ATOMIC_SHREDDER_DUMMY);
         atomicShredderDummyCore = new BlockAtomicShredderDummyCore(Material.anvil, Strings.BLOCK_PLACE_HOLDER);
+        crystalObelisk = new BlockCrystalObelisk(Material.anvil, Strings.CRYSTAL_OBELISK);
+        pylonCrystal = new BlockPylonCrystal(Material.anvil, Strings.PYLON_CRYSTAL);
 
         plastic = new BlockPlastic(Material.anvil, Strings.PLASTIC_BLOCK);
-        crystalObelisk = new BlockCrystalObelisk(Material.anvil, Strings.CRYSTAL_OBELISK);
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
         HUDBlackLists.addToHUDIgnoreList(droneBay);

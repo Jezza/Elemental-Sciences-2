@@ -20,6 +20,7 @@ import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileCrystalObeliskRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TilePylonCrystalRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileQuantumStateDisruptorRenderer;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
@@ -31,9 +32,11 @@ import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,13 +76,14 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void initTileRenderers() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileConsole.class, new TileConsoleRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileDroneBay.class, new TileDroneBayRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalObelisk.class, new TileCrystalObeliskRenderer());
+        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer());
+        registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
+        registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
+        registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());
+        registerTileEntityRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
+        registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
+        registerTileEntityRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
+        registerTileEntityRenderer(TileCrystalObelisk.class, new TileCrystalObeliskRenderer());
     }
 
     private void initItemRenderer() {
@@ -100,6 +104,10 @@ public class ClientProxy extends CommonProxy {
     public void initEventHandlers() {
         MinecraftForge.EVENT_BUS.register(hudRenderer);
         MinecraftForge.EVENT_BUS.register(new HoverRenderer());
+    }
+
+    private void registerTileEntityRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
+        ClientRegistry.bindTileEntitySpecialRenderer(clazz, renderer);
     }
 
     private void registerItemRenderer(Item item, IItemRenderer renderer) {

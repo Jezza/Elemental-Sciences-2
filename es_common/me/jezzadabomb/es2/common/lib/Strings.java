@@ -12,19 +12,15 @@ public class Strings {
     public static final String ATOMIC_SHREDDER_DUMMY = "atomicShredderDummy";
     public static final String ATOMIC_SHREDDER_DUMMY_CORE = "atomicShredderDummyCore";
     public static final String CRYSTAL_OBELISK = "crystalObelisk";
+    public static final String PYLON_CRYSTAL = "pylonCrystal";
 
-    public static final String OKU_TROLL = "okuTroll";
-    public static final String BLOCK_TUTORIAL = "tutorialBlock";
-    
     public static final String PLASTIC_BLOCK = "plasticBlock";
 
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
     public static final String GLASSES = "spectralGlasses";
     public static final String DEBUG_TOOL = "debugTool";
-    public static final String RING_CONTROL = "ringControl";
     public static final String HOVER_BOOTS = "hoverBoots";
-    public static final String DOUBLE_JUMP_BOOTS = "doubleJump";
     public static final String PLACEHOLDER = "placeHolder";
     public static final String PLACEHOLDER_64 = "placeHolder64";
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";

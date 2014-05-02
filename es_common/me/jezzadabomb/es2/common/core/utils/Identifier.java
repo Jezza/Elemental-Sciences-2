@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.core.utils;
 
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -59,5 +60,10 @@ public class Identifier {
     public static boolean isMasterable(World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         return tileEntity != null && tileEntity instanceof IMasterable;
+    }
+
+    public static boolean isPylonReciever(World world, int x, int y, int z) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        return tileEntity != null && tileEntity instanceof IPylonReceiver;
     }
 }

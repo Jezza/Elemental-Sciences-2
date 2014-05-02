@@ -132,14 +132,11 @@ public class DroneBayTracker implements IMasterable {
     }
 
     @Override
-    public void setMaster(TileES tileES) {
-        if (!(tileES instanceof TileConsole))
-            return;
-        this.console = (TileConsole) tileES;
-        world = console.getWorldObj();
-        x = console.xCoord;
-        y = console.yCoord;
-        z = console.zCoord;
+    public void setMaster(CoordSet coordSet, World world) {
+        this.world = world;
+        x = coordSet.getX();
+        y = coordSet.getY();
+        z = coordSet.getZ();
     }
 
     @Override
@@ -148,8 +145,8 @@ public class DroneBayTracker implements IMasterable {
     }
 
     @Override
-    public TileES getMaster() {
-        return console;
+    public CoordSet getMaster() {
+        return console.getCoordSet();
     }
 
     @Override

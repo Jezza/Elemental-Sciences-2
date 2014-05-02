@@ -64,8 +64,7 @@ public class ItemDebugTool extends ItemDebug {
             if (Identifier.isMasterable(world, x, y, z)) {
                 IMasterable masterable = (IMasterable) world.getTileEntity(x, y, z);
                 if (masterable.hasMaster()) {
-                    TileES tileES = masterable.getMaster();
-                    UtilMethods.addChatMessage(player, "Found: " + tileES.getCoordSet());
+                    UtilMethods.addChatMessage(player, "Found: " + masterable.getMaster().toString());
                 } else {
                     UtilMethods.addChatMessage(player, "No Master Found.");
                 }
@@ -73,16 +72,16 @@ public class ItemDebugTool extends ItemDebug {
         }
 
         if (side.isServer()) {
-            if (Identifier.isConstructor(world, x, y, z)) {
-                if (isDebugMode("Console - Send To")) {
-                    TileAtomicConstructor atomic = (TileAtomicConstructor) world.getTileEntity(x, y, z);
-                    if (atomic.hasMaster()) {
-                        ((TileConsole) atomic.getMaster()).testDatShit(atomic);
-                    } else {
-                        ESLogger.info("No master found.");
-                    }
-                }
-            }
+            // if (Identifier.isConstructor(world, x, y, z)) {
+            // if (isDebugMode("Console - Send To")) {
+            // TileAtomicConstructor atomic = (TileAtomicConstructor) world.getTileEntity(x, y, z);
+            // if (atomic.hasMaster()) {
+            // ((TileConsole) atomic.getMaster()).testDatShit(atomic);
+            // } else {
+            // ESLogger.info("No master found.");
+            // }
+            // }
+            // }
 
             if (Identifier.isDroneBay(world, x, y, z)) {
                 if (isDebugMode("Drone Bay - Door control")) {

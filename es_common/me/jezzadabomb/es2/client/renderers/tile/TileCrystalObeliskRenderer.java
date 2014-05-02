@@ -25,14 +25,11 @@ public class TileCrystalObeliskRenderer extends TileEntitySpecialRenderer {
 
         switch (obelisk.getRenderType()) {
             case 2:
-                float tempScale = 0.758F;
-                for (int i = 0; i < 2; i++)
-                    glScalef(tempScale, 1.0F, tempScale);
                 RenderUtils.bindTexture(TextureMaps.CRYSTAL_TOP_OBELISK);
                 modelCrystalObelisk.renderUpper();
                 break;
             case 1:
-                tempScale = 0.758F;
+                float tempScale = 0.90F;
                 glScalef(tempScale, 1.0F, tempScale);
             case 0:
             default:

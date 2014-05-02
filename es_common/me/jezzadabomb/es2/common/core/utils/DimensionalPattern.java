@@ -126,20 +126,23 @@ public class DimensionalPattern {
                     char type = row.sections.charAt(depth);
                     if (type == '*')
                         continue;
+                    if (type == ' ') {
+                        if (flag.isIgnoring())
+                            world.setBlockToAir(x + rowPos, y + layerPos, z + depth);
+                        continue;
+                    }
                     BlockState blockState = comparisonMap.get(Character.valueOf(type));
 
                     if (blockState == null)
                         return false;
 
                     if (flag.isIgnoring()) {
-                        if (!world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3))
-                            return false;
+                        world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3);
                         continue;
                     }
 
                     if (flag.isAir()) {
-                        boolean airBlock = world.isAirBlock(x + rowPos, y + layerPos, z + depth);
-                        if (airBlock) {
+                        if (world.isAirBlock(x + rowPos, y + layerPos, z + depth)) {
                             world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3);
                             continue;
                         }

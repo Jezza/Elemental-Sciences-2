@@ -68,7 +68,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
                     if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (tile.hasMaster()) {
-                            setMaster((TileConsole) tile.getMaster());
+                            setMaster(tile.getMaster(), worldObj);
                             return true;
                         }
                     }
@@ -81,7 +81,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
                 for (int k = -1; k <= 1; k++)
                     if (!(i == 0 && j == 0 && k == 0) && Identifier.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
                         TileConsole tile = (TileConsole) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
-                        setMaster(tile);
+                        setMaster(tile.getCoordSet(), worldObj);
                         return true;
                     }
         return false;
@@ -95,7 +95,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
                         TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
                         if (atomic.hasMaster())
                             continue;
-                        atomic.setMaster(tileConsole);
+                        atomic.setMaster(tileConsole.getCoordSet(), worldObj);
                     }
     }
 
@@ -172,9 +172,9 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
     }
 
     @Override
-    public void setMaster(TileES tileES) {
-        if (tileES instanceof TileConsole) {
-            tileConsole = (TileConsole) tileES;
+    public void setMaster(CoordSet coordSet, World world) {
+        if (Identifier.isConsole(worldObj, coordSet.getX(), coordSet.getY(), coordSet.getZ())) {
+            tileConsole = (TileConsole) worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ());
             propogateMaster();
         }
     }
@@ -185,7 +185,7 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
     }
 
     @Override
-    public TileES getMaster() {
-        return tileConsole;
+    public CoordSet getMaster() {
+        return tileConsole.getCoordSet();
     }
 }

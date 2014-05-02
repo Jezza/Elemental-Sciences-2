@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
@@ -77,11 +78,8 @@ public class DroneRemovingTracker implements IMasterable {
     }
 
     @Override
-    public void setMaster(TileES tileES) {
-        if (tileES instanceof TileDroneBay) {
-            droneBay = (TileDroneBay) tileES;
-            world = droneBay.getWorldObj();
-        }
+    public void setMaster(CoordSet object, World world) {
+        this.world = world;
     }
 
     @Override
@@ -90,8 +88,8 @@ public class DroneRemovingTracker implements IMasterable {
     }
 
     @Override
-    public TileES getMaster() {
-        return droneBay;
+    public CoordSet getMaster() {
+        return droneBay.getCoordSet();
     }
 
 }
