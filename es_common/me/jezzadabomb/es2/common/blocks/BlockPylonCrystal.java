@@ -9,6 +9,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import me.jezzadabomb.es2.common.blocks.framework.BlockMetaHolder;
+import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.items.ItemBlockHolder;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 
@@ -26,13 +27,21 @@ public class BlockPylonCrystal extends BlockMetaHolder {
     }
 
     @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TilePylonCrystal)
+            ((TilePylonCrystal) tileEntity).notifyBlockBroken();
+        super.onBlockPreDestroy(world, x, y, z, meta);
+    }
+
+    @Override
     protected Class<? extends ItemBlock> getItemBlockClass() {
         return ItemBlockHolder.class;
     }
 
     @Override
     public boolean renderWithModel() {
-        return true;
+        return false;
     }
 
     @Override

@@ -42,12 +42,6 @@ public class ESLogger {
         log(Level.WARN, "[DEBUG] " + object);
     }
 
-    public static void debugFlood(Object object) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            if (DebugHelper.canShowDebugHUD() && DebugHelper.canFlood())
-                log(Level.WARN, "[DEBUG] " + object);
-    }
-
     public static void severe(Object object) {
         log(Level.FATAL, object);
     }

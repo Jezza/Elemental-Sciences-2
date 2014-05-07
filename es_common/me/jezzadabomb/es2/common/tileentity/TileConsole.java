@@ -130,7 +130,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
 
         droneBayMaintenance();
 
-        int result = droneBayTracker.sendDronesToXYZ(1, new CoordSet(tileAtomic).toCoordSetD());
+        int result = droneBayTracker.sendDronesToXYZ(1, tileAtomic.getCoordSet().toCoordSetD());
     }
 
     public void updateRenderCables() {

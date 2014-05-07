@@ -1,19 +1,17 @@
 package me.jezzadabomb.es2.client.tickers;
 
-import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.api.HUDBlackLists;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
 import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -23,14 +21,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PlayerTicker {
 
-    private int dis;
+    private int dis = Reference.HUD_BLOCK_RANGE;
     private int oldX, oldY, oldZ, notMoveTick;
-    StoredQueues storedQueues;
-
-    public PlayerTicker() {
-        dis = Reference.HUD_BLOCK_RANGE;
-        storedQueues = StoredQueues.getInstance();
-    }
+    StoredQueues storedQueues = StoredQueues.getInstance();
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
@@ -49,18 +42,9 @@ public class PlayerTicker {
                             int tempX = playerX + x;
                             int tempY = playerY + y;
                             int tempZ = playerZ + z;
-                            if (Identifier.isIInventory(world, tempX, tempY, tempZ)) {
-                                if (HUDBlackLists.scannerBlackListContains(world.getBlock(tempX, tempY, tempZ)))
-                                    break;
-
-                                TileEntity tileEntity = world.getTileEntity(tempX, tempY, tempZ);
-                                InventoryInstance tempInstance = new InventoryInstance(((IInventory) tileEntity).getInventoryName(), tempX, tempY, tempZ);
-
-                                storedQueues.putTempInventory(tempInstance);
-
-                                if (!storedQueues.isAlreadyInQueue(tempInstance))
-                                    storedQueues.putInventory(tempInstance);
-                            }
+                            if (Identifier.isIInventory(world, tempX, tempY, tempZ))
+                                if (!HUDBlackLists.scannerBlackListContains(world.getBlock(tempX, tempY, tempZ)))
+                                    storedQueues.putInventory(new CoordSet(tempX, tempY, tempZ));
                         }
 
                 oldX = playerX;
@@ -69,17 +53,14 @@ public class PlayerTicker {
 
                 storedQueues.setLists();
 
-                // TODO Make a packet method to send more than one InventoryInstance at once.
-                for (InventoryInstance i : storedQueues.getRequestList())
-                    PacketDispatcher.sendToServer(new InventoryRequestPacket(i));
+                if (storedQueues.canSendRequestList())
+                    PacketDispatcher.sendToServer(new InventoryRequestPacket(storedQueues.getRequestList().toArray(new CoordSet[0])));
             }
         }
     }
 
     public boolean playerMoved(int x, int y, int z) {
-        // return (oldX != x || oldY != y || oldZ != z);
         int range = 2;
         return (!MathHelper.withinRange(x, oldX, range) || !MathHelper.withinRange(y, oldY, range) || !MathHelper.withinRange(z, oldZ, range));
     }
-
 }

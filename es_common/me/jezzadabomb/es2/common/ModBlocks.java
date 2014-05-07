@@ -9,9 +9,9 @@ import me.jezzadabomb.es2.common.blocks.BlockConsole;
 import me.jezzadabomb.es2.common.blocks.BlockCrystalObelisk;
 import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
-import me.jezzadabomb.es2.common.blocks.BlockPlastic;
 import me.jezzadabomb.es2.common.blocks.BlockPylonCrystal;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.blocks.BlockStrengthenedIron;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -30,7 +30,7 @@ public class ModBlocks {
     public static Block atomicShredderDummy;
     public static Block atomicShredderDummyCore;
 
-    public static Block plastic;
+    public static Block strengthenedIronBlock;
     public static Block crystalObelisk;
     public static Block pylonCrystal;
 
@@ -45,8 +45,7 @@ public class ModBlocks {
         atomicShredderDummyCore = new BlockAtomicShredderDummyCore(Material.anvil, Strings.BLOCK_PLACE_HOLDER);
         crystalObelisk = new BlockCrystalObelisk(Material.anvil, Strings.CRYSTAL_OBELISK);
         pylonCrystal = new BlockPylonCrystal(Material.anvil, Strings.PYLON_CRYSTAL);
-
-        plastic = new BlockPlastic(Material.anvil, Strings.PLASTIC_BLOCK);
+        strengthenedIronBlock = new BlockStrengthenedIron(Material.anvil, Strings.STRENGTHENED_IRON_BLOCK);
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
         HUDBlackLists.addToHUDIgnoreList(droneBay);

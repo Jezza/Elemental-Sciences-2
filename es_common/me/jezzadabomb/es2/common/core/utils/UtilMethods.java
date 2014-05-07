@@ -130,20 +130,20 @@ public class UtilMethods {
     }
 
     public static CoordSet getArrayFromString(String loc) {
-        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*"))
-            return null;
-
-        int firstIndex = loc.indexOf(":");
         CoordSet coordSet = new CoordSet(0, 0, 0);
+        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*"))
+            return coordSet;
+        String[] strs = loc.split(":");
 
         try {
-            coordSet.setX(Integer.parseInt(loc.substring(0, firstIndex)));
-            coordSet.setY(Integer.parseInt(loc.substring(firstIndex + 1, loc.indexOf(":", firstIndex + 1))));
-            coordSet.setZ(Integer.parseInt(loc.substring(loc.lastIndexOf(":") + 1)));
+            coordSet.setX(Integer.parseInt(strs[0]));
+            coordSet.setY(Integer.parseInt(strs[1]));
+            coordSet.setZ(Integer.parseInt(strs[2]));
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return null;
+            return coordSet;
         }
+
         return coordSet;
     }
 

@@ -175,6 +175,10 @@ public class DimensionalPattern {
         return new Row(section);
     }
 
+    public static BlockState createBlockState(char type, Block block) {
+        return new BlockState(type, block, 0);
+    }
+
     public static BlockState createBlockState(char type, Block block, int meta) {
         return new BlockState(type, block, meta);
     }

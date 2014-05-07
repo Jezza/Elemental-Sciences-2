@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.glTranslated;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.client.utils.Colour;
@@ -47,14 +48,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HUDRenderer {
 
-    private ArrayList<InventoryPacket> packetList;
-    private ArrayList<PacketTimeout> ignoreList;
+    private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
+    private ArrayList<PacketTimeout> ignoreList = new ArrayList<PacketTimeout>();
     public static final Colour hudColour = new Colour(1.0F, 1.0F, 1.0F, 0.6F);
-
-    public HUDRenderer() {
-        packetList = new ArrayList<InventoryPacket>();
-        ignoreList = new ArrayList<PacketTimeout>();
-    }
 
     public void addPacketToList(InventoryPacket p) {
         World world = Minecraft.getMinecraft().theWorld;
@@ -63,7 +59,7 @@ public class HUDRenderer {
             return;
 
         CoordSet packetSet = p.coordSet;
-        if (!Identifier.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ()) || isIgnoring(p))
+        if (isIgnoring(p) || !Identifier.isIInventory(world, packetSet.getX(), packetSet.getY(), packetSet.getZ()))
             return;
 
         if (isPacketAtXYZ(p))
@@ -125,12 +121,8 @@ public class HUDRenderer {
             if (packet.tickTimeout())
                 ignoreList.remove(packet);
 
-        if (packetList.isEmpty()) {
-            ESLogger.debugFlood("PacketList is empty");
+        if (packetList.isEmpty())
             return;
-        }
-
-        ESLogger.debugFlood(packetList);
 
         ArrayList<InventoryPacket> packetUtilList = new ArrayList<InventoryPacket>();
         packetUtilList.addAll(packetList);

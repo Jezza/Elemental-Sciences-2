@@ -1,8 +1,8 @@
 package me.jezzadabomb.es2.client.hud;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 
 public class StoredQueues {
@@ -10,68 +10,33 @@ public class StoredQueues {
     private static StoredQueues INSTANCE = new StoredQueues();
 
     // Previously stored blocks from the last tick. Used with tempInv.
-    private ArrayList<InventoryInstance> inventories;
+    private HashSet<CoordSet> inventories = new HashSet<CoordSet>();
 
     // The current set of inventories from this tick, used to flush all old inventories.
-    private ArrayList<InventoryInstance> tempInv;
+    private HashSet<CoordSet> tempInv = new HashSet<CoordSet>();
 
     // This is the list that contains all inventories to have their inventories requested.
-    private ArrayList<InventoryInstance> requestedList;
+    private HashSet<CoordSet> requestedList = new HashSet<CoordSet>();
 
-    public StoredQueues() {
-        inventories = new ArrayList<InventoryInstance>();
-        tempInv = new ArrayList<InventoryInstance>();
-        requestedList = new ArrayList<InventoryInstance>();
-    }
-
-    public static StoredQueues getInstance() {
-        return INSTANCE;
-    }
-
-    public void putInventory(InventoryInstance inventory) {
-        inventories.add(inventory);
-    }
-
-    public boolean isAlreadyInQueue(InventoryInstance inventory) {
-        return inventories.contains(inventory);
+    public void putInventory(CoordSet coordSet) {
+        inventories.add(coordSet);
+        tempInv.add(coordSet);
     }
 
     public boolean isAtXYZ(CoordSet coordSet) {
-        return isAtXYZ(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+        return inventories.contains(coordSet);
     }
 
-    public boolean isAtXYZ(int x, int y, int z) {
-        return getAtXYZ(x, y, z) != null;
-    }
-
-    public InventoryInstance getAtXYZ(int x, int y, int z) {
-        for (InventoryInstance i : inventories)
-            if (i.isAtXYZ(x, y, z))
-                return i;
-        return null;
-    }
-
-    public void replaceAtXYZ(int x, int y, int z, InventoryInstance inventory) {
-        if (inventory == null)
-            return;
-        InventoryInstance tempInstance = getAtXYZ(x, y, z);
-        if (tempInstance == null) {
-            inventories.add(inventory);
-            return;
-        }
-        inventories.set(inventories.indexOf(tempInstance), inventory);
-    }
-
-    public void putTempInventory(InventoryInstance inventory) {
-        tempInv.add(inventory);
-    }
-
-    public ArrayList<InventoryInstance> getRequestList() {
+    public HashSet<CoordSet> getRequestList() {
         return requestedList;
     }
 
+    public boolean canSendRequestList() {
+        return !requestedList.isEmpty();
+    }
+
     /**
-     * The inventories list is flushed with the current inventory list, so all that remains is the ones still around this scan process. All packets we sent last tick, we'll remove from this round, because no point sending them so quickly. NOTE: That this means it's once a second by default.
+     * The inventories list is flushed with the current inventory list, so all that remains is the ones still around this scan process. All packets we sent last tick, we'll remove from this round, because no point sending them so quickly. NOTE: This means it's once a second by default.
      * 
      * We clear the packetRequest list, so we can begin anew. Add all the inventories we want to view. Clear the temp list, because we have no need of it, until next tick.
      */
@@ -81,5 +46,9 @@ public class StoredQueues {
         requestedList.clear();
         requestedList.addAll(tempInv);
         tempInv.clear();
+    }
+
+    public static StoredQueues getInstance() {
+        return INSTANCE;
     }
 }

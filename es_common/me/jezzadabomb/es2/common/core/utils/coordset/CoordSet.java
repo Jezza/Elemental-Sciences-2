@@ -15,15 +15,6 @@ public class CoordSet {
 
     private int x, y, z;
 
-    public CoordSet() {
-    }
-
-    public CoordSet(TileES tileES) {
-        x = tileES.xCoord;
-        y = tileES.yCoord;
-        z = tileES.zCoord;
-    }
-
     public CoordSet(EntityPlayer player) {
         this((int) Math.floor(player.posX), (int) Math.floor(player.posY), (int) Math.floor(player.posZ));
     }
@@ -38,11 +29,6 @@ public class CoordSet {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    public boolean isPacket(InventoryPacket p) {
-        CoordSet tempSet = p.coordSet;
-        return x == tempSet.getX() && y == tempSet.getY() && z == tempSet.getZ();
     }
 
     public void setX(int x) {
@@ -88,46 +74,46 @@ public class CoordSet {
         return this.x == x && this.y == y && this.z == z;
     }
 
-    public void writeToStream(ByteArrayDataOutput out) {
-        out.writeInt(x);
-        out.writeInt(y);
-        out.writeInt(z);
+    public boolean withinRangeDEBUG(CoordSet tempSet, int range) {
+        // TODO remove this.
+        double distance = getDistanceSq(tempSet);
+        return distance <= (range * range) && distance >= (Math.pow(range - 1, 2));
     }
 
-    public static CoordSet readFromStream(ByteArrayDataInput in) {
-        int x = in.readInt();
-        int y = in.readInt();
-        int z = in.readInt();
-        return new CoordSet(x, y, z);
+    public boolean withinRange(CoordSet tempSet, int range) {
+        return getDistanceSq(tempSet) <= (range * range);
     }
 
-    public int distanceFrom(CoordSet tempSet) {
-        return MathHelper.pythagoras(MathHelper.pythagoras(x - tempSet.x, y - tempSet.y), z - tempSet.z);
+    public double getDistanceSq(CoordSet tempSet) {
+        double x2 = x - tempSet.x;
+        double y2 = y - tempSet.y;
+        double z2 = z - tempSet.z;
+        return x2 * x2 + y2 * y2 + z2 * z2;
+    }
+
+    public double getDistance(CoordSet tempSet) {
+        double x2 = x - tempSet.x;
+        double y2 = y - tempSet.y;
+        double z2 = z - tempSet.z;
+        return (double) net.minecraft.util.MathHelper.sqrt_double(x2 * x2 + y2 * y2 + z2 * z2);
     }
 
     public boolean isAdjacent(CoordSet tempSet) {
-        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(y, tempSet.getY(), 1)) {
+        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(y, tempSet.getY(), 1))
             return true;
-        }
-        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1)) {
+        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1))
             return true;
-        }
-        if (MathHelper.withinRange(y, tempSet.getY(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1)) {
+        if (MathHelper.withinRange(y, tempSet.getY(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1))
             return true;
-        }
         return false;
     }
 
-    public CoordSet subtractCoords(CoordSet tempSet) {
-        return new CoordSet(x - tempSet.getX(), y - tempSet.getY(), z - tempSet.getZ());
-    }
-
     public void writeToNBT(NBTTagCompound tag) {
-        tag.setIntArray("coords", new int[] { x, y, z });
+        tag.setIntArray("coordSet", new int[] { x, y, z });
     }
 
     public static CoordSet readFromNBT(NBTTagCompound tag) {
-        return new CoordSet(tag.getIntArray("coords"));
+        return new CoordSet(tag.getIntArray("coordSet"));
     }
 
     public void writeBytes(ByteBuf bytes) {
@@ -152,29 +138,24 @@ public class CoordSet {
         return new CoordSetD(x + 0.5D, y + 0.5D, z + 0.5D);
     }
 
-    /*
-     * Truncated.
-     */
-    public int distanceFrom(int x, int y, int z) {
-        return MathHelper.pythagoras(MathHelper.pythagoras(x, y), z);
-    }
-
     @Override
     public boolean equals(Object other) {
-        if (other == null)
-            return false;
-        if (!(other instanceof CoordSet))
+        if (other == null || !(other instanceof CoordSet))
             return false;
         CoordSet coordSet = (CoordSet) other;
         return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
     }
 
+//    @Override
+//    public int hashCode() {
+//        int hash = this.x;
+//        hash *= 31 + this.y;
+//        hash *= 31 + this.z;
+//        return hash;
+//    }
+
     public String toPacketString() {
         return x + ":" + y + ":" + z;
-    }
-
-    public double distanceFrom(float i, float j, float k) {
-        return MathHelper.pythagoras(MathHelper.pythagoras(((float) x) - i, ((float) y) - j), ((float) z) - k);
     }
 
     @Override

@@ -20,10 +20,14 @@ import net.minecraft.world.World;
 
 public class InventoryRequestPacket implements IPacket {
 
-    private String loc;
+    private String locs;
 
-    public InventoryRequestPacket(InventoryInstance inventory) {
-        loc = new CoordSet(inventory.getX(), inventory.getY(), inventory.getZ()).toPacketString();
+    public InventoryRequestPacket(CoordSet... coordSets) {
+        StringBuilder sb = new StringBuilder();
+        for (CoordSet coordSet : coordSets)
+            sb.append(new CoordSet(coordSet.getX(), coordSet.getY(), coordSet.getZ()).toPacketString() + ",");
+        locs = sb.toString();
+        ESLogger.info(locs);
     }
 
     public InventoryRequestPacket() {
@@ -31,12 +35,12 @@ public class InventoryRequestPacket implements IPacket {
 
     @Override
     public void writeBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-        PacketUtils.writeStringByteBuffer(buffer, loc);
+        PacketUtils.writeStringByteBuffer(buffer, locs);
     }
 
     @Override
     public void readBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-        loc = PacketUtils.readStringByteBuffer(buffer);
+        locs = PacketUtils.readStringByteBuffer(buffer);
     }
 
     @Override
@@ -48,13 +52,15 @@ public class InventoryRequestPacket implements IPacket {
     public void executeServerSide(EntityPlayer player) {
         World world = player.worldObj;
 
-        CoordSet coordSet = UtilMethods.getArrayFromString(loc);
+        for (String loc : locs.split(",")) {
+            CoordSet coordSet = UtilMethods.getArrayFromString(loc);
 
-        int x = coordSet.getX();
-        int y = coordSet.getY();
-        int z = coordSet.getZ();
+            int x = coordSet.getX();
+            int y = coordSet.getY();
+            int z = coordSet.getZ();
 
-        if (Identifier.isIInventory(world, x, y, z))
-            PacketDispatcher.sendTo(new InventoryPacket(world.getTileEntity(x, y, z), loc), (EntityPlayerMP) player);
+            if (Identifier.isIInventory(world, x, y, z))
+                PacketDispatcher.sendTo(new InventoryPacket(world.getTileEntity(x, y, z), loc), (EntityPlayerMP) player);
+        }
     }
 }

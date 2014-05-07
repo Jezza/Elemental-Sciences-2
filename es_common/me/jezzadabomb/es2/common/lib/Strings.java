@@ -14,7 +14,7 @@ public class Strings {
     public static final String CRYSTAL_OBELISK = "crystalObelisk";
     public static final String PYLON_CRYSTAL = "pylonCrystal";
 
-    public static final String PLASTIC_BLOCK = "plasticBlock";
+    public static final String STRENGTHENED_IRON_BLOCK = "strengthenedIronBlock";
 
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";

@@ -31,5 +31,6 @@ public class Reference {
 
     // Numerical constants
     public static int HUD_BLOCK_RANGE = 6;
+    public static int PYLON_POWER_RANGE = 16;
     public static int DRONE_BAY_DOOR_TYPE;
 }

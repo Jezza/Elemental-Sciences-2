@@ -2,8 +2,10 @@ package me.jezzadabomb.es2.common.tileentity.multi;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.utils.DimensionalPattern;
+import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.BlockState;
+import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.Layer;
+import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.Row;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.helpers.DimensionalPatternHelper;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.tileentity.TileEntity;
 
@@ -13,7 +15,18 @@ public class TileAtomicShredderDummyCore extends TileES {
     DimensionalPattern dimensionalPattern;
 
     public TileAtomicShredderDummyCore() {
-        dimensionalPattern = DimensionalPatternHelper.getAtomicShredder();
+        Row row1 = DimensionalPattern.createRow("###");
+        Row row2 = DimensionalPattern.createRow("#G#");
+        Row row3 = DimensionalPattern.createRow("GCG");
+
+        Layer layer1 = DimensionalPattern.createLayer(row1, row2, row1);
+        Layer layer2 = DimensionalPattern.createLayer(row2, row3, row2);
+
+        BlockState shredderFrame = DimensionalPattern.createBlockState(Character.valueOf('#'), ModBlocks.atomicShredderDummyCore);
+        BlockState shredderGlass = DimensionalPattern.createBlockState(Character.valueOf('G'), ModBlocks.atomicShredderDummy, 1);
+        BlockState shredderDummyCore = DimensionalPattern.createBlockState(Character.valueOf('C'), ModBlocks.atomicShredderDummyCore, 1);
+
+        dimensionalPattern = DimensionalPattern.createPattern("AtomicShredder", layer1, layer2, layer1, shredderFrame, shredderGlass, shredderDummyCore);
     }
 
     @Override

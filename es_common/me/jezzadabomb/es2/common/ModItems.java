@@ -8,6 +8,7 @@ import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder64;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.items.debug.ItemDebugTool;
+import me.jezzadabomb.es2.common.items.debug.ItemPylonManager;
 import me.jezzadabomb.es2.common.items.framework.ItemArmourES.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -31,7 +32,7 @@ public class ModItems {
     public static Item atomicShredderDummy;
 
     public static Item debugItem;
-    public static Item ringControl;
+    public static Item pylonControl;
 
     private static int ironRenderIndex = 2;
 
@@ -48,6 +49,7 @@ public class ModItems {
 
         if (Reference.isDebugMode) {
             debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);
+            pylonControl = new ItemPylonManager(Strings.DEBUG_TOOL + "1");
         }
     }
 
