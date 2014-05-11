@@ -25,17 +25,18 @@ public class TileCrystalObeliskRenderer extends TileEntitySpecialRenderer {
 
         switch (obelisk.getRenderType()) {
             case 2:
-                RenderUtils.bindTexture(TextureMaps.CRYSTAL_TOP_OBELISK);
-                modelCrystalObelisk.renderUpper();
-                break;
-            case 1:
+//                RenderUtils.bindTexture(TextureMaps.CRYSTAL_TOP_OBELISK);
+//                modelCrystalObelisk.renderUpper();
                 float tempScale = 0.90F;
+                glScalef(tempScale, 1.0F, tempScale);
+//                break;
+            case 1:
+                tempScale = 0.90F;
                 glScalef(tempScale, 1.0F, tempScale);
             case 0:
             default:
                 RenderUtils.bindTexture(TextureMaps.CRYSTAL_OBELISK);
                 modelCrystalObelisk.renderLower();
-
         }
 
         glPopMatrix();

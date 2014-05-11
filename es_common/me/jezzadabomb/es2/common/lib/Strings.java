@@ -13,6 +13,8 @@ public class Strings {
     public static final String ATOMIC_SHREDDER_DUMMY_CORE = "atomicShredderDummyCore";
     public static final String CRYSTAL_OBELISK = "crystalObelisk";
     public static final String PYLON_CRYSTAL = "pylonCrystal";
+    public static final String PYLON_CRYSTAL_DUMMY = "pylonCrystalDummy";
+    public static final String PYLON_USER_DUMMY = "pylonUserDummy";
 
     public static final String STRENGTHENED_IRON_BLOCK = "strengthenedIronBlock";
 

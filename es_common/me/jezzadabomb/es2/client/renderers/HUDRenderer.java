@@ -48,6 +48,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HUDRenderer {
 
+    // TODO REWRITE THIS
+    
     private ArrayList<InventoryPacket> packetList = new ArrayList<InventoryPacket>();
     private ArrayList<PacketTimeout> ignoreList = new ArrayList<PacketTimeout>();
     public static final Colour hudColour = new Colour(1.0F, 1.0F, 1.0F, 0.6F);
@@ -127,6 +129,7 @@ public class HUDRenderer {
         ArrayList<InventoryPacket> packetUtilList = new ArrayList<InventoryPacket>();
         packetUtilList.addAll(packetList);
 
+        // TODO Yep.
         for (InventoryPacket packet : packetUtilList) {
             if (PlayerHelper.isWearingItem(ModItems.glasses)) {
                 if (!StoredQueues.getInstance().isAtXYZ(packet.coordSet))

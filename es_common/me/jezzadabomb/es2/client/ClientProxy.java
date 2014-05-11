@@ -61,21 +61,31 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void runClientSide() {
-        initTickHandlers();
-        initTileRenderers();
-        initItemRenderer();
-        initEventHandlers();
-        initEntityHandler();
+    public void runPreInit() {
+        initHandlers();
+        initRenderers();
     }
 
-    public void initEntityHandler() {
+    @Override
+    public void runPostInit() {
+
+    }
+
+    private void initHandlers() {
+        // initEntityHandler
         RenderingRegistry.registerEntityRenderingHandler(EntityConstructorDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
-        // TODO Make a model for the combat drone.
         RenderingRegistry.registerEntityRenderingHandler(EntityCombatDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
+
+        // initTickHandlers
+        registerTickHandler(new PlayerTicker());
+
+        // initEventHandlers
+        registerEventHandler(hudRenderer);
+        registerEventHandler(new HoverRenderer());
     }
 
-    private void initTileRenderers() {
+    private void initRenderers() {
+        // initTileRenderers
         registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer());
         registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
@@ -84,26 +94,16 @@ public class ClientProxy extends CommonProxy {
         registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
         registerTileEntityRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
         registerTileEntityRenderer(TileCrystalObelisk.class, new TileCrystalObeliskRenderer());
-    }
 
-    private void initItemRenderer() {
+        // initItemRenderer
         registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
         registerItemRenderer(ModItems.placeHolders, new ItemPlaceHolderRenderer());
         registerItemRenderer(ModItems.placeHolders64, new ItemPlaceHolder64Renderer());
-
         registerItemRenderer(ModBlocks.inventoryScanner, new ItemInventoryScannerRenderer());
         registerItemRenderer(ModBlocks.atomicConstructor, new ItemAtomicConstructorRenderer());
         registerItemRenderer(ModBlocks.console, new ItemConsoleRenderer());
         registerItemRenderer(ModBlocks.droneBay, new ItemDroneBayRenderer());
-    }
 
-    private void initTickHandlers() {
-        FMLCommonHandler.instance().bus().register(new PlayerTicker());
-    }
-
-    public void initEventHandlers() {
-        MinecraftForge.EVENT_BUS.register(hudRenderer);
-        MinecraftForge.EVENT_BUS.register(new HoverRenderer());
     }
 
     private void registerTileEntityRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {

@@ -74,12 +74,6 @@ public class CoordSet {
         return this.x == x && this.y == y && this.z == z;
     }
 
-    public boolean withinRangeDEBUG(CoordSet tempSet, int range) {
-        // TODO remove this.
-        double distance = getDistanceSq(tempSet);
-        return distance <= (range * range) && distance >= (Math.pow(range - 1, 2));
-    }
-
     public boolean withinRange(CoordSet tempSet, int range) {
         return getDistanceSq(tempSet) <= (range * range);
     }
@@ -146,13 +140,13 @@ public class CoordSet {
         return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
     }
 
-//    @Override
-//    public int hashCode() {
-//        int hash = this.x;
-//        hash *= 31 + this.y;
-//        hash *= 31 + this.z;
-//        return hash;
-//    }
+    @Override
+    public int hashCode() {
+        int hash = this.x;
+        hash *= 31 + this.y;
+        hash *= 31 + this.z;
+        return hash;
+    }
 
     public String toPacketString() {
         return x + ":" + y + ":" + z;

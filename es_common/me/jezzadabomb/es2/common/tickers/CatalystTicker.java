@@ -1,17 +1,24 @@
 package me.jezzadabomb.es2.common.tickers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.utils.SteppingObject;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -23,6 +30,7 @@ public class CatalystTicker {
 
     @SubscribeEvent
     public void worldTick(TickEvent.WorldTickEvent event) {
+        // TODO Fix the random null entry.
         breakTicks(event.world);
     }
 
@@ -48,6 +56,7 @@ public class CatalystTicker {
                         for (ItemStack is : ret)
                             if (!vb.player.capabilities.isCreativeMode && !vb.player.inventory.addItemStackToInventory(is))
                                 world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));
+
                         world.func_147480_a(vb.x, vb.y, vb.z, false);
 
                         if (vb.strength > 0)
@@ -71,7 +80,7 @@ public class CatalystTicker {
 
     public static void addBreaker(World world, int x, int y, int z, Block block, int meta, int strength, EntityPlayer player, int fortune, int speed) {
         int dim = world.provider.dimensionId;
-        if ((block == null) || (block.getBlockHardness(world, x, y, z) < 0.0F))
+        if ((block == null) || (block.getBlockHardness(world, x, y, z) < 0.0F) || player == null)
             return;
         LinkedBlockingQueue<VirtualBreaker> queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
         if (queue == null) {

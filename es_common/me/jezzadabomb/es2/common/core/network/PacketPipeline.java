@@ -113,6 +113,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, IPacke
 
     public void initalise() {
         this.channels = NetworkRegistry.INSTANCE.newChannel("ES2", this);
+        PacketHandler.init();
     }
 
     public void postInitialise() {

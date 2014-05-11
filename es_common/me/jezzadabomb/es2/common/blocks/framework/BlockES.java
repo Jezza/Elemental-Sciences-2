@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
@@ -10,8 +11,12 @@ import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -29,6 +34,13 @@ public abstract class BlockES extends Block {
 
     public void register(String name) {
         GameRegistry.registerBlock(this, name);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof IPylonReceiver)
+            ((IPylonReceiver) tileEntity).pylonNotifyUpdate();
     }
 
     @Override

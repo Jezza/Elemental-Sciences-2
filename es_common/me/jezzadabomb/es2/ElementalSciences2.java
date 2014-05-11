@@ -31,6 +31,8 @@ public class ElementalSciences2 {
     @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
     public static CommonProxy proxy;
 
+    public static final PacketPipeline packetPipeline = new PacketPipeline();
+
     public static CreativeTabs creativeTab = new CreativeTabs(Reference.MOD_ID) {
         @Override
         @SideOnly(Side.CLIENT)
@@ -38,8 +40,6 @@ public class ElementalSciences2 {
             return ModItems.glasses;
         }
     };
-
-    public static final PacketPipeline packetPipeline = new PacketPipeline();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -53,8 +53,7 @@ public class ElementalSciences2 {
         ModBlocks.initBlockRecipes();
         ModItems.initItemRecipes();
 
-        proxy.runClientSide();
-        proxy.runServerSide();
+        proxy.runPreInit();
     }
 
     @EventHandler
@@ -66,18 +65,18 @@ public class ElementalSciences2 {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
         packetPipeline.initalise();
-
-        PacketHandler.init();
     }
 
     @EventHandler
     public void postLoaded(FMLPostInitializationEvent event) {
         packetPipeline.postInitialise();
+
+        proxy.runPostInit();
     }
 
     @EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
-        proxy.initServerHandlers();
+        proxy.runServerStart();
     }
 
 }

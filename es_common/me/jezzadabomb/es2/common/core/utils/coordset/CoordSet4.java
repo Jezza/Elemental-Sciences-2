@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -126,7 +127,7 @@ public class CoordSet4 {
         hash *= 31 + i;
         return hash;
     }
-    
+
     public String toPacketString() {
         return x + ":" + y + ":" + z + ":" + i;
     }

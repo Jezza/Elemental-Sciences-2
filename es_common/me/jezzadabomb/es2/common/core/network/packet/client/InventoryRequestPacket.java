@@ -27,7 +27,6 @@ public class InventoryRequestPacket implements IPacket {
         for (CoordSet coordSet : coordSets)
             sb.append(new CoordSet(coordSet.getX(), coordSet.getY(), coordSet.getZ()).toPacketString() + ",");
         locs = sb.toString();
-        ESLogger.info(locs);
     }
 
     public InventoryRequestPacket() {

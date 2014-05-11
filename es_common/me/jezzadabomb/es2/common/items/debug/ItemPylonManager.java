@@ -6,6 +6,7 @@ import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.items.framework.ItemDebug;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ public class ItemPylonManager extends ItemDebug {
         if (isDebugMode("Field Check")) {
             int tier = IPylonRegistry.isPowered(world, x, y, z);
             if (tier >= 0)
-                UtilMethods.addChatMessage(player, "Pylon found: " + tier);
+                UtilMethods.addChatMessage(player, "Pylon found! Tier: " + (tier + 1));
             else
                 UtilMethods.addChatMessage(player, "No pylon found");
         }

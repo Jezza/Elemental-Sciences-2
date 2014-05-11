@@ -1,11 +1,14 @@
 package me.jezzadabomb.es2.common.items;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.Random;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
+import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
@@ -30,7 +33,7 @@ public class ItemAtomicCatalyst extends ItemES {
 
     @Override
     public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        if (player.isSneaking()) {
+        if (player.isSneaking() && player.capabilities.isCreativeMode) {
             player.openGui(ElementalSciences2.instance, 32, world, 0, 0, 0);
             return itemStack;
         }

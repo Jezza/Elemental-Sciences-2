@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2;
 
 import me.jezzadabomb.es2.common.containers.ContainerConsole;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
@@ -12,6 +13,8 @@ import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonDummyCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonUserDummy;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderDummy;
@@ -27,17 +30,23 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy implements IGuiHandler {
 
-    public QuantumBombTicker quantumBomb = new QuantumBombTicker();
-
-    public void runServerSide() {
-        MinecraftForge.EVENT_BUS.register(new MiscEventHandler());
-        MinecraftForge.EVENT_BUS.register(new HoverHandler());
+    public void runPreInit() {
+        initHandlers();
     }
 
-    public void initServerHandlers() {
-        EventBus bus = FMLCommonHandler.instance().bus();
-        bus.register(quantumBomb);
-        bus.register(new CatalystTicker());
+    public void runPostInit() {
+    }
+
+    public void runServerStart() {
+        // initTickHandlers
+        registerTickHandler(new QuantumBombTicker());
+        registerTickHandler(new CatalystTicker());
+    }
+
+    private void initHandlers() {
+        // initEventHandlers
+        registerEventHandler(new MiscEventHandler());
+        registerEventHandler(new HoverHandler());
     }
 
     public void registerTileEntities() {
@@ -51,9 +60,17 @@ public class CommonProxy implements IGuiHandler {
         GameRegistry.registerTileEntity(TileAtomicShredderDummyCore.class, Strings.ATOMIC_SHREDDER_DUMMY_CORE);
         GameRegistry.registerTileEntity(TileCrystalObelisk.class, Strings.CRYSTAL_OBELISK);
         GameRegistry.registerTileEntity(TilePylonCrystal.class, Strings.PYLON_CRYSTAL);
+        GameRegistry.registerTileEntity(TilePylonDummyCrystal.class, Strings.PYLON_CRYSTAL_DUMMY);
+
+        GameRegistry.registerTileEntity(TilePylonUserDummy.class, Strings.PYLON_USER_DUMMY);
     }
 
-    public void runClientSide() {
+    public void registerTickHandler(Object target) {
+        FMLCommonHandler.instance().bus().register(target);
+    }
+
+    public void registerEventHandler(Object target) {
+        MinecraftForge.EVENT_BUS.register(target);
     }
 
     @Override
