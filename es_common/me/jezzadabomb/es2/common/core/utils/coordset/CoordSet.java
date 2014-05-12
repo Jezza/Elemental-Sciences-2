@@ -85,11 +85,8 @@ public class CoordSet {
         return x2 * x2 + y2 * y2 + z2 * z2;
     }
 
-    public double getDistance(CoordSet tempSet) {
-        double x2 = x - tempSet.x;
-        double y2 = y - tempSet.y;
-        double z2 = z - tempSet.z;
-        return (double) net.minecraft.util.MathHelper.sqrt_double(x2 * x2 + y2 * y2 + z2 * z2);
+    public float getDistance(CoordSet tempSet) {
+        return net.minecraft.util.MathHelper.sqrt_double(getDistanceSq(tempSet));
     }
 
     public boolean isAdjacent(CoordSet tempSet) {

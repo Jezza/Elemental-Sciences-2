@@ -33,6 +33,7 @@ import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonDummyCrystal;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.block.Block;
@@ -86,7 +87,8 @@ public class ClientProxy extends CommonProxy {
 
     private void initRenderers() {
         // initTileRenderers
-        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer());
+        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer(false));
+        registerTileEntityRenderer(TilePylonDummyCrystal.class, new TilePylonCrystalRenderer(true));
         registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
         registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());

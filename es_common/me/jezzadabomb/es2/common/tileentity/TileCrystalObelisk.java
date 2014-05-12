@@ -1,35 +1,46 @@
 package me.jezzadabomb.es2.common.tileentity;
 
-import net.minecraft.tileentity.TileEntity;
+import me.jezzadabomb.es2.common.ModBlocks;
+import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
 
-public class TileCrystalObelisk extends TileES {
+public class TileCrystalObelisk extends TileES implements IBlockNotifier {
 
-    private int renderType = 0;
+    private int renderType = 2;
+    private boolean ticked = false;
 
     @Override
     public void updateEntity() {
-        checkBelow();
-    }
-
-    public void checkBelow() {
-        TileEntity tileEntity = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-        if (tileEntity instanceof TileCrystalObelisk) {
-            TileCrystalObelisk obelisk = (TileCrystalObelisk) tileEntity;
-            renderType = obelisk.getRenderType() + 1;
-            if(renderType >= 3)
-                renderType = 0;
-        } else {
-            renderType = 0;
+        if (!ticked) {
+            renderType = 2;
+            for (int i = 1; i <= 3; i++)
+                if (ModBlocks.pylonCrystal.equals(worldObj.getBlock(xCoord, yCoord + i, zCoord)))
+                    renderType -= (i - 1);
+            ticked = true;
         }
-    }
-
-    public void checkAbove() {
-
     }
 
     public int getRenderType() {
         return renderType;
+    }
+
+    @Override
+    public void onBlockRemoval() {
+        for (int i = 1; i <= 3; i++) {
+            TileEntity tileEntity = worldObj.getTileEntity(xCoord, yCoord + i, zCoord);
+            if (tileEntity instanceof TilePylonCrystal) {
+                ((TilePylonCrystal) tileEntity).onBlockRemoval();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onBlockAdded() {
+
     }
 
 }

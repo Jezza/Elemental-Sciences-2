@@ -2,11 +2,15 @@ package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
+import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonUser;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -39,8 +43,27 @@ public abstract class BlockES extends Block {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof IPylonReceiver)
-            ((IPylonReceiver) tileEntity).pylonNotifyUpdate();
+        if (tileEntity instanceof IBlockNotifier)
+            ((IBlockNotifier) tileEntity).onBlockAdded();
+    }
+
+    @Override
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
+        onBlockRemoval(world, x, y, z);
+        super.onBlockExploded(world, x, y, z, explosion);
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
+        onBlockRemoval(world, x, y, z);
+        return super.removedByPlayer(world, player, x, y, z);
+    }
+
+    public void onBlockRemoval(World world, int x, int y, int z) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+        if (tileEntity instanceof IBlockNotifier)
+            ((IBlockNotifier) tileEntity).onBlockRemoval();
     }
 
     @Override

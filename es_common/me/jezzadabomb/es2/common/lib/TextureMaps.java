@@ -42,6 +42,8 @@ public class TextureMaps {
 
     public static final ResourceLocation CRYSTAL_OBELISK = getResource("crystalObelisk");
     public static final ResourceLocation CRYSTAL_TOP_OBELISK = getResource("crystalTopObelisk");
+    
+    public static final ResourceLocation PYLON_CRYSTAL = getResource("pylonCrystal");
 
     private static String getFullLocation(String name) {
         return Reference.MOD_ID + ":" + MODEL_SHEET_LOCATION + name + ".png";

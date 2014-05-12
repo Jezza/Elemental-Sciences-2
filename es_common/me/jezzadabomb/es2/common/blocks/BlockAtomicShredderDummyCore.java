@@ -2,7 +2,7 @@ package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockMetaHolder;
 import me.jezzadabomb.es2.common.items.ItemBlockHolder;
-import me.jezzadabomb.es2.common.tileentity.TilePylonUserDummy;
+import me.jezzadabomb.es2.common.tileentity.TilePylonUser;
 import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderDummyCore;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
@@ -38,7 +38,7 @@ public class BlockAtomicShredderDummyCore extends BlockMetaHolder {
             case 1:
                 return new TileAtomicShredderDummyCore();
             case 2:
-                return new TilePylonUserDummy();
+                return new TilePylonUser();
         }
         return null;
     }

@@ -12,8 +12,12 @@ public class ModelPylonCrystal {
         model = AdvancedModelLoader.loadModel(Models.PYLON_CRYSTAL);
     }
 
-    public void render() {
-        model.renderAll();
+    public void renderCrystal() {
+        model.renderPart("Crystal");
+    }
+
+    public void renderRings() {
+        model.renderPart("Rings");
     }
 
 }
