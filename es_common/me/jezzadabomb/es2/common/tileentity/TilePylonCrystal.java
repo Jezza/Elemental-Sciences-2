@@ -1,19 +1,12 @@
 package me.jezzadabomb.es2.common.tileentity;
 
+import me.jezzadabomb.es2.api.multiblock.DimensionalPattern.Flag;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylon;
-import me.jezzadabomb.es2.common.core.utils.DimensionalPattern;
-import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.BlockState;
-import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.Flag;
-import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.Layer;
-import me.jezzadabomb.es2.common.core.utils.DimensionalPattern.Row;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.framework.TilePylon;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public class TilePylonCrystal extends TilePylon implements IPylon, IBlockNotifier {
 
@@ -41,14 +34,18 @@ public class TilePylonCrystal extends TilePylon implements IPylon, IBlockNotifie
     }
 
     @Override
-    public void onBlockRemoval() {
+    public void onBlockRemoval(World world, int x, int y, int z) {
+        // Fix this
+        getStrengthenedIronPattern().convert(worldObj, xCoord, yCoord - 3, zCoord, Flag.IGNORE);
+        for (int i = 1; i <= 3; i++)
+            worldObj.func_147480_a(xCoord, yCoord - i, zCoord, false);
         getStrengthenedIronPattern().convert(worldObj, xCoord, yCoord - 3, zCoord, Flag.IGNORE);
         worldObj.setBlock(xCoord, yCoord, zCoord, ModBlocks.pylonCrystal, tier + 3, 3);
         registered = !IPylonRegistry.removePylon(worldObj, getCoordSet(), tier);
     }
 
     @Override
-    public void onBlockAdded() {
+    public void onBlockAdded(World world, int x, int y, int z) {
 
     }
 }

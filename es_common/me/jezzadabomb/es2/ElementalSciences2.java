@@ -5,7 +5,6 @@ import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.config.ConfigHandler;
-import me.jezzadabomb.es2.common.core.network.PacketHandler;
 import me.jezzadabomb.es2.common.core.network.PacketPipeline;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.creativetab.CreativeTabs;

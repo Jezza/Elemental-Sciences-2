@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.core.utils;
+package me.jezzadabomb.es2.api.multiblock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,22 +244,16 @@ public class DimensionalPattern {
 
     public static enum Flag {
         //@formatter:off
-        AIR(0),
-        IGNORE(1);
+        AIR,
+        IGNORE;
         //@formatter:on
 
-        int flag;
-
-        private Flag(int flag) {
-            this.flag = flag;
-        }
-
         public boolean isAir() {
-            return flag == 0;
+            return this == AIR;
         }
 
         public boolean isIgnoring() {
-            return flag == 1;
+            return this == IGNORE;
         }
     }
 

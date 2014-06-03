@@ -2,35 +2,42 @@ package me.jezzadabomb.es2.common.blocks;
 
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.common.ModBlocks;
+import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
+import me.jezzadabomb.es2.common.tileentity.TileObelisk;
+import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.blocks.framework.BlockES;
-import me.jezzadabomb.es2.common.blocks.framework.BlockMetaHolder;
-import me.jezzadabomb.es2.common.items.ItemBlockHolder;
-import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 
-public class BlockCrystalObelisk extends BlockES {
+public class BlockObelisk extends BlockESMeta {
 
-    public BlockCrystalObelisk(Material material, String name) {
+    public static final String[] names = new String[] { "obelisk0", "obelisk1", "obelisk2" };
+
+    public BlockObelisk(Material material, String name) {
         super(material, name);
         setHardness(4F);
     }
 
-    @Override
     public boolean renderWithModel() {
         return true;
     }
 
     @Override
+    public void onBlockRemoval(World world, int x, int y, int z) {
+        super.onBlockRemoval(world, x, y, z);
+        for (int i = 1; i <= 3; i++) {
+            TileEntity tileEntity = world.getTileEntity(x, y + i, z);
+            if (tileEntity instanceof TilePylonCrystal)
+                ((TilePylonCrystal) tileEntity).onBlockRemoval(world, x, y, z);
+        }
+    }
+
+    @Override
     public TileEntity getTileEntity(int metadata) {
-        return new TileCrystalObelisk();
+        return new TileObelisk();
     }
 
     @Override
@@ -45,5 +52,10 @@ public class BlockCrystalObelisk extends BlockES {
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
         return new ItemStack(ModBlocks.strengthenedIronBlock);
+    }
+
+    @Override
+    public String[] getNames() {
+        return names;
     }
 }

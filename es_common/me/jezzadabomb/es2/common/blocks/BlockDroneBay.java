@@ -1,7 +1,7 @@
 package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
@@ -33,9 +33,9 @@ public class BlockDroneBay extends BlockES {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return Identifier.isIInventory(world, x, y - 1, z);
+        return new CoordSet(x, y - 1, z).isIInventory(world);
     }
-    
+
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;

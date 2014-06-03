@@ -28,8 +28,6 @@ public class ModItems {
     public static Item quantumStateDisrupter;
     public static Item placeHolders;
     public static Item placeHolders64;
-    public static Item atomicShredderHolder;
-    public static Item atomicShredderDummy;
 
     public static Item debugItem;
     public static Item pylonControl;
@@ -43,9 +41,6 @@ public class ModItems {
         quantumStateDisrupter = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTER);
         placeHolders = new ItemPlaceHolder(Strings.PLACEHOLDER);
         placeHolders64 = new ItemPlaceHolder64(Strings.PLACEHOLDER_64);
-
-        atomicShredderHolder = new ItemBlockHolder(ModBlocks.atomicShredderDummy);
-        atomicShredderDummy = new ItemBlockHolder(ModBlocks.atomicShredderDummyCore);
 
         if (Reference.isDebugMode) {
             debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);

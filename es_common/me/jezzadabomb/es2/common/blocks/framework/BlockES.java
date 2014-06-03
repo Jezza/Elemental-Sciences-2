@@ -1,23 +1,17 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
-import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.lib.Reference;
-import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
-import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonUser;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
@@ -44,7 +38,7 @@ public abstract class BlockES extends Block {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof IBlockNotifier)
-            ((IBlockNotifier) tileEntity).onBlockAdded();
+            ((IBlockNotifier) tileEntity).onBlockAdded(world, x, y, z);
     }
 
     @Override
@@ -61,9 +55,8 @@ public abstract class BlockES extends Block {
 
     public void onBlockRemoval(World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-
         if (tileEntity instanceof IBlockNotifier)
-            ((IBlockNotifier) tileEntity).onBlockRemoval();
+            ((IBlockNotifier) tileEntity).onBlockRemoval(world, x, y, z);
     }
 
     @Override

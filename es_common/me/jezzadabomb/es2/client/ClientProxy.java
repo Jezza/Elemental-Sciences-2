@@ -15,7 +15,6 @@ import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileAtomicShredderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileCrystalObeliskRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
@@ -29,13 +28,12 @@ import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import me.jezzadabomb.es2.common.tileentity.TileCrystalObelisk;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import me.jezzadabomb.es2.common.tileentity.TileObelisk;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonDummyCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonCrystalDummy;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
-import me.jezzadabomb.es2.common.tileentity.multi.TileAtomicShredderCore;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,10 +43,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -88,14 +84,13 @@ public class ClientProxy extends CommonProxy {
     private void initRenderers() {
         // initTileRenderers
         registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer(false));
-        registerTileEntityRenderer(TilePylonDummyCrystal.class, new TilePylonCrystalRenderer(true));
+        registerTileEntityRenderer(TilePylonCrystalDummy.class, new TilePylonCrystalRenderer(true));
         registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
         registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());
         registerTileEntityRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
         registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
-        registerTileEntityRenderer(TileAtomicShredderCore.class, new TileAtomicShredderRenderer());
-        registerTileEntityRenderer(TileCrystalObelisk.class, new TileCrystalObeliskRenderer());
+        registerTileEntityRenderer(TileObelisk.class, new TileCrystalObeliskRenderer());
 
         // initItemRenderer
         registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());

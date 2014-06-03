@@ -14,6 +14,7 @@ import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
+import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -42,6 +43,16 @@ public class InventoryPacket implements IPacket {
     }
 
     public InventoryPacket() {
+    }
+
+    public boolean tick() {
+        ESLogger.info(tickTiming);
+        return ++tickTiming >= 100;
+    }
+
+    public boolean canRemove() {
+        int dis = Reference.HUD_BLOCK_RANGE;
+        return distanceToPlayer() > dis * dis;
     }
 
     @Override
@@ -122,11 +133,15 @@ public class InventoryPacket implements IPacket {
         return coordSet.equals(tempPacket.coordSet) && this.itemStacks.equals(tempPacket.itemStacks);
     }
 
+    @Override
+    public int hashCode() {
+        return coordSet.hashCode();
+    }
+
     public double distanceToPlayer() {
         EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-
         CoordSetF playerSet = new CoordSet(player).toCoordSetF();
 
-        return Math.abs(playerSet.distanceTo(coordSet.toCoordSetF()));
+        return Math.abs(playerSet.distanceToSq(coordSet.toCoordSetF()));
     }
 }

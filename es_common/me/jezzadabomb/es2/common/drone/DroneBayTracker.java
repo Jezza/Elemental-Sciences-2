@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.world.World;
 
 public class DroneBayTracker implements IMasterable {
@@ -57,13 +55,15 @@ public class DroneBayTracker implements IMasterable {
 
         for (int i = -width; i < width + 1; i++)
             for (int j = -height; j < height + 1; j++)
-                for (int k = -width; k < width + 1; k++)
-                    if (Identifier.isDroneBay(world, x + i, y + j, z + k)) {
-                        TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x + i, y + j, z + k);
+                for (int k = -width; k < width + 1; k++) {
+                    CoordSet coordSet = new CoordSet(x + i, y + j, z + k);
+                    if (coordSet.isDroneBay(world)) {
+                        TileDroneBay droneBay = (TileDroneBay) coordSet.getTileEntity(world);
                         droneBayList.add(droneBay);
                         totalSpawnableDrones += droneBay.getItemDroneCount();
                         droneList.addAll(droneBay.droneTracker.droneList);
                     }
+                }
     }
 
     public void updateDrones() {

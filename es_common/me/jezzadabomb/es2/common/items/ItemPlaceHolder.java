@@ -5,8 +5,7 @@ import java.util.Random;
 
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
@@ -61,10 +60,12 @@ public class ItemPlaceHolder extends ItemMetaES {
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (ModItems.isPlaceHolderStack("wrenchThing", stack, true) && Identifier.isDismantable(world, x, y, z)) {
-            IDismantleable dismantle = (IDismantleable) world.getTileEntity(x, y, z);
-            if (dismantle.canDismantle(player, world, x, y, z)) {
-                ItemStack tempStack = dismantle.dismantleBlock(player, world, x, y, z, !player.capabilities.isCreativeMode);
+        CoordSet coordSet = new CoordSet(x, y, z);
+
+        if (ModItems.isPlaceHolderStack("wrenchThing", stack, true) && coordSet.isDismantable(world)) {
+            IDismantleable dismantle = (IDismantleable) coordSet.getTileEntity(world);
+            if (dismantle.canDismantle(player, world, coordSet)) {
+                ItemStack tempStack = dismantle.dismantleBlock(player, world, coordSet, !player.capabilities.isCreativeMode);
                 int damage = stack.getTagCompound().getInteger("Durablity") - 1;
                 stack.getTagCompound().setInteger("Durablity", damage);
                 if (damage == 0) {

@@ -16,12 +16,12 @@ public class PacketDispatcher {
         packetPipeline.sendToAll(message);
     }
 
-    public static void sendTo(IPacket message, EntityPlayerMP player) {
-        packetPipeline.sendTo(message, player);
-    }
-
     public static void sendPacketToPlayer(IPacket message, EntityPlayerMP player) {
         sendTo(message, player);
+    }
+
+    public static void sendTo(IPacket message, EntityPlayerMP player) {
+        packetPipeline.sendTo(message, player);
     }
 
     public static void sendToAllAround(IPacket message, NetworkRegistry.TargetPoint point) {

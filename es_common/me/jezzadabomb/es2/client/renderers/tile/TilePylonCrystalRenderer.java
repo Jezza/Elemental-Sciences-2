@@ -7,7 +7,7 @@ import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonDummyCrystal;
+import me.jezzadabomb.es2.common.tileentity.TilePylonCrystalDummy;
 import me.jezzadabomb.es2.common.tileentity.framework.TilePylon;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +52,7 @@ public class TilePylonCrystalRenderer extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float tick) {
-        if (tileEntity instanceof TilePylonCrystal || tileEntity instanceof TilePylonDummyCrystal)
+        if (tileEntity instanceof TilePylonCrystal || tileEntity instanceof TilePylonCrystalDummy)
             renderPylonCrystalAt(tileEntity, x, y, z, tick);
     }
 

@@ -3,6 +3,7 @@ package me.jezzadabomb.es2.common.blocks.framework;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
+import me.jezzadabomb.es2.common.items.ItemBlockHolder;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,15 +16,15 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class BlockMetaHolder extends BlockES {
+public abstract class BlockESMeta extends BlockES {
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
 
-    public BlockMetaHolder(Material material, String name) {
+    public BlockESMeta(Material material, String name) {
         super(material, name);
     }
-    
+
     @Override
     public void register(String name) {
         GameRegistry.registerBlock(this, getItemBlockClass(), name);
@@ -57,8 +58,9 @@ public abstract class BlockMetaHolder extends BlockES {
         return icons[meta % icons.length];
     }
 
+    protected Class<? extends ItemBlock> getItemBlockClass() {
+        return ItemBlockHolder.class;
+    }
+
     public abstract String[] getNames();
-
-    protected abstract Class<? extends ItemBlock> getItemBlockClass();
-
 }

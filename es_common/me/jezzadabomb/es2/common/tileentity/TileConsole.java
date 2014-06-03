@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Random;
 
-import me.jezzadabomb.es2.client.gui.GuiConsole;
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.containers.ContainerConsole;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IRotatable;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.drone.DroneBayTracker;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
@@ -92,8 +89,9 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
                 for (int k = -1; k <= 1; k++) {
                     if (i == 0 && j == 0 && k == 0)
                         continue;
-                    if (Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
-                        TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                    CoordSet coordSet = new CoordSet(xCoord + i, yCoord + j, zCoord + k);
+                    if (coordSet.isConstructor(worldObj)) {
+                        TileAtomicConstructor atomic = (TileAtomicConstructor) coordSet.getTileEntity(worldObj);
                         if (atomic.hasMaster())
                             continue;
                         atomic.setMaster(getCoordSet(), worldObj);
@@ -148,7 +146,8 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     }
 
     private boolean isMatch(int x, int y, int z) {
-        return worldObj != null && (Identifier.isConsole(worldObj, x, y, z) || Identifier.isConstructor(worldObj, x, y, z));
+        CoordSet coordSet = new CoordSet(x, y, z);
+        return worldObj != null && (coordSet.isConsole(worldObj) || coordSet.isConstructor(worldObj));
     }
 
     public BitSet getRenderCables() {
@@ -197,15 +196,15 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
     }
 
     @Override
-    public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
-        world.setBlockToAir(x, y, z);
+    public ItemStack dismantleBlock(EntityPlayer player, World world, CoordSet coordSet, boolean returnBlock) {
+        coordSet.setBlockToAir(world);
         if (!world.isRemote && returnBlock)
-            world.spawnEntityInWorld(new EntityItem(world, x + 0.5F, y + 0.1F, z + 0.5F, new ItemStack(ModBlocks.console)));
+            world.spawnEntityInWorld(new EntityItem(world, coordSet.getX() + 0.5F, coordSet.getY() + 0.1F, coordSet.getZ() + 0.5F, new ItemStack(ModBlocks.console)));
         return null;
     }
 
     @Override
-    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+    public boolean canDismantle(EntityPlayer player, World world, CoordSet coordSet) {
         return true;
     }
 

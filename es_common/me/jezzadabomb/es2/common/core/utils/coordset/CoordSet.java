@@ -1,15 +1,22 @@
 package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
+import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
+import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
+import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileConsole;
+import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
+import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 public class CoordSet {
 
@@ -99,6 +106,26 @@ public class CoordSet {
         return false;
     }
 
+    public Block getBlock(IBlockAccess world) {
+        return world.getBlock(x, y, z);
+    }
+
+    public TileEntity getTileEntity(IBlockAccess world) {
+        return world.getTileEntity(x, y, z);
+    }
+
+    public boolean hasTileEntity(IBlockAccess world) {
+        return getTileEntity(world) != null;
+    }
+
+    public boolean setBlockToAir(World world) {
+        return world.setBlockToAir(x, y, z);
+    }
+
+    public boolean isAirBlock(World world) {
+        return world.isAirBlock(x, y, z);
+    }
+
     public void writeToNBT(NBTTagCompound tag) {
         tag.setIntArray("coordSet", new int[] { x, y, z });
     }
@@ -154,10 +181,46 @@ public class CoordSet {
         return " @ " + toPacketString();
     }
 
+    public CoordSet copy() {
+        return new CoordSet(x, y, z);
+    }
+
     public static CoordSet createFromMinecraftTag(NBTTagCompound tag) {
         int x = tag.getInteger("x");
         int y = tag.getInteger("y");
         int z = tag.getInteger("z");
         return new CoordSet(x, y, z);
+    }
+
+    public boolean isConsole(IBlockAccess world) {
+        return getTileEntity(world) instanceof TileConsole;
+    }
+
+    public boolean isConstructor(IBlockAccess world) {
+        return getTileEntity(world) instanceof TileAtomicConstructor;
+    }
+
+    public boolean isScanner(IBlockAccess world) {
+        return getTileEntity(world) instanceof TileInventoryScanner;
+    }
+
+    public boolean isDismantable(IBlockAccess world) {
+        return getTileEntity(world) instanceof IDismantleable;
+    }
+
+    public boolean isIInventory(IBlockAccess world) {
+        return getTileEntity(world) instanceof IInventory;
+    }
+
+    public boolean isDroneBay(IBlockAccess world) {
+        return getTileEntity(world) instanceof TileDroneBay;
+    }
+
+    public boolean isMasterable(World world) {
+        return getTileEntity(world) instanceof IMasterable;
+    }
+
+    public boolean isPylonReciever(World world) {
+        return getTileEntity(world) instanceof IPylonReceiver;
     }
 }

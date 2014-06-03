@@ -70,21 +70,6 @@ public class RenderUtils {
         drawTexturedQuad(x, y, u, v, uLength, vLength, zLevel);
     }
 
-    public static void addBlockDestroyEffects(IBlockAccess world, int x, int y, int z) {
-        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-
-        if (world == null || effectRenderer == null)
-            return;
-
-        Block block = world.getBlock(x, y, z);
-        int meta = world.getBlockMetadata(x, y, z);
-
-        if (block == null)
-            return;
-
-        effectRenderer.addBlockDestroyEffects(x, y, z, block, meta);
-    }
-
     public static void drawTexturedQuad(int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
         float var7 = 0.0039063F;
         float var8 = 0.0039063F;
@@ -111,15 +96,6 @@ public class RenderUtils {
         return temp;
     }
 
-    public static void drawLineFrom(double x, double y, double z, double targetX, double targetY, double targetZ) {
-        glPushMatrix();
-        glBegin(GL_LINES);
-        glVertex3d(x, y, z);
-        glVertex3d(targetX, targetY, targetZ);
-        glEnd();
-        glPopMatrix();
-    }
-
     public static double[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
         double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
         double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
@@ -138,59 +114,6 @@ public class RenderUtils {
     }
 
     // Individual translations if I want.
-    private static void translateWithRowAndColumn(int columnNum, int rowNum, boolean itemBlock, boolean specialRenderer) {
-        if (itemBlock) {
-            switch (columnNum) {
-                case 0:
-                    glTranslated(2.0D, 0.0D, 0.0D);
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    glTranslated(-2.0D, 0.0D, 0.0D);
-                    break;
-                default:
-                    return;
-            }
-
-            switch (rowNum) {
-                case 0:
-                    glTranslated(0.0D, 3.0D, 0.0D);
-                    break;
-                case 1:
-                    glTranslated(0.0D, 2.0D, 0.0D);
-                    break;
-                case 2:
-                    break;
-                default:
-                    return;
-            }
-        } else {
-            switch (columnNum) {
-                case 0:
-                    glTranslated(1.0D, 0.0D, 0.0D);
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                default:
-                    return;
-            }
-
-            switch (rowNum) {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                default:
-                    return;
-            }
-        }
-
-    }
 
     private static void translateSpecialRender(int indexNum, int rowNum) {
         indexNum -= 1.0D;
@@ -200,7 +123,7 @@ public class RenderUtils {
         glTranslated(0.0D, rowNum, 0.0D);
     }
 
-    public static void drawItemStack(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
+    public static void draw2DItemStack(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
         if (itemStack == null)
             return;
 
@@ -219,7 +142,7 @@ public class RenderUtils {
 
         boolean flag = itemStack.getItem() instanceof ItemBlock;
 
-        translateWithRowAndColumn(indexNum, rowNum, flag, false);
+        HUDUtils.translateWithRowAndColumn(indexNum, rowNum, flag);
 
         if (flag) {
             glTranslated(-3.0D, 8.0D, 0.0D);
@@ -227,7 +150,7 @@ public class RenderUtils {
             double scale = 2.2D;
 
             glScaled(scale, scale, scale);
-
+            
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
             entityItem.setEntityItemStack(itemStack);
 
@@ -257,7 +180,7 @@ public class RenderUtils {
                 glPopMatrix();
         }
         glEnable(GL_ALPHA_TEST);
-        HUDRenderer.hudColour.doGL();
+        HUDRenderer.HUDCOLOUR.doGL();
         glDisable(GL_LIGHTING);
         glEnable(GL_CULL_FACE);
         glPopMatrix();
@@ -274,7 +197,7 @@ public class RenderUtils {
         glDisable(GL_LIGHTING);
         if (Reference.DRAW_TEXTURED_SLOTS)
             drawTextureSlot(x, y, zLevel + 1);
-        drawItemStack(x, y, itemStack, zLevel, indexNum, rowNum);
+        draw2DItemStack(x, y, itemStack, zLevel, indexNum, rowNum);
     }
 
     public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {

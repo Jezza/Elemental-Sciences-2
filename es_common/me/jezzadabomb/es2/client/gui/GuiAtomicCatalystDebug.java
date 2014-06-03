@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.client.gui;
 
+import me.jezzadabomb.es2.client.lib.GuiSheet;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.containers.ContainerAtomicCatalystDebug;
 import me.jezzadabomb.es2.common.core.ESLogger;
@@ -7,7 +8,6 @@ import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.AtomicCatalystDebugPacket;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import me.jezzadabomb.es2.common.lib.GuiTextureMaps;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -102,7 +102,7 @@ public class GuiAtomicCatalystDebug extends GuiContainerES {
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
 
-        RenderUtils.bindTexture(GuiTextureMaps.GUI_ATOMIC_CATALYST_DEBUG);
+        RenderUtils.bindTexture(GuiSheet.GUI_ATOMIC_CATALYST_DEBUG);
 
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
     }

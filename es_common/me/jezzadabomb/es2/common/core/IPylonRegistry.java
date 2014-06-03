@@ -73,7 +73,7 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmUser(dimID);
         for (CoordSet coordSet : userMap.get(dimID)) {
-            TileEntity tileEntity = world.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+            TileEntity tileEntity = coordSet.getTileEntity(world);
             if (tileEntity instanceof IPylonReceiver)
                 ((IPylonReceiver) tileEntity).notifyPylonUpdate();
         }
@@ -82,8 +82,6 @@ public class IPylonRegistry {
     public static int isPowered(World world, CoordSet coordSet) {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
-        
-        
 
         int highest = -1;
         for (CoordSet4 coordSet4 : pylonMap.get(dimID)) {

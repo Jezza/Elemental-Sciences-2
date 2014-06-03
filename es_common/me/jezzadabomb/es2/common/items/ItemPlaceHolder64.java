@@ -3,11 +3,10 @@ package me.jezzadabomb.es2.common.items;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.entity.item.EntityItem;
@@ -17,7 +16,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 public class ItemPlaceHolder64 extends ItemMetaES {
-    public static final String[] names = new String[] { "glassesLens", "ironStrip", "ironBar", "spectrumSensor", "selectiveEMPTrigger", "empTrigger", "strengthenedIron", "strengthenedPlate", "ironPlate", "strengthenedIronBar", "atomicFrame"};
+    public static final String[] names = new String[] { "glassesLens", "ironStrip", "ironBar", "spectrumSensor", "selectiveEMPTrigger", "empTrigger", "strengthenedIron", "strengthenedPlate", "ironPlate", "strengthenedIronBar", "atomicFrame" };
 
     public ItemPlaceHolder64(String name) {
         super(name);
@@ -43,8 +42,10 @@ public class ItemPlaceHolder64 extends ItemMetaES {
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        CoordSet coordSet = new CoordSet(x, y, z);
+
         if (!world.isRemote) {
-            if (ModItems.isPlaceHolderStack("selectiveEMPTrigger", stack, true) && Identifier.isDroneBay(world, x, y, z)) {
+            if (ModItems.isPlaceHolderStack("selectiveEMPTrigger", stack, true) && coordSet.isDroneBay(world)) {
                 TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
                 droneBay.recallDrones(-1);
             }

@@ -5,13 +5,11 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 
-import me.jezzadabomb.es2.client.hud.InventoryInstance;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,12 +52,8 @@ public class InventoryRequestPacket implements IPacket {
         for (String loc : locs.split(",")) {
             CoordSet coordSet = UtilMethods.getArrayFromString(loc);
 
-            int x = coordSet.getX();
-            int y = coordSet.getY();
-            int z = coordSet.getZ();
-
-            if (Identifier.isIInventory(world, x, y, z))
-                PacketDispatcher.sendTo(new InventoryPacket(world.getTileEntity(x, y, z), loc), (EntityPlayerMP) player);
+            if (coordSet.isIInventory(world))
+                PacketDispatcher.sendTo(new InventoryPacket(coordSet.getTileEntity(world), loc), (EntityPlayerMP) player);
         }
     }
 }

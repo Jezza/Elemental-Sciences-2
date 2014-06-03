@@ -2,7 +2,7 @@ package me.jezzadabomb.es2.common.items.framework;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import me.jezzadabomb.es2.common.blocks.framework.BlockMetaHolder;
+import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
@@ -33,9 +33,9 @@ public abstract class ItemBlockES extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        if (!(block instanceof BlockMetaHolder))
+        if (!(block instanceof BlockESMeta))
             super.getUnlocalizedName(itemStack);
-        String[] names = ((BlockMetaHolder) block).getNames();
+        String[] names = ((BlockESMeta) block).getNames();
         return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length - 1)];
     }
 

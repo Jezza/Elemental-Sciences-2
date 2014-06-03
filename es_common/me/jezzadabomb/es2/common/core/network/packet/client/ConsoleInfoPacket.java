@@ -43,9 +43,7 @@ public class ConsoleInfoPacket implements IPacket {
 
     @Override
     public void executeServerSide(EntityPlayer player) {
-        World world = player.worldObj;
-
-        TileConsole tileConsole = (TileConsole) world.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+        TileConsole tileConsole = (TileConsole) coordSet.getTileEntity(player.worldObj);
 
         String string = tileConsole.toString();
 

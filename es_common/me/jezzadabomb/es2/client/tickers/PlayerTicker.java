@@ -1,11 +1,11 @@
 package me.jezzadabomb.es2.client.tickers;
 
+import me.jezzadabomb.es2.api.HUDBlackLists;
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.api.HUDBlackLists;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
@@ -23,7 +23,7 @@ public class PlayerTicker {
 
     private int dis = Reference.HUD_BLOCK_RANGE;
     private int oldX, oldY, oldZ, notMoveTick;
-    StoredQueues storedQueues = StoredQueues.getInstance();
+    private StoredQueues storedQueues = StoredQueues.getInstance();
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
@@ -39,12 +39,10 @@ public class PlayerTicker {
                 for (int x = -dis; x <= dis; x++)
                     for (int y = -dis; y <= dis; y++)
                         for (int z = -dis; z <= dis; z++) {
-                            int tempX = playerX + x;
-                            int tempY = playerY + y;
-                            int tempZ = playerZ + z;
-                            if (Identifier.isIInventory(world, tempX, tempY, tempZ))
-                                if (!HUDBlackLists.scannerBlackListContains(world.getBlock(tempX, tempY, tempZ)))
-                                    storedQueues.putInventory(new CoordSet(tempX, tempY, tempZ));
+                            CoordSet coordSet = new CoordSet(playerX + x, playerY + y, playerZ + z);
+                            if (coordSet.isIInventory(world))
+                                if (!HUDBlackLists.scannerBlackListContains(coordSet.getBlock(world)))
+                                    storedQueues.putInventory(coordSet);
                         }
 
                 oldX = playerX;

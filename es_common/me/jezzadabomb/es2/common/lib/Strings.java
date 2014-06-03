@@ -7,14 +7,12 @@ public class Strings {
     public static final String ATOMIC_CONSTRUCTOR = "atomicConstructor";
     public static final String CONSOLE = "console";
     public static final String DRONE_BAY = "droneBay";
-    public static final String ATOMIC_SHREDDER = "atomicShredder";
     public static final String BLOCK_PLACE_HOLDER = "blockPlaceHolder";
-    public static final String ATOMIC_SHREDDER_DUMMY = "atomicShredderDummy";
-    public static final String ATOMIC_SHREDDER_DUMMY_CORE = "atomicShredderDummyCore";
-    public static final String CRYSTAL_OBELISK = "crystalObelisk";
+    public static final String OBELISK = "crystalObelisk";
     public static final String PYLON_CRYSTAL = "pylonCrystal";
     public static final String PYLON_CRYSTAL_DUMMY = "pylonCrystalDummy";
-    public static final String PYLON_USER_DUMMY = "pylonUserDummy";
+
+    public static final String ATOMIC_SHREDDER = "atomicShredder";
 
     public static final String STRENGTHENED_IRON_BLOCK = "strengthenedIronBlock";
 
@@ -42,7 +40,4 @@ public class Strings {
     // Entity Constants
     public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
     public static final String COMBAT_DRONE = "EntityConstructorDrone";
-
-    // Inventory Constants
-    public static final String ATOMIC_SHREDDER_NAME = "container." + ATOMIC_SHREDDER;
 }

@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.api;
+package me.jezzadabomb.es2.api;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,8 @@ public class HUDBlackLists {
     public static ArrayList<Block> HUDIgnoreList = new ArrayList<Block>();
 
     /**
-     * @param item The object that is being passed into the list.
+     * @param item
+     *            The object that is being passed into the list.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToRenderBlackList(Item item) {
@@ -35,7 +36,8 @@ public class HUDBlackLists {
     }
 
     /**
-     * @param itemStack The object that is being passed into the list.
+     * @param itemStack
+     *            The object that is being passed into the list.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToRenderBlackList(ItemStack itemStack) {
@@ -43,7 +45,8 @@ public class HUDBlackLists {
     }
 
     /**
-     * @param block The block being passed into the list.
+     * @param block
+     *            The block being passed into the list.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToRenderBlackList(Block block) {
@@ -51,8 +54,10 @@ public class HUDBlackLists {
     }
 
     /**
-     * @param block The block being passed into the list.
-     * @param damage The damage for the block.
+     * @param block
+     *            The block being passed into the list.
+     * @param damage
+     *            The damage for the block.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToRenderBlackList(Block block, int damage) {
@@ -61,7 +66,9 @@ public class HUDBlackLists {
 
     /**
      * Adds block to the scannerBlackList
-     * @param block The block to add.
+     * 
+     * @param block
+     *            The block to add.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToScannerBlackList(Block block) {
@@ -73,9 +80,12 @@ public class HUDBlackLists {
         }
         return false;
     }
+
     /**
      * Adds a block to the HUDIgnoreList
-     * @param block The block to add.
+     * 
+     * @param block
+     *            The block to add.
      * @return Returns true if the object is in the list, false otherwise.
      */
     public static boolean addToHUDIgnoreList(Block block) {

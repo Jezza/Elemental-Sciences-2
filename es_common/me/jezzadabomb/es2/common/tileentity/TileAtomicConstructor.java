@@ -3,7 +3,6 @@ package me.jezzadabomb.es2.common.tileentity;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.item.EntityItem;
@@ -64,39 +63,45 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
     private boolean findConsoleFromNearbyConstructors() {
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
-                        TileAtomicConstructor tile = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                for (int k = -1; k <= 1; k++) {
+                    CoordSet coordSet = new CoordSet(xCoord + i, yCoord + j, zCoord + k);
+                    if (!(i == 0 && j == 0 && k == 0) && coordSet.isConstructor(worldObj)) {
+                        TileAtomicConstructor tile = (TileAtomicConstructor) coordSet.getTileEntity(worldObj);
                         if (tile.hasMaster()) {
                             setMaster(tile.getMaster(), worldObj);
                             return true;
                         }
                     }
+                }
         return false;
     }
 
     private boolean findConsoleNearby() {
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConsole(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
-                        TileConsole tile = (TileConsole) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                for (int k = -1; k <= 1; k++) {
+                    CoordSet coordSet = new CoordSet(xCoord + i, yCoord + j, zCoord + k);
+                    if (!(i == 0 && j == 0 && k == 0) && coordSet.isConsole(worldObj)) {
+                        TileConsole tile = (TileConsole) coordSet.getTileEntity(worldObj);
                         setMaster(tile.getCoordSet(), worldObj);
                         return true;
                     }
+                }
         return false;
     }
 
     public void propogateMaster() {
         for (int i = -1; i <= 1; i++)
             for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
-                    if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(worldObj, xCoord + i, yCoord + j, zCoord + k)) {
-                        TileAtomicConstructor atomic = (TileAtomicConstructor) worldObj.getTileEntity(xCoord + i, yCoord + j, zCoord + k);
+                for (int k = -1; k <= 1; k++) {
+                    CoordSet coordSet = new CoordSet(xCoord + i, yCoord + j, zCoord + k);
+                    if (!(i == 0 && j == 0 && k == 0) && coordSet.isConstructor(worldObj)) {
+                        TileAtomicConstructor atomic = (TileAtomicConstructor) coordSet.getTileEntity(worldObj);
                         if (atomic.hasMaster())
                             continue;
                         atomic.setMaster(tileConsole.getCoordSet(), worldObj);
                     }
+                }
     }
 
     public boolean[] getRenderMatrix() {
@@ -158,23 +163,23 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
     }
 
     @Override
-    public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
-        world.setBlockToAir(x, y, z);
+    public ItemStack dismantleBlock(EntityPlayer player, World world, CoordSet coordSet, boolean returnBlock) {
+        coordSet.setBlockToAir(world);
         if (!world.isRemote && returnBlock)
-            world.spawnEntityInWorld(new EntityItem(world, x + 0.5F, y + 0.1F, z + 0.5F, new ItemStack(ModBlocks.atomicConstructor)));
+            world.spawnEntityInWorld(new EntityItem(world, coordSet.getX() + 0.5F, coordSet.getY() + 0.1F, coordSet.getZ() + 0.5F, new ItemStack(ModBlocks.atomicConstructor)));
         worldObj.removeTileEntity(xCoord, yCoord, zCoord);
         return null;
     }
 
     @Override
-    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+    public boolean canDismantle(EntityPlayer player, World world, CoordSet coordSet) {
         return true;
     }
 
     @Override
     public void setMaster(CoordSet coordSet, World world) {
-        if (Identifier.isConsole(worldObj, coordSet.getX(), coordSet.getY(), coordSet.getZ())) {
-            tileConsole = (TileConsole) worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ());
+        if (coordSet.isConsole(world)) {
+            tileConsole = (TileConsole) coordSet.getTileEntity(world);
             propogateMaster();
         }
     }

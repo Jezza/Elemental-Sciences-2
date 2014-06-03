@@ -126,11 +126,11 @@ public class CoordSetF {
         return "X: " + x + ", Y:" + y + ", Z:" + z;
     }
 
-    public double distanceTo(CoordSetF otherSet) {
-        float dX = otherSet.x - x;
-        float dY = otherSet.y - y;
-        float dZ = otherSet.z - z;
+    public double distanceToSq(CoordSetF otherSet) {
+        float dX = x - otherSet.x;
+        float dY = y - otherSet.y;
+        float dZ = z - otherSet.z;
 
-        return MathHelper.pythagoras(MathHelper.pythagoras(dX, dY), dZ);
+        return dX * dX + dY * dY + dZ * dZ;
     }
 }

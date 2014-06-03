@@ -11,8 +11,11 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
+import me.jezzadabomb.es2.common.core.network.packet.client.AtomicCatalystDebugPacket;
+import me.jezzadabomb.es2.common.core.network.packet.client.ConsoleInfoPacket;
 import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
 import me.jezzadabomb.es2.common.core.network.packet.client.SetBlockChunkPacket;
+import me.jezzadabomb.es2.common.core.network.packet.server.DroneBayDoorPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.HoverHandlerPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
@@ -113,7 +116,18 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, IPacke
 
     public void initalise() {
         this.channels = NetworkRegistry.INSTANCE.newChannel("ES2", this);
-        PacketHandler.init();
+        init();
+    }
+
+    private void init() {
+        registerPacket(InventoryRequestPacket.class);
+        registerPacket(SetBlockChunkPacket.class);
+        registerPacket(HoverHandlerPacket.class);
+        registerPacket(InventoryPacket.class);
+        registerPacket(NeighbourChangedPacket.class);
+        registerPacket(ConsoleInfoPacket.class);
+        registerPacket(DroneBayDoorPacket.class);
+        registerPacket(AtomicCatalystDebugPacket.class);
     }
 
     public void postInitialise() {

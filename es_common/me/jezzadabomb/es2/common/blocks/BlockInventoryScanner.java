@@ -3,7 +3,7 @@ package me.jezzadabomb.es2.common.blocks;
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -27,15 +27,7 @@ public class BlockInventoryScanner extends BlockES {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return Identifier.isIInventory(world, x, y - 1, z);
-    }
-
-    @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-        
-        ClientProxy.getHUDRenderer().removePacketAtXYZ(x, y - 1, z);
-
-        super.breakBlock(world, x, y, z, block, meta);
+        return new CoordSet(x, y - 1, z).isIInventory(world);
     }
 
     @Override

@@ -1,8 +1,9 @@
-package me.jezzadabomb.es2.common.lib;
+package me.jezzadabomb.es2.client.lib;
 
+import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiTextureMaps {
+public class GuiSheet {
 
     public static final String GUI_SHEET_LOCATION = "textures/gui/";
 

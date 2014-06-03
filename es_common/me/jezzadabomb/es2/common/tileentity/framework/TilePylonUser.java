@@ -1,18 +1,18 @@
-package me.jezzadabomb.es2.common.tileentity;
+package me.jezzadabomb.es2.common.tileentity.framework;
 
+import net.minecraft.world.World;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 
-public class TilePylonUser extends TileES implements IPylonReceiver, IBlockNotifier {
+public abstract class TilePylonUser extends TileES implements IPylonReceiver, IBlockNotifier {
 
     private boolean powered = false;
     private boolean registered = false;
 
     /**
-     * call this, or no power for you.
+     * Call this, or no power for you.
      */
     @Override
     public void updateEntity() {
@@ -47,12 +47,12 @@ public class TilePylonUser extends TileES implements IPylonReceiver, IBlockNotif
     }
 
     @Override
-    public void onBlockRemoval() {
-        
+    public void onBlockRemoval(World world, int x, int y, int z) {
+
     }
 
     @Override
-    public void onBlockAdded() {
+    public void onBlockAdded(World world, int x, int y, int z) {
         notifyPylonUpdate();
     }
 

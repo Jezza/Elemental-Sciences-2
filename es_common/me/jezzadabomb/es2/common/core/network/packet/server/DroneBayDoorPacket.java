@@ -5,9 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +20,7 @@ public class DroneBayDoorPacket implements IPacket {
         coordSet = droneBay.getCoordSet();
         this.open = open;
     }
-    
+
     public DroneBayDoorPacket() {
     }
 
@@ -40,15 +38,10 @@ public class DroneBayDoorPacket implements IPacket {
 
     @Override
     public void executeClientSide(EntityPlayer player) {
-//        ESLogger.info(open ? "Opening" : "Closing");
         World world = player.worldObj;
 
-        int x = coordSet.getX();
-        int y = coordSet.getY();
-        int z = coordSet.getZ();
-
-        if (Identifier.isDroneBay(world, x, y, z)) {
-            TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
+        if (coordSet.isDroneBay(world)) {
+            TileDroneBay droneBay = (TileDroneBay) coordSet.getTileEntity(world);
             if (open) {
                 droneBay.openHatch();
             } else {
@@ -62,13 +55,8 @@ public class DroneBayDoorPacket implements IPacket {
     public void executeServerSide(EntityPlayer player) {
         World world = player.worldObj;
 
-        int x = coordSet.getX();
-        int y = coordSet.getY();
-        int z = coordSet.getZ();
-
-        if (Identifier.isDroneBay(world, x, y, z)) {
-            TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
-            ESLogger.info("Toggle");
+        if (coordSet.isDroneBay(world)) {
+            TileDroneBay droneBay = (TileDroneBay) coordSet.getTileEntity(world);
             droneBay.toggleDoor();
         }
     }

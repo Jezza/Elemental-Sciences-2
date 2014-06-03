@@ -2,27 +2,22 @@ package me.jezzadabomb.es2.common.items.debug;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.Identifier;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemDebug;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
 
 public class ItemDebugTool extends ItemDebug {
 
@@ -32,8 +27,6 @@ public class ItemDebugTool extends ItemDebug {
     private static ArrayList<String> debugList = new ArrayList<String>() {
         {
             add("Normal Debug"); // 0
-            add("Minor Packet Monitoring"); // 1
-            add("Extreme Packet Monitoring"); // 2
             add("Y-Axis Toggle"); // 3
             add("Constructor - Set Pos"); // 4
             add("Constructor - Get Pos"); // 5
@@ -59,10 +52,11 @@ public class ItemDebugTool extends ItemDebug {
 
     @Override
     public boolean onItemDebugUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ, Side side) {
+        CoordSet coordSet = new CoordSet(x, y, z);
 
         if (isDebugMode("IMasterable - Locate Master")) {
-            if (Identifier.isMasterable(world, x, y, z)) {
-                IMasterable masterable = (IMasterable) world.getTileEntity(x, y, z);
+            if (coordSet.isMasterable(world)) {
+                IMasterable masterable = (IMasterable) coordSet.getTileEntity(world);
                 if (masterable.hasMaster()) {
                     UtilMethods.addChatMessage(player, "Found: " + masterable.getMaster().toString());
                 } else {
@@ -72,18 +66,7 @@ public class ItemDebugTool extends ItemDebug {
         }
 
         if (side.isServer()) {
-            // if (Identifier.isConstructor(world, x, y, z)) {
-            // if (isDebugMode("Console - Send To")) {
-            // TileAtomicConstructor atomic = (TileAtomicConstructor) world.getTileEntity(x, y, z);
-            // if (atomic.hasMaster()) {
-            // ((TileConsole) atomic.getMaster()).testDatShit(atomic);
-            // } else {
-            // ESLogger.info("No master found.");
-            // }
-            // }
-            // }
-
-            if (Identifier.isDroneBay(world, x, y, z)) {
+            if (coordSet.isDroneBay(world)) {
                 if (isDebugMode("Drone Bay - Door control")) {
                     TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
                     droneBay.toggleDoor();
@@ -97,13 +80,13 @@ public class ItemDebugTool extends ItemDebug {
         }
 
         if (side.isClient()) {
-            if (Identifier.isConstructor(world, x, y, z)) {
+            if (coordSet.isConstructor(world)) {
                 if (isDebugMode("Constructor - Get Nearby Count")) {
                     ArrayList<TileAtomicConstructor> tempList = new ArrayList<TileAtomicConstructor>();
                     for (int i = -1; i <= 1; i++)
                         for (int j = -1; j <= 1; j++)
                             for (int k = -1; k <= 1; k++) {
-                                if (!(i == 0 && j == 0 && k == 0) && Identifier.isConstructor(world, x + i, y + j, z + k))
+                                if (!(i == 0 && j == 0 && k == 0) && new CoordSet(x + i, y + j, z + k).isConstructor(world))
                                     tempList.add((TileAtomicConstructor) world.getTileEntity(x + i, y + j, z + k));
                             }
                     UtilMethods.addChatMessage(player, "" + tempList.size());
@@ -146,25 +129,6 @@ public class ItemDebugTool extends ItemDebug {
 
                     UtilMethods.addChatMessage(player, "Error");
                 }
-            }
-
-            if (isDebugMode("Minor Packet Monitoring")) {
-                InventoryPacket packet = ClientProxy.getHUDRenderer().getPacketAtXYZ(x, y, z);
-                if (packet != null) {
-                    UtilMethods.addChatMessage(player, "");
-                    UtilMethods.addChatMessage(player, "Contents: ");
-                    String tempString = packet.getItemStacksInfo();
-                    if (tempString == null)
-                        return false;
-                    int lastIndex = 0;
-                    for (int i = 0; i < tempString.length(); i++) {
-                        if (tempString.charAt(i) == ',') {
-                            UtilMethods.addChatMessage(player, tempString.substring(lastIndex, i));
-                            lastIndex = i + 1;
-                        }
-                    }
-                }
-                return packet != null;
             }
         }
         return false;

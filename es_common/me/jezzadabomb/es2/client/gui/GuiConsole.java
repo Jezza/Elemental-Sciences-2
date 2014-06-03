@@ -1,9 +1,9 @@
 package me.jezzadabomb.es2.client.gui;
 
+import me.jezzadabomb.es2.client.lib.GuiSheet;
 import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.containers.ContainerConsole;
-import me.jezzadabomb.es2.common.lib.GuiTextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -46,7 +46,7 @@ public class GuiConsole extends GuiContainerES {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY) {
-        RenderUtils.bindTexture(GuiTextureMaps.GUI_CONSOLE_TEXTURE);
+        RenderUtils.bindTexture(GuiSheet.GUI_CONSOLE_TEXTURE);
 
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
     }

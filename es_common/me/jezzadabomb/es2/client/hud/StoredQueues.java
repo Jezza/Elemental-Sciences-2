@@ -10,7 +10,7 @@ public class StoredQueues {
 
     private static StoredQueues INSTANCE = new StoredQueues();
 
-    // Previously stored blocks from the last tick. Used with tempInv.
+    // Previously stored blocks from the last tick. Used with the HUD renderer, as if it's not found in this set, then it doesn't exist.
     private HashSet<CoordSet> inventories = new HashSet<CoordSet>();
 
     // The current set of inventories from this tick, used to flush all old inventories.
