@@ -148,7 +148,7 @@ public class HUDRenderer {
 
         if (underBlock) {
             yInventoryPos = 174;
-            yd += 1.2F;
+            yd += 0.25F;
         }
 
         float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
