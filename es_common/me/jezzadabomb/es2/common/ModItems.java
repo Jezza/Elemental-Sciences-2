@@ -1,7 +1,8 @@
 package me.jezzadabomb.es2.common;
 
+import java.util.List;
+
 import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
-import me.jezzadabomb.es2.common.items.ItemBlockHolder;
 import me.jezzadabomb.es2.common.items.ItemGlasses;
 import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
@@ -48,38 +49,29 @@ public class ModItems {
         }
     }
 
-    public static ItemStack getPlaceHolderStack(String item, int size) {
-        String[] names = ItemPlaceHolder64.names;
-        int pos = 0;
-        for (String name : names) {
-            if (name.equals(item))
-                return new ItemStack(placeHolders64, size, pos);
-            pos++;
-        }
-
-        names = ItemPlaceHolder.names;
-        pos = 0;
-        for (String name : names) {
-            if (name.equals(item))
-                return new ItemStack(placeHolders, size, pos);
-            pos++;
-        }
-
-        return null;
-    }
-
     public static ItemStack getPlaceHolderStack(String item) {
         return getPlaceHolderStack(item, 1);
     }
 
-    public static boolean isPlaceHolderStack(String string, ItemStack stack, boolean ignoreStackSize) {
-        ItemStack itemStack = getPlaceHolderStack(string);
-        if (itemStack == null)
-            return false;
+    public static ItemStack getPlaceHolderStack(String item, int size) {
+        List<String> names = ItemPlaceHolder64.names;
+        int pos = names.indexOf(item);
+        if (pos > -1)
+            return new ItemStack(ModItems.placeHolders64, size, pos);
 
-        if (ignoreStackSize)
-            return stack.getItemDamage() == itemStack.getItemDamage() && stack.getItem().equals(itemStack.getItem());
-        return ItemStack.areItemStacksEqual(itemStack, stack);
+        names = ItemPlaceHolder.names;
+        pos = names.indexOf(item);
+        if (pos > -1)
+            return new ItemStack(ModItems.placeHolders, size, pos);
+
+        return null;
+    }
+
+    public static boolean isPlaceHolderStack(ItemStack itemStack, String... names) {
+        for (String name : names) {
+
+        }
+        return true;
     }
 
     public static void initItemRecipes() {

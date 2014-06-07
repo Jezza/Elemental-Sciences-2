@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,47 +20,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemES extends Item {
 
-    protected ArrayList<String> infoList = new ArrayList<String>();
-	protected ArrayList<String> shiftList = new ArrayList<String>();
+    public ItemES(String name) {
+        setUnlocalizedName(name);
+        setTextureName(name);
+        setCreativeTab(ElementalSciences2.creativeTab);
+        register(name);
+    }
 
-	public ItemES(String name) {
-		setUnlocalizedName(name);
-		setCreativeTab(ElementalSciences2.creativeTab);
-		register(name);
-	}
+    public void register(String name) {
+        GameRegistry.registerItem(this, name);
+    }
 
-	public void register(String name) {
-		GameRegistry.registerItem(this, name);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister iconRegister) {
-		itemIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + this.getUnlocalizedName().replace("item.", ""));
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister iconRegister) {
+        itemIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + getIconString());
+    }
 
-	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-		shiftList.clear();
-		infoList.clear();
-		addInformation(player, stack);
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-			list.addAll(shiftList);
-		} else {
-			list.addAll(infoList);
-		}
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+        ItemInformation information = new ItemInformation();
+        addInformation(stack, player, information);
+        information.addToList(list);
+    }
 
-	protected void defaultInfoList() {
-		infoList.add("Press" + EnumChatFormatting.DARK_RED + " Shift" + EnumChatFormatting.GRAY + " for more info.");
-	}
-	
-	protected void addToBothLists(String string){
-		shiftList.add(string);
-		infoList.add(string);
-	}
-
-	protected abstract void addInformation(EntityPlayer player, ItemStack stack);
+    protected abstract void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information);
 }

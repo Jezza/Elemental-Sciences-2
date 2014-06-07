@@ -50,7 +50,7 @@ public class InventoryRequestPacket implements IPacket {
         World world = player.worldObj;
 
         for (String loc : locs.split(",")) {
-            CoordSet coordSet = UtilMethods.getArrayFromString(loc);
+            CoordSet coordSet = CoordSet.getArrayFromString(loc);
 
             if (coordSet.isIInventory(world))
                 PacketDispatcher.sendTo(new InventoryPacket(coordSet.getTileEntity(world), loc), (EntityPlayerMP) player);

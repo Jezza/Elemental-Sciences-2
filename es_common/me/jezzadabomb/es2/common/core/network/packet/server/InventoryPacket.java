@@ -76,7 +76,7 @@ public class InventoryPacket implements IPacket {
     @Override
     public void executeClientSide(EntityPlayer player) {
         World world = player.worldObj;
-        CoordSet tempSet = UtilMethods.getArrayFromString(loc);
+        CoordSet tempSet = CoordSet.getArrayFromString(loc);
         if (tempSet == null)
             return;
         coordSet = tempSet;

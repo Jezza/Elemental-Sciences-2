@@ -12,6 +12,9 @@ public class Strings {
     public static final String PYLON_CRYSTAL = "pylonCrystal";
     public static final String PYLON_CRYSTAL_DUMMY = "pylonCrystalDummy";
 
+    public static final String COMPUTER_FRAME = "computerFrame";
+    public static final String COMPUTER_EXTERNAL = "computerExternal";
+
     public static final String ATOMIC_SHREDDER = "atomicShredder";
 
     public static final String STRENGTHENED_IRON_BLOCK = "strengthenedIronBlock";

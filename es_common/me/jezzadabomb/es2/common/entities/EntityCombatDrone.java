@@ -27,15 +27,6 @@ public class EntityCombatDrone extends EntityDrone implements IEntityOwnable {
 
     public EntityCombatDrone(World par1World) {
         super(par1World);
-
-        setSpeed(0.3F);
-        pathed = false;
-
-        Random rand = new Random();
-
-        float dX = rand.nextFloat() - 0.5F;
-        float dY = rand.nextFloat() + 0.6F;
-        float dZ = rand.nextFloat() - 0.5F;
     }
 
     @Override

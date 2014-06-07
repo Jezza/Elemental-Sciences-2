@@ -36,6 +36,8 @@ public abstract class BlockES extends Block {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
+        int meta = world.getBlockMetadata(x, y, z);
+
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof IBlockNotifier)
             ((IBlockNotifier) tileEntity).onBlockAdded(world, x, y, z);

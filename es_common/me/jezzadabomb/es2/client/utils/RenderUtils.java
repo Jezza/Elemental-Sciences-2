@@ -1,17 +1,32 @@
 package me.jezzadabomb.es2.client.utils;
 
-import static org.lwjgl.opengl.GL11.*;
-
+import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopAttrib;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushAttrib;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScaled;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslated;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -24,9 +39,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import org.lwjgl.opengl.GL11;
 
@@ -113,14 +126,11 @@ public class RenderUtils {
         return (player != null && player.getDisplayName().equals(username));
     }
 
-    // Individual translations if I want.
-
-    private static void translateSpecialRender(int indexNum, int rowNum) {
-        indexNum -= 1.0D;
-        glTranslated(indexNum < 0.0D ? indexNum : 0.0D, 0.0D, indexNum > 0.0D ? indexNum : 0.0D);
-
-        rowNum -= 1.0D;
-        glTranslated(0.0D, rowNum, 0.0D);
+    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
+        glDisable(GL_LIGHTING);
+        if (Reference.DRAW_TEXTURED_SLOTS)
+            drawTextureSlot(x, y, zLevel + 1);
+        draw2DItemStack(x, y, itemStack, zLevel, indexNum, rowNum);
     }
 
     public static void draw2DItemStack(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
@@ -150,7 +160,7 @@ public class RenderUtils {
             double scale = 2.2D;
 
             glScaled(scale, scale, scale);
-            
+
             EntityItem entityItem = new EntityItem(mc.thePlayer.worldObj);
             entityItem.setEntityItemStack(itemStack);
 
@@ -193,61 +203,16 @@ public class RenderUtils {
         glPopMatrix();
     }
 
-    public static void drawItemAndSlot(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {
-        glDisable(GL_LIGHTING);
-        if (Reference.DRAW_TEXTURED_SLOTS)
-            drawTextureSlot(x, y, zLevel + 1);
-        draw2DItemStack(x, y, itemStack, zLevel, indexNum, rowNum);
-    }
+    private static void translateSpecialRender(int indexNum, int rowNum) {
+        indexNum -= 1.0D;
+        glTranslated(indexNum < 0.0D ? indexNum : 0.0D, 0.0D, indexNum > 0.0D ? indexNum : 0.0D);
 
-    public static void drawTextInAir(double x, double y, double z, double partialTicks, String text) {
-        if ((Minecraft.getMinecraft().renderViewEntity instanceof EntityPlayer)) {
-            EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-            double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
-            double iPY = player.prevPosY + (player.posY - player.prevPosY) * partialTicks;
-            double iPZ = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks;
-
-            glPushMatrix();
-
-            glTranslated(-iPX + x + 0.5D, -iPY + y + 1.5D, -iPZ + z + 0.5D);
-
-            float xd = (float) (iPX - (x + 0.5D));
-            float zd = (float) (iPZ - (z + 0.5D));
-            float yd = (float) (iPY - (y + 1.5D));
-
-            float rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / 3.141592653589793D);
-
-            glRotatef(rotYaw + 180.0F, 0.0F, 1.0F, 0.0F);
-            if (Reference.HUD_VERTICAL_ROTATION) {
-                glTranslated(0.0D, -0.7D, 0.0D);
-                float rotPitch = (float) (Math.atan2(yd, MathHelper.pythagoras(xd, zd)) * 180.0D / 3.141592653589793D);
-                glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
-                glTranslated(0.0D, 0.7D, 0.0D);
-            }
-
-            glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            glScalef(0.02F, 0.02F, 0.02F);
-            int sw = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-            glEnable(GL_BLEND);
-            Minecraft.getMinecraft().fontRenderer.drawString(text, 1 - sw / 2, 1, 1118481);
-            glTranslated(0.0D, 0.0D, -0.1D);
-            Minecraft.getMinecraft().fontRenderer.drawString(text, -sw / 2, 0, 16777215);
-            glDisable(GL_BLEND);
-            glPopMatrix();
-        }
-    }
-
-    public static void renderColouredBox(double partialTicks, InventoryPacket p, boolean underBlock) {
-        renderColouredBox(partialTicks, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), underBlock ? 1 : 0);
-    }
-
-    public static void renderDebugBox(double partialTicks, InventoryPacket p) {
-        renderColouredBox(partialTicks, p.coordSet.getX(), p.coordSet.getY(), p.coordSet.getZ(), 2);
+        rowNum -= 1.0D;
+        glTranslated(0.0D, rowNum, 0.0D);
     }
 
     // Thanks to Player for this. :D
-    public static void renderColouredBox(double partialTicks, int posX, int posY, int posZ, int type) {
-
+    public static void renderColouredBox(double partialTicks, CoordSet coordSet, Colour colour) {
         EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
         double px = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
         double py = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
@@ -256,9 +221,9 @@ public class RenderUtils {
         double offset = 0.02;
         double delta = 1 + 2 * offset;
 
-        double x = posX - px - offset;
-        double y = posY - py - offset;
-        double z = posZ - pz - offset;
+        double x = coordSet.getX() - px - offset;
+        double y = coordSet.getY() - py - offset;
+        double z = coordSet.getZ() - pz - offset;
         glPushMatrix();
         glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -270,17 +235,7 @@ public class RenderUtils {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
 
-        switch (type) {
-            case 0:
-                tessellator.setColorRGBA(255, 0, 0, 150);
-                break;
-            case 1:
-                tessellator.setColorRGBA(0, 255, 0, 75);
-                break;
-            case 2:
-                tessellator.setColorRGBA(0, 0, 255, 75);
-                break;
-        }
+        colour.setTesselator(tessellator);
 
         // BOTTOM
         tessellator.addVertex(x, y, z);

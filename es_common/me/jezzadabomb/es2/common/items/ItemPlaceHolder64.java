@@ -1,8 +1,10 @@
 package me.jezzadabomb.es2.common.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
@@ -16,26 +18,42 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 public class ItemPlaceHolder64 extends ItemMetaES {
-    public static final String[] names = new String[] { "glassesLens", "ironStrip", "ironBar", "spectrumSensor", "selectiveEMPTrigger", "empTrigger", "strengthenedIron", "strengthenedPlate", "ironPlate", "strengthenedIronBar", "atomicFrame" };
+
+    public static final ArrayList<String> names = new ArrayList<String>() {
+        {
+            add("glassesLens");
+            add("ironStrip");
+            add("ironBar");
+            add("spectrumSensor");
+            add("selectiveEMPTrigger");
+            add("empTrigger");
+            add("strengthenedIron");
+            add("strengthenedPlate");
+            add("ironPlate");
+            add("strengthenedIronBar");
+            add("atomicFrame");
+        }
+    };
 
     public ItemPlaceHolder64(String name) {
         super(name);
         setMaxStackSize(64);
     }
 
-    protected void addInformation(EntityPlayer player, ItemStack stack) {
+    @Override
+    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
         switch (stack.getItemDamage()) {
             case 0:
-                addToBothLists("A carefully crafted, highly fragile glass lens.");
+                information.addInfoList("A carefully crafted, highly fragile glass lens.");
                 break;
             case 1:
-                addToBothLists("A tough piece of metal, could be used for a frame.");
+                information.addInfoList("A tough piece of metal, could be used for a frame.");
                 break;
             case 2:
-                addToBothLists("A solid iron rod.");
+                information.addInfoList("A solid iron rod.");
                 break;
             case 3:
-                addToBothLists("A very fragile crystal.");
+                information.addInfoList("A very fragile crystal.");
                 break;
         }
     }
@@ -45,7 +63,7 @@ public class ItemPlaceHolder64 extends ItemMetaES {
         CoordSet coordSet = new CoordSet(x, y, z);
 
         if (!world.isRemote) {
-            if (ModItems.isPlaceHolderStack("selectiveEMPTrigger", stack, true) && coordSet.isDroneBay(world)) {
+            if (ModItems.isPlaceHolderStack(stack, "selectiveEMPTrigger") && coordSet.isDroneBay(world)) {
                 TileDroneBay droneBay = (TileDroneBay) world.getTileEntity(x, y, z);
                 droneBay.recallDrones(-1);
             }
@@ -56,7 +74,7 @@ public class ItemPlaceHolder64 extends ItemMetaES {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (ModItems.isPlaceHolderStack("empTrigger", stack, true)) {
+        if (ModItems.isPlaceHolderStack(stack, "empTrigger")) {
             float range = 5.0F; // Around the player.
             List<Object> droneList = world.getEntitiesWithinAABB(EntityConstructorDrone.class, AxisAlignedBB.getAABBPool().getAABB(player.posX - range, player.posY - range, player.posZ - range, player.posX + range, player.posY + range, player.posZ + range));
             for (Object object : droneList) {
@@ -84,7 +102,7 @@ public class ItemPlaceHolder64 extends ItemMetaES {
     }
 
     @Override
-    public String[] getNames() {
+    public List<String> getNames() {
         return names;
     }
 }

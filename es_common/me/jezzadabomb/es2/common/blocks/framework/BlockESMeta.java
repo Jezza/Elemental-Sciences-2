@@ -3,7 +3,7 @@ package me.jezzadabomb.es2.common.blocks.framework;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import me.jezzadabomb.es2.common.items.ItemBlockHolder;
+import me.jezzadabomb.es2.common.items.framework.ItemBlockES;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -59,7 +59,7 @@ public abstract class BlockESMeta extends BlockES {
     }
 
     protected Class<? extends ItemBlock> getItemBlockClass() {
-        return ItemBlockHolder.class;
+        return ItemBlockES.class;
     }
 
     public abstract String[] getNames();

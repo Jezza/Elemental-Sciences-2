@@ -134,6 +134,24 @@ public class CoordSet {
         return new CoordSet(tag.getIntArray("coordSet"));
     }
 
+    public static CoordSet getArrayFromString(String loc) {
+        CoordSet coordSet = new CoordSet(0, 0, 0);
+        if (!loc.matches("-?\\d*:-?\\d*:-?\\d*"))
+            return coordSet;
+        String[] strs = loc.split(":");
+
+        try {
+            coordSet.setX(Integer.parseInt(strs[0]));
+            coordSet.setY(Integer.parseInt(strs[1]));
+            coordSet.setZ(Integer.parseInt(strs[2]));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return coordSet;
+        }
+
+        return coordSet;
+    }
+
     public void writeBytes(ByteBuf bytes) {
         bytes.writeInt(x);
         bytes.writeInt(y);

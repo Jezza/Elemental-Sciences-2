@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.client.utils;
 
+import net.minecraft.client.renderer.Tessellator;
+
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -48,6 +50,10 @@ public class Colour {
         val = val | ((int) (b * 255));
 
         return val;
+    }
+
+    public void setTesselator(Tessellator tessellator) {
+        tessellator.setColorRGBA_F((float) r, (float) g, (float) b, (float) a);
     }
 
     public static int getInt(double r, double g, double b, double a) {
@@ -101,13 +107,5 @@ public class Colour {
         int y = (int) (x * 255);
         String hexDigits = "0123456789ABCDEF";
         return hexDigits.charAt(y / 16) + "" + hexDigits.charAt(y % 16);
-    }
-
-    public Color awtColor() {
-        return new Color((float) r, (float) g, (float) b, (float) a);
-    }
-
-    public boolean equals(Colour o) {
-        return r == o.r && g == o.g && b == o.b && a == o.a;
     }
 }

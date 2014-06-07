@@ -65,8 +65,8 @@ public class TileInventoryScanner extends TileES implements IDismantleable, IBlo
         if (players == null)
             return;
         for (EntityPlayer player : players) {
-            CoordSet coordSet = getCoordSet().addY(-1);
-            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ()), UtilMethods.getLocFromArray(coordSet)), (EntityPlayerMP) player);
+            CoordSet coordSet = getCoordSet().copy().addY(-1);
+            PacketDispatcher.sendPacketToPlayer(new InventoryPacket(worldObj.getTileEntity(coordSet.getX(), coordSet.getY(), coordSet.getZ()), coordSet.toPacketString()), (EntityPlayerMP) player);
         }
     }
 

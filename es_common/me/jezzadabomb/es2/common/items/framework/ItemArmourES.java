@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -19,18 +20,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemArmourES extends ItemArmor {
 
-    protected ArrayList<String> infoList = new ArrayList<String>();
-    protected ArrayList<String> shiftList = new ArrayList<String>();
-
-    int slot;
     String textureLocation;
+    int slot;
 
     public ItemArmourES(ArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
-        super(armorMaterial, renderIndex, armourIndex.slot);
-        slot = armourIndex.slot;
+        super(armorMaterial, renderIndex, armourIndex.ordinal());
+        slot = armourIndex.ordinal();
         this.textureLocation = textureLocation;
         setMaxDamage(0);
         setUnlocalizedName(name);
+        setTextureName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
         register(name);
     }
@@ -58,47 +57,21 @@ public abstract class ItemArmourES extends ItemArmor {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        itemIcon = register.registerIcon(Reference.MOD_IDENTIFIER + this.getUnlocalizedName().replace("item.", ""));
+        itemIcon = register.registerIcon(Reference.MOD_IDENTIFIER + getIconString());
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        shiftList.clear();
-        infoList.clear();
-        addInformation();
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.addAll(shiftList);
-        } else {
-            list.addAll(infoList);
-        }
+        ItemInformation information = new ItemInformation();
+        addInformation(information);
+        information.addToList(list);
     }
 
-    protected void addToBothLists(String string) {
-        shiftList.add(string);
-        infoList.add(string);
-    }
-
-    protected void defaultInfoList() {
-        infoList.add("Press shift for more info.");
-    }
-
-    protected void addInformation() {
+    public void addInformation(ItemInformation information) {
     }
 
     public enum ArmourSlotIndex {
-        // @formatter:off
-        HEAD(0),
-        CHESTPLATE(1),
-        LEGGINGS(2),
-        BOOTS(3);
-        // @formatter:on
-
-        int slot;
-
-        ArmourSlotIndex(int slot) {
-            this.slot = slot;
-        }
+        HEAD, CHESTPLATE, LEGGINGS, BOOTS;
     }
 }

@@ -24,12 +24,12 @@ public class ItemPlaceHolderRenderer implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack stack, ItemRenderType type) {
-        return ModItems.isPlaceHolderStack("constructorDrone", stack, true);
+        return ModItems.isPlaceHolderStack(stack, "constructorDrone");
     }
 
     @Override
     public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack stack, ItemRendererHelper helper) {
-        return ModItems.isPlaceHolderStack("constructorDrone", stack, true);
+        return ModItems.isPlaceHolderStack(stack, "constructorDrone");
     }
 
     @Override

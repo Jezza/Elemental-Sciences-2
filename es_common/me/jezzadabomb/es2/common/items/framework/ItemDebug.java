@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.items.framework;
 
 import java.util.ArrayList;
 
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
@@ -74,12 +75,11 @@ public abstract class ItemDebug extends ItemES {
         else
             return onItemDebugUseFirst(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.SERVER);
     }
-
+    
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void addInformation(EntityPlayer player, ItemStack stack) {
-        addToBothLists("Debug Mode: " + debugMode);
-        addToBothLists(getDebugString());
+    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
+        information.addInfoList("Debug Mode: " + debugMode);
+        information.addInfoList(getDebugString());
     }
 
     public abstract ArrayList<String> getDebugList();

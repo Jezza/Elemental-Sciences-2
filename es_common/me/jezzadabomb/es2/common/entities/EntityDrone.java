@@ -16,7 +16,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class EntityDrone extends EntityES implements IEntityAdditionalSpawnData {
+public abstract class EntityDrone extends EntityES {
 
     protected ArrayList<CoordSetD> targetQueue;
     protected double xSpeed, ySpeed, zSpeed;
@@ -156,25 +156,6 @@ public abstract class EntityDrone extends EntityES implements IEntityAdditionalS
             UtilMethods.writeQueueToNBT(targetQueue, tag);
 
         writeDroneToNBT(tag);
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf additionalData) {
-        boolean flag = additionalData.readBoolean();
-        if (flag)
-            targetQueue = UtilMethods.readQueueFromBuffer(additionalData);
-
-        readDroneSpawnData(additionalData);
-    }
-
-    @Override
-    public void writeSpawnData(ByteBuf buffer) {
-        boolean flag = !(targetQueue == null || targetQueue.isEmpty());
-        buffer.writeBoolean(flag);
-        if (flag)
-            UtilMethods.writeQueueToBuffer(targetQueue, buffer);
-
-        writeDroneSpawnData(buffer);
     }
 
     public boolean reachedFinalTarget() {

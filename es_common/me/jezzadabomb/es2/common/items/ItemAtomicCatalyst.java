@@ -8,6 +8,7 @@ import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
@@ -63,7 +64,7 @@ public class ItemAtomicCatalyst extends ItemES {
     }
 
     @Override
-    protected void addInformation(EntityPlayer player, ItemStack stack) {
+    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
         if (!stack.hasTagCompound())
             setTag(stack);
 
@@ -74,17 +75,17 @@ public class ItemAtomicCatalyst extends ItemES {
         int strength = attribute.getStrength();
 
         if (fortune > 0)
-            infoList.add("Fortune: " + fortune);
+            information.addInfoList("Fortune: " + fortune);
         if (speed > 0)
-            infoList.add("Speed: " + speed);
+            information.addInfoList("Speed: " + speed);
         if (strength > 0)
-            infoList.add("Strength: " + strength);
+            information.addInfoList("Strength: " + strength);
 
-        shiftList.add("Creates a high energy particle");
-        shiftList.add("wave that propagates through");
-        shiftList.add("a medium, breaking it's wave");
-        shiftList.add("function, and thus");
-        shiftList.add("collapsing it.");
+        information.addShiftList("Creates a high energy particle");
+        information.addShiftList("wave that propagates through");
+        information.addShiftList("a medium, breaking it's wave");
+        information.addShiftList("function, and thus");
+        information.addShiftList("collapsing it.");
     }
 
     public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase target) {

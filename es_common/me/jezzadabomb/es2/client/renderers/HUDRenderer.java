@@ -131,7 +131,7 @@ public class HUDRenderer {
             glPopMatrix();
 
             if (DebugHelper.canShowDebugHUD())
-                RenderUtils.renderDebugBox(partialTicks, p);
+                RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(1.0F, 0.0F, 0.0F, 0.5F));
             return;
         }
 
@@ -175,9 +175,8 @@ public class HUDRenderer {
         glDisable(GL_BLEND);
         glPopMatrix();
 
-        if (underBlock)
-            if (DebugHelper.canShowDebugHUD())
-                RenderUtils.renderColouredBox(partialTicks, p, underBlock);
+        if (underBlock && DebugHelper.canShowDebugHUD())
+            RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(0.0F, 1.0F, 0.0F, 0.5F));
     }
 
     private void drawItemStacks(ArrayList<ItemStack> itemStacks) {

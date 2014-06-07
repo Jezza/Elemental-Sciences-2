@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.items;
 
 import me.jezzadabomb.es2.common.ModBlocks;
+import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
@@ -28,9 +29,9 @@ public class ItemQuantumStateDisruptor extends ItemES {
     }
 
     @Override
-    protected void addInformation(EntityPlayer player, ItemStack stack) {
-        defaultInfoList();
-        shiftList.add("The war between Life and Death");
-        shiftList.add("has never been a victory.");
+    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
+        information.defaultInfoList();
+        information.addShiftList("The war between Life and Death");
+        information.addShiftList("has never been a war.");
     }
 }
