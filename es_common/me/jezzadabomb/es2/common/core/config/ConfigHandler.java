@@ -1,16 +1,13 @@
 package me.jezzadabomb.es2.common.core.config;
 
 import java.io.File;
-import java.util.logging.Level;
-
-import net.minecraftforge.common.config.Configuration;
 
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
-import cpw.mods.fml.common.FMLLog;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler {
 

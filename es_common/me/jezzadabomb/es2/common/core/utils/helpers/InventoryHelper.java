@@ -18,10 +18,9 @@ public class InventoryHelper {
                     inventory[i].stackSize += stack.stackSize;
                     stack = null;
                     return true;
-                } else {
-                    stack.stackSize -= hold;
-                    inventory[i].stackSize += hold;
                 }
+                stack.stackSize -= hold;
+                inventory[i].stackSize += hold;
             } else if (inventory[i] == null && openSlot == -1) {
                 openSlot = i;
             }
@@ -77,7 +76,7 @@ public class InventoryHelper {
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack tempStack = inventory.getStackInSlot(i);
-            if (areItemStacksEqual(itemStack, itemStack)) {
+            if (areItemStacksEqual(itemStack, tempStack)) {
                 inventory.setInventorySlotContents(i, (ItemStack) null);
                 if (++index >= count)
                     return index;

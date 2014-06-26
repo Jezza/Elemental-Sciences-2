@@ -1,9 +1,5 @@
 package me.jezzadabomb.es2.common.lib;
 
-import java.util.ArrayList;
-
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-
 public class Reference {
 
     // Naming Constants

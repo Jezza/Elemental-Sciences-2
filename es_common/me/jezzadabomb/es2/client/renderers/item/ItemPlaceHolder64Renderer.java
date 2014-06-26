@@ -11,7 +11,6 @@ import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 @SideOnly(Side.CLIENT)
 public class ItemPlaceHolder64Renderer implements IItemRenderer {
@@ -39,16 +38,16 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
         if (ModItems.isPlaceHolderStack(stack, "strengthenedIronBar")) {
             switch (type) {
                 case ENTITY:
-                    renderItem(0.0F, 1.5F, 0.0F, 1.0F, type);
+                    renderStrengthenedIronBar(0.0F, 1.5F, 0.0F, 1.0F, type);
                     break;
                 case EQUIPPED:
-                    renderItem(-0.4F, 3F, -0.3F, 2F, type);
+                    renderStrengthenedIronBar(-0.4F, 3F, -0.3F, 2F, type);
                     break;
                 case EQUIPPED_FIRST_PERSON:
-                    renderItem(0.5F, 2.0F, 0.5F, 1.5F, type);
+                    renderStrengthenedIronBar(0.5F, 2.0F, 0.5F, 1.5F, type);
                     break;
                 case INVENTORY:
-                    renderItem(0.0F, 1.5F, 0.1F, 1.5F, type);
+                    renderStrengthenedIronBar(0.0F, 1.5F, 0.1F, 1.5F, type);
                     break;
                 default:
                     break;
@@ -56,19 +55,19 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
         } else if (ModItems.isPlaceHolderStack(stack, "atomicFrame")) {
             switch (type) {
                 case ENTITY: {
-                    renderItem(0.0F, 0.55F, 0.0F, 0.5F, type);
+                    renderAtomicFrame(0.0F, 0.55F, 0.0F, 0.5F, type);
                     break;
                 }
                 case EQUIPPED_FIRST_PERSON: {
-                    renderItem(0.4F, 1.5F, 0.5F, 1.0F, type);
+                    renderAtomicFrame(0.4F, 1.5F, 0.5F, 1.0F, type);
                     break;
                 }
                 case INVENTORY: {
-                    renderItem(0.0F, 1.0F, 0.0F, 1.0F, type);
+                    renderAtomicFrame(0.0F, 1.0F, 0.0F, 1.0F, type);
                     break;
                 }
                 case EQUIPPED: {
-                    renderItem(0.4F, 1.5F, 0.4F, 1.0F, type);
+                    renderAtomicFrame(0.4F, 1.5F, 0.4F, 1.0F, type);
                     break;
                 }
                 default:
@@ -77,7 +76,7 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
         }
     }
 
-    public void renderItem(float x, float y, float z, float scale, ItemRenderType type) {
+    public void renderStrengthenedIronBar(float x, float y, float z, float scale, ItemRenderType type) {
 
         glPushMatrix();
         glDisable(GL_LIGHTING);
@@ -97,5 +96,22 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
         glEnable(GL_LIGHTING);
         glPopMatrix();
 
+    }
+
+    public void renderAtomicFrame(float x, float y, float z, float scale, ItemRenderType type) {
+        glPushMatrix();
+        glDisable(GL_LIGHTING);
+
+        glTranslatef(x, y, z);
+
+        glRotated(180.0D, 1.0D, 0.0D, 0.0D);
+
+        glScalef(scale, scale, scale);
+
+        RenderUtils.bindTexture(TextureMaps.ATOMIC_CONSTRUCTOR);
+        modelAtomic.renderFrame();
+
+        glEnable(GL_LIGHTING);
+        glPopMatrix();
     }
 }

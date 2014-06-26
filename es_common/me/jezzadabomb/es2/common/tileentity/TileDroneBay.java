@@ -2,11 +2,9 @@ package me.jezzadabomb.es2.common.tileentity;
 
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.DroneBayDoorPacket;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
 import me.jezzadabomb.es2.common.drone.DroneTracker;
@@ -14,7 +12,6 @@ import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -23,10 +20,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public class TileDroneBay extends TileES implements IDismantleable {
+public class TileDroneBay extends TileES {
 
     public DroneTracker droneTracker;
 
@@ -248,19 +244,5 @@ public class TileDroneBay extends TileES implements IDismantleable {
         doorProgress = tag.getFloat("doorProgress");
         closing = tag.getBoolean("closing");
         opening = tag.getBoolean("opening");
-    }
-
-    @Override
-    public ItemStack dismantleBlock(EntityPlayer player, World world, CoordSet coordSet, boolean returnBlock) {
-        coordSet.setBlockToAir(world);
-        if (!world.isRemote && returnBlock)
-            world.spawnEntityInWorld(new EntityItem(world, coordSet.getX() + 0.5F, coordSet.getY() + 0.1F, coordSet.getZ() + 0.5F, new ItemStack(ModBlocks.droneBay)));
-        worldObj.removeTileEntity(xCoord, yCoord, zCoord);
-        return null;
-    }
-
-    @Override
-    public boolean canDismantle(EntityPlayer player, World world, CoordSet coordSet) {
-        return true;
     }
 }

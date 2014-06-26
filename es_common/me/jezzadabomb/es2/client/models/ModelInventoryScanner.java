@@ -19,11 +19,10 @@ public class ModelInventoryScanner extends ModelBase {
     ModelRenderer projector3;
     ModelRenderer projector4;
 
-    public ModelInventoryScanner()
-    {
-      textureWidth = 64;
-      textureHeight = 32;
-      
+    public ModelInventoryScanner() {
+        textureWidth = 64;
+        textureHeight = 32;
+
         base = new ModelRenderer(this, 0, 0);
         base.addBox(0F, 0F, 0F, 16, 1, 16);
         base.setRotationPoint(-8F, 23F, -8F);
@@ -80,6 +79,7 @@ public class ModelInventoryScanner extends ModelBase {
         setRotation(projector4, 0.669215F, -0.7853982F, 0F);
     }
 
+    @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -95,7 +95,7 @@ public class ModelInventoryScanner extends ModelBase {
     }
 
     public void render() {
-        Entity entity = (Entity) null;
+        Entity entity = null;
         float f5 = 0.0625F;
         super.render(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, f5);
         setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, f5, entity);
@@ -117,6 +117,7 @@ public class ModelInventoryScanner extends ModelBase {
         model.rotateAngleZ = z;
     }
 
+    @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
     }

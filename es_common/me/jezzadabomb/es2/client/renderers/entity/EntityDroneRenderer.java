@@ -2,9 +2,7 @@ package me.jezzadabomb.es2.client.renderers.entity;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.models.drones.ModelDrone;
-import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.renderer.entity.Render;

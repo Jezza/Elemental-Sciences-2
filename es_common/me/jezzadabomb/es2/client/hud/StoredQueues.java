@@ -1,9 +1,7 @@
 package me.jezzadabomb.es2.client.hud;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 
 public class StoredQueues {

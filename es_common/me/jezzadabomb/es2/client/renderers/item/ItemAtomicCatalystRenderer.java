@@ -4,9 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import me.jezzadabomb.es2.client.models.ModelCube;
 import me.jezzadabomb.es2.client.utils.AtomicCatalystRenderState;
-import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
 import me.jezzadabomb.es2.common.lib.TextureMaps;

@@ -1,12 +1,11 @@
 package me.jezzadabomb.es2.common.core.network.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
-
-import cpw.mods.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public interface IPacket {
 

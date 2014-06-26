@@ -1,14 +1,20 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
-import static org.lwjgl.opengl.GL11.*;
-
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslated;
 import me.jezzadabomb.es2.client.models.ModelPylonCrystal;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonCrystalDummy;
-import me.jezzadabomb.es2.common.tileentity.framework.TilePylon;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -24,35 +30,29 @@ public class TilePylonCrystalRenderer extends TileEntitySpecialRenderer {
 
     public void renderPylonCrystalAt(TileEntity pylon, double x, double y, double z, float tick) {
         glPushMatrix();
-        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glTranslated(x + 0.5F, y + 0.5F, z + 0.5F);
 
-        float scale = 0.4F;
+        // glRotated(180, 0.0, 0.0, 1.0);
+
+        float scale = 0.35F;
         glScalef(scale, scale, scale);
+        glScalef(0.65F, 1.0F, 0.65F);
 
-        glPushMatrix();
-        
-        glTranslated(0.0F, RenderUtils.hoverEquation(0.4F, -2F, 8F), 0.0F);
+        glColor4f(0.357F, 0.91F, 0.961F, 0.6F);
 
-        RenderUtils.bindTexture(TextureMaps.PYLON_CRYSTAL);
-        modelPylonCrystal.renderCrystal();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        modelPylonCrystal.renderAll();
 
-        glPopMatrix();
-        if (!dummy)
-            glRotated(RenderUtils.rotationEquation(4, 0), 0.0F, 1.0F, 0.0F);
-        glTranslated(0.0F, RenderUtils.hoverEquation(0.4F, 2F, 8F), 0.0F);
-
-        RenderUtils.bindTexture(TextureMaps.ATOMIC_CATALYST_MAIN);
-        modelPylonCrystal.renderRings();
-
-        glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
         glPopMatrix();
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float tick) {
-        if (tileEntity instanceof TilePylonCrystal || tileEntity instanceof TilePylonCrystalDummy)
+        if (tileEntity instanceof TilePylonCrystal)
             renderPylonCrystalAt(tileEntity, x, y, z, tick);
     }
 

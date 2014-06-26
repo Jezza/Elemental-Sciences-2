@@ -10,9 +10,7 @@ import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import me.jezzadabomb.es2.common.tileentity.TileObelisk;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonCrystalDummy;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -50,8 +48,6 @@ public class CommonProxy implements IGuiHandler {
         GameRegistry.registerTileEntity(TileConsole.class, Strings.CONSOLE);
         GameRegistry.registerTileEntity(TileDroneBay.class, Strings.DRONE_BAY);
         GameRegistry.registerTileEntity(TilePylonCrystal.class, Strings.PYLON_CRYSTAL);
-        GameRegistry.registerTileEntity(TilePylonCrystalDummy.class, Strings.PYLON_CRYSTAL_DUMMY);
-        GameRegistry.registerTileEntity(TileObelisk.class, Strings.OBELISK);
     }
 
     public void registerTickHandler(Object target) {

@@ -3,46 +3,33 @@ package me.jezzadabomb.es2.common.core;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import me.jezzadabomb.es2.common.core.interfaces.IPylon;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet4;
-import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class IPylonRegistry {
 
-    // TODO Revisit with new sphere object, easier projection and locating.
-
-    private static HashMap<Integer, HashSet<CoordSet4>> pylonMap = new HashMap<Integer, HashSet<CoordSet4>>();
+    private static HashMap<Integer, HashSet<IPylon>> pylonMap = new HashMap<Integer, HashSet<IPylon>>();
     private static HashMap<Integer, HashSet<CoordSet>> userMap = new HashMap<Integer, HashSet<CoordSet>>();
 
-    public static boolean registerPylon(World world, CoordSet coordSet, int tier) {
+    public static boolean registerPylon(World world, IPylon pylon) {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        CoordSet4 coordSet4 = new CoordSet4(coordSet, tier);
-        pylonMap.get(dimID).add(coordSet4);
+        pylonMap.get(dimID).add(pylon);
         broadcastPylonUpdate(world);
-        return pylonMap.get(dimID).contains(coordSet4);
+        return pylonMap.get(dimID).contains(pylon);
     }
 
-    public static boolean registerPylon(World world, int x, int y, int z, int tier) {
-        return registerPylon(world, new CoordSet(x, y, z), tier);
-    }
-
-    public static boolean removePylon(World world, CoordSet coordSet, int tier) {
+    public static boolean removePylon(World world, IPylon pylon) {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        CoordSet4 coordSet4 = new CoordSet4(coordSet, tier);
-        pylonMap.get(dimID).remove(coordSet4);
+        pylonMap.get(dimID).remove(pylon);
         broadcastPylonUpdate(world);
-        return !pylonMap.get(dimID).contains(coordSet4);
-    }
-
-    public static boolean removePylon(World world, int x, int y, int z, int tier) {
-        return removePylon(world, new CoordSet(x, y, z), tier);
+        return !pylonMap.get(dimID).contains(pylon);
     }
 
     public static boolean registerUser(World world, CoordSet coordSet) {
@@ -53,20 +40,12 @@ public class IPylonRegistry {
         return userMap.get(dimID).contains(coordSet);
     }
 
-    public static boolean registerUser(World world, int x, int y, int z) {
-        return registerUser(world, new CoordSet(x, y, z));
-    }
-
     public static boolean removeUser(World world, CoordSet coordSet) {
         int dimID = world.provider.dimensionId;
         confirmUser(dimID);
 
         userMap.get(dimID).remove(coordSet);
         return !userMap.get(dimID).contains(coordSet);
-    }
-
-    public static boolean removeUser(World world, int x, int y, int z) {
-        return removeUser(world, new CoordSet(x, y, z));
     }
 
     private static void broadcastPylonUpdate(World world) {
@@ -79,26 +58,22 @@ public class IPylonRegistry {
         }
     }
 
-    public static int isPowered(World world, CoordSet coordSet) {
+    public static IPylon isPowered(World world, CoordSet coordSet) {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        int highest = -1;
-        for (CoordSet4 coordSet4 : pylonMap.get(dimID)) {
-            if (coordSet.withinRange(coordSet4.toCoordSet(), (coordSet4.getI() + 1) * Reference.PYLON_POWER_RANGE))
-                if (highest < coordSet4.getI())
-                    highest = coordSet4.getI();
-        }
-        return highest;
-    }
+        if (pylonMap.get(dimID).isEmpty())
+            return null;
 
-    public static int isPowered(World world, int x, int y, int z) {
-        return isPowered(world, new CoordSet(x, y, z));
+        for (IPylon pylon : pylonMap.get(dimID))
+            if (pylon.isPowering(coordSet))
+                return pylon;
+        return null;
     }
 
     private static void confirmPylon(int dimID) {
         if (!pylonMap.containsKey(dimID))
-            pylonMap.put(dimID, new HashSet<CoordSet4>());
+            pylonMap.put(dimID, new HashSet<IPylon>());
     }
 
     private static void confirmUser(int dimID) {

@@ -1,20 +1,6 @@
 package me.jezzadabomb.es2.client.renderers;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,13 +8,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 import me.jezzadabomb.es2.api.HUDBlackLists;
-import me.jezzadabomb.es2.client.hud.StoredQueues;
-import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.DebugHelper;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
@@ -37,7 +19,6 @@ import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -50,13 +31,12 @@ public class HUDRenderer {
 
     private HashSet<InventoryPacket> packetList = new HashSet<InventoryPacket>();
     private HashSet<PacketTimeout> ignoreList = new HashSet<PacketTimeout>();
-    public static final Colour HUDCOLOUR = new Colour(1.0F, 1.0F, 1.0F, 0.6F);
 
-    public void addPacketToList(InventoryPacket packet) {
+    public void addPacket(InventoryPacket packet) {
         World world = Minecraft.getMinecraft().theWorld;
         CoordSet coordSet = packet.coordSet;
 
-        if (ignoreList.contains(packet.coordSet) || !coordSet.isIInventory(world) || !StoredQueues.getInstance().isAtXYZ(coordSet))
+        if (ignoreList.contains(coordSet) || !coordSet.isIInventory(world) || coordSet.isAirBlock(world))
             return;
 
         if (packetList.contains(packet))
@@ -64,10 +44,10 @@ public class HUDRenderer {
         packetList.add(packet);
     }
 
-    public void removePacketAtXYZ(CoordSet coordSet) {
-        boolean flag = packetList.remove(coordSet);
-        if (flag)
-            ignoreList.add(new PacketTimeout(coordSet));
+    public void removePacket(CoordSet coordSet) {
+        if (packetList.contains(coordSet))
+            if (packetList.remove(coordSet))
+                ignoreList.add(new PacketTimeout(coordSet));
     }
 
     @SubscribeEvent
@@ -86,9 +66,14 @@ public class HUDRenderer {
         ArrayList<InventoryPacket> packetUtilList = new ArrayList<InventoryPacket>();
         packetUtilList.addAll(packetList);
 
-        for (InventoryPacket packet : packetUtilList)
-            if ((!PlayerHelper.isWearingItem(ModItems.glasses) && packet.tick()) || packet.canRemove() || packet.coordSet.isAirBlock(world))
+        for (InventoryPacket packet : packetUtilList) {
+            CoordSet coordSet = packet.coordSet;
+            if ((!PlayerHelper.isWearingItem(ModItems.glasses) && packet.tick()) || packet.canRemove() || !coordSet.isIInventory(world) || coordSet.isAirBlock(world))
                 packetList.remove(packet);
+        }
+
+        if (packetList.isEmpty())
+            return;
 
         packetUtilList.clear();
         packetUtilList.addAll(packetList);
@@ -118,7 +103,7 @@ public class HUDRenderer {
         glDisable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        HUDCOLOUR.doGL();
+        glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
 
         if (underBlock)
             glClear(GL_DEPTH_BUFFER_BIT);
@@ -130,8 +115,8 @@ public class HUDRenderer {
             glDisable(GL_BLEND);
             glPopMatrix();
 
-            if (DebugHelper.canShowDebugHUD())
-                RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(1.0F, 0.0F, 0.0F, 0.5F));
+//            if (DebugHelper.canShowDebugHUD())
+//                RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour());
             return;
         }
 
@@ -175,8 +160,8 @@ public class HUDRenderer {
         glDisable(GL_BLEND);
         glPopMatrix();
 
-        if (underBlock && DebugHelper.canShowDebugHUD())
-            RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(0.0F, 1.0F, 0.0F, 0.5F));
+//        if (underBlock && DebugHelper.canShowDebugHUD())
+//            RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(0.0F, 1.0F, 0.0F, 0.5F));
     }
 
     private void drawItemStacks(ArrayList<ItemStack> itemStacks) {
@@ -201,13 +186,6 @@ public class HUDRenderer {
         }
     }
 
-    public static final Comparator<ItemStack> itemStackComparator = new Comparator<ItemStack>() {
-        @Override
-        public int compare(ItemStack stack1, ItemStack stack2) {
-            return stack2.stackSize - stack1.stackSize;
-        }
-    };
-
     public static final Comparator<InventoryPacket> packetListComparator = new Comparator<InventoryPacket>() {
         @Override
         public int compare(InventoryPacket packet1, InventoryPacket packet2) {
@@ -215,17 +193,20 @@ public class HUDRenderer {
         }
     };
 
+    public static final Comparator<ItemStack> itemStackComparator = new Comparator<ItemStack>() {
+        @Override
+        public int compare(ItemStack stack1, ItemStack stack2) {
+            return stack2.stackSize - stack1.stackSize;
+        }
+    };
+
     private static class PacketTimeout {
-        public CoordSet coordSet;
-        public int timeout;
+        private CoordSet coordSet;
+        private int timeout;
 
         public PacketTimeout(CoordSet coordSet) {
             this.coordSet = coordSet;
             timeout = 30;
-        }
-
-        public boolean isAtXYZ(InventoryPacket packet) {
-            return coordSet.equals(packet.coordSet);
         }
 
         public boolean tickTimeout() {

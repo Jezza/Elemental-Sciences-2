@@ -69,9 +69,12 @@ public class ModItems {
 
     public static boolean isPlaceHolderStack(ItemStack itemStack, String... names) {
         for (String name : names) {
-
+            ItemStack tempStack = getPlaceHolderStack(name);
+            if (tempStack != null)
+                if (itemStack.getItemDamage() == tempStack.getItemDamage() && itemStack.getItem().equals(tempStack.getItem()))
+                    return true;
         }
-        return true;
+        return false;
     }
 
     public static void initItemRecipes() {

@@ -1,21 +1,18 @@
 package me.jezzadabomb.es2.common.core.network.packet.server;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.IOException;
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler.HoveringPlayer;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class HoverHandlerPacket implements IPacket {
 

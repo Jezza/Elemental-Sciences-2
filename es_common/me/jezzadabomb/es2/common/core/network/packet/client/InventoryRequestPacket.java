@@ -10,10 +10,10 @@ import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.world.World;
 
 public class InventoryRequestPacket implements IPacket {
@@ -53,7 +53,7 @@ public class InventoryRequestPacket implements IPacket {
             CoordSet coordSet = CoordSet.getArrayFromString(loc);
 
             if (coordSet.isIInventory(world))
-                PacketDispatcher.sendTo(new InventoryPacket(coordSet.getTileEntity(world), loc), (EntityPlayerMP) player);
+                PacketDispatcher.sendTo(new InventoryPacket((IInventory) coordSet.getTileEntity(world), loc, false), (EntityPlayerMP) player);
         }
     }
 }

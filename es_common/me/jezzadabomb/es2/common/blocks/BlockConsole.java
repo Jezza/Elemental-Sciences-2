@@ -1,14 +1,10 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
-import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -78,8 +74,8 @@ public class BlockConsole extends BlockES {
     }
 
     @Override
-    public boolean renderWithModel() {
-        return true;
+    public BlockType getBlockType() {
+        return BlockType.MODEL;
     }
 
     @Override

@@ -1,25 +1,7 @@
 package me.jezzadabomb.es2.client.utils;
 
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glDepthMask;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopAttrib;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushAttrib;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.*;
+
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
@@ -49,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderUtils {
 
-    static RenderBlocks renderBlocksInstance = new RenderBlocks();
+    private static RenderBlocks renderBlocksInstance = new RenderBlocks();
 
     public static double hoverEquation(float inAmplitude, float scale, float exAmplitude) {
         return hoverEquation(inAmplitude, scale, exAmplitude, 0.0F);
@@ -190,7 +172,7 @@ public class RenderUtils {
                 glPopMatrix();
         }
         glEnable(GL_ALPHA_TEST);
-        HUDRenderer.HUDCOLOUR.doGL();
+        glColor4f(1.0F, 1.0F, 1.0F, 0.6F);
         glDisable(GL_LIGHTING);
         glEnable(GL_CULL_FACE);
         glPopMatrix();
@@ -212,7 +194,7 @@ public class RenderUtils {
     }
 
     // Thanks to Player for this. :D
-    public static void renderColouredBox(double partialTicks, CoordSet coordSet, Colour colour) {
+    public static void renderColouredBox(double partialTicks, CoordSet coordSet) {
         EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
         double px = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
         double py = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
@@ -235,7 +217,7 @@ public class RenderUtils {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
 
-        colour.setTesselator(tessellator);
+        // colour.setTesselator(tessellator);
 
         // BOTTOM
         tessellator.addVertex(x, y, z);

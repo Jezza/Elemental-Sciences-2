@@ -15,7 +15,8 @@ public class ModelConstructorDrone extends ModelDrone {
 		constructorDrone = AdvancedModelLoader.loadModel(Models.CONSTRUCTOR_DRONE);
 	}
 	
-	public void render(){
+	@Override
+    public void render(){
 		constructorDrone.renderAll();
 	}
 }

@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import net.minecraft.block.material.Material;
@@ -42,8 +43,8 @@ public class BlockDroneBay extends BlockES {
     }
 
     @Override
-    public boolean renderWithModel() {
-        return true;
+    public BlockType getBlockType() {
+        return BlockType.MODEL;
     }
 
     @Override

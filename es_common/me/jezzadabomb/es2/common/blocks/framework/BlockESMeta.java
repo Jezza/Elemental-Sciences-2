@@ -5,6 +5,7 @@ import java.util.List;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemBlockES;
 import me.jezzadabomb.es2.common.lib.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,8 +27,9 @@ public abstract class BlockESMeta extends BlockES {
     }
 
     @Override
-    public void register(String name) {
+    public BlockESMeta register(String name) {
         GameRegistry.registerBlock(this, getItemBlockClass(), name);
+        return this;
     }
 
     @Override

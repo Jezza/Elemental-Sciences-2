@@ -4,25 +4,19 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Random;
 
-import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IRotatable;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.drone.DroneBayTracker;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileConsole extends TileES implements IDismantleable, IRotatable {
+public class TileConsole extends TileES implements IRotatable {
 
     ArrayList<TileAtomicConstructor> constructorList;
 
@@ -50,6 +44,7 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
         droneBayMaintenance();
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return AxisAlignedBB.getAABBPool().getAABB(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 2.0F, zCoord + 1.0F);
@@ -187,25 +182,14 @@ public class TileConsole extends TileES implements IDismantleable, IRotatable {
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
     }
 
+    @Override
     public void setOrientation(int direction) {
         this.direction = direction;
     }
 
+    @Override
     public int getOrientation() {
         return direction;
-    }
-
-    @Override
-    public ItemStack dismantleBlock(EntityPlayer player, World world, CoordSet coordSet, boolean returnBlock) {
-        coordSet.setBlockToAir(world);
-        if (!world.isRemote && returnBlock)
-            world.spawnEntityInWorld(new EntityItem(world, coordSet.getX() + 0.5F, coordSet.getY() + 0.1F, coordSet.getZ() + 0.5F, new ItemStack(ModBlocks.console)));
-        return null;
-    }
-
-    @Override
-    public boolean canDismantle(EntityPlayer player, World world, CoordSet coordSet) {
-        return true;
     }
 
     @Override

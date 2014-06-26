@@ -1,12 +1,9 @@
 package me.jezzadabomb.es2.common.core;
 
-import me.jezzadabomb.es2.common.core.utils.helpers.DebugHelper;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class ESLogger {
@@ -25,9 +22,7 @@ public class ESLogger {
     }
 
     public static void log(Level logLevel, Object object) {
-        if (object == null)
-            object = "null";
-        log.esLogger.log(logLevel, object.toString());
+        log.esLogger.log(logLevel, String.valueOf(object));
     }
 
     public static void info(Object object) {
@@ -35,10 +30,6 @@ public class ESLogger {
     }
 
     public static void debug(Object object) {
-        log(Level.WARN, "[DEBUG] " + object);
-    }
-
-    public static void debug(Object object, int mode) {
         log(Level.WARN, "[DEBUG] " + object);
     }
 

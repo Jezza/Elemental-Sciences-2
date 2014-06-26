@@ -2,7 +2,6 @@ package me.jezzadabomb.es2.client.models;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -191,6 +190,7 @@ public class ModelAtomicConstructor extends ModelBase {
         setRotation(BottomBrace4, 0F, 0F, 0F);
     }
 
+    @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -203,10 +203,10 @@ public class ModelAtomicConstructor extends ModelBase {
         Brace2.render(f5);
         Brace3.render(f5);
         Brace4.render(f5);
-//        Wall1.render(f5);
-//        Wall2.render(f5);
-//        Wall3.render(f5);
-//        Wall4.render(f5);
+        // Wall1.render(f5);
+        // Wall2.render(f5);
+        // Wall3.render(f5);
+        // Wall4.render(f5);
         TopCorner1.render(f5);
         TopCorner2.render(f5);
         TopCorner3.render(f5);
@@ -257,7 +257,7 @@ public class ModelAtomicConstructor extends ModelBase {
     public void render(boolean[] checkState) {
         if (checkState == null || checkState.length < 1)
             return;
-        Entity entity = (Entity) null;
+        Entity entity = null;
         float f5 = 0.0625F;
         super.render(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, f5);
         setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, f5, entity);
@@ -339,6 +339,7 @@ public class ModelAtomicConstructor extends ModelBase {
         model.rotateAngleZ = z;
     }
 
+    @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
     }

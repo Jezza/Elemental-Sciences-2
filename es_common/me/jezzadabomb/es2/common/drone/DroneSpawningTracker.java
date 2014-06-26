@@ -2,7 +2,6 @@ package me.jezzadabomb.es2.common.drone;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
@@ -10,9 +9,6 @@ import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class DroneSpawningTracker implements IMasterable {
@@ -90,12 +86,10 @@ public class DroneSpawningTracker implements IMasterable {
     }
 
     public boolean processSpawnedDrone(EntityConstructorDrone drone) {
-        if (spawnedList.remove(drone)) {
+        if (spawnedList.remove(drone))
             return true;
-        } else {
-            ESLogger.severe("TRYING TO REGISTER A DRONE ALREADY SPAWNED!");
-            drone.setDead();
-        }
+        ESLogger.severe("TRYING TO REGISTER A DRONE ALREADY SPAWNED!");
+        drone.setDead();
         return false;
     }
 

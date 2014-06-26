@@ -1,17 +1,13 @@
 package me.jezzadabomb.es2.common.tileentity;
 
 import me.jezzadabomb.es2.common.ModBlocks;
-import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TileAtomicConstructor extends TileES implements IDismantleable, IMasterable {
+public class TileAtomicConstructor extends TileES implements IMasterable {
 
     boolean[] renderMatrix;
     TileConsole tileConsole;
@@ -160,20 +156,6 @@ public class TileAtomicConstructor extends TileES implements IDismantleable, IMa
                 (!(localArray[10] && localArray[1] && localArray[4]))
         };
         // @formatter:on
-    }
-
-    @Override
-    public ItemStack dismantleBlock(EntityPlayer player, World world, CoordSet coordSet, boolean returnBlock) {
-        coordSet.setBlockToAir(world);
-        if (!world.isRemote && returnBlock)
-            world.spawnEntityInWorld(new EntityItem(world, coordSet.getX() + 0.5F, coordSet.getY() + 0.1F, coordSet.getZ() + 0.5F, new ItemStack(ModBlocks.atomicConstructor)));
-        worldObj.removeTileEntity(xCoord, yCoord, zCoord);
-        return null;
-    }
-
-    @Override
-    public boolean canDismantle(EntityPlayer player, World world, CoordSet coordSet) {
-        return true;
     }
 
     @Override

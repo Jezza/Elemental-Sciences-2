@@ -3,7 +3,6 @@ package me.jezzadabomb.es2.common.tileentity;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tileentity.framework.TileES;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +34,7 @@ public class TileQuantumStateDisruptor extends TileES {
         }
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return AxisAlignedBB.getAABBPool().getAABB(xCoord - 1, yCoord, zCoord - 1, xCoord + 2, yCoord, zCoord + 2);

@@ -1,21 +1,15 @@
 package me.jezzadabomb.es2.common.items;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Random;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.sound.Sounds;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
-import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,6 +82,7 @@ public class ItemAtomicCatalyst extends ItemES {
         information.addShiftList("collapsing it.");
     }
 
+    @Override
     public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase target) {
         if (!player.worldObj.isRemote && !(target instanceof EntityPlayerMP && ((EntityPlayerMP) target).capabilities.isCreativeMode)) {
             if (!itemStack.hasTagCompound())

@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.items;
 
-import net.minecraft.util.EnumChatFormatting;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
 import me.jezzadabomb.es2.common.items.framework.ItemArmourES;
 

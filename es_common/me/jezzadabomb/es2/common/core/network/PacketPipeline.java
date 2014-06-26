@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 
-import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
 import me.jezzadabomb.es2.common.core.network.packet.client.AtomicCatalystDebugPacket;

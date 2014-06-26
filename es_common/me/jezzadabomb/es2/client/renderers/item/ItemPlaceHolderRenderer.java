@@ -4,11 +4,9 @@ import static org.lwjgl.opengl.GL11.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import me.jezzadabomb.es2.client.models.ModelAtomicConstructor;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;

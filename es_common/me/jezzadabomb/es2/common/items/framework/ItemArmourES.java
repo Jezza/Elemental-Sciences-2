@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.items.framework;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.ElementalSciences2;
@@ -11,8 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -27,15 +24,19 @@ public abstract class ItemArmourES extends ItemArmor {
         super(armorMaterial, renderIndex, armourIndex.ordinal());
         slot = armourIndex.ordinal();
         this.textureLocation = textureLocation;
-        setMaxDamage(0);
-        setUnlocalizedName(name);
-        setTextureName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
+        setMaxDamage(0);
+        setName(name);
         register(name);
     }
 
     public void register(String name) {
         GameRegistry.registerItem(this, name);
+    }
+
+    public void setName(String name) {
+        setUnlocalizedName(name);
+        setTextureName(name);
     }
 
     @Override

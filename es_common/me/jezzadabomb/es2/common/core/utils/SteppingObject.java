@@ -1,7 +1,5 @@
 package me.jezzadabomb.es2.common.core.utils;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class SteppingObject {

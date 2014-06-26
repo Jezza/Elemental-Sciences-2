@@ -13,7 +13,6 @@ import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
 
 public class ConsoleInfoPacket implements IPacket {
 

@@ -2,7 +2,6 @@ package me.jezzadabomb.es2.api;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

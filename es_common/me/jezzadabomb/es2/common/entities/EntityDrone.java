@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -141,9 +138,9 @@ public abstract class EntityDrone extends EntityES {
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound tag) {
-        boolean flag = tag.getBoolean("hasTargetSet");
-        if (flag)
-            targetQueue = UtilMethods.readQueueFromNBT(tag);
+//        boolean flag = tag.getBoolean("hasTargetSet");
+//        if (flag)
+//            targetQueue = UtilMethods.readQueueFromNBT(tag);
 
         readDroneFromNBT(tag);
     }
@@ -152,8 +149,8 @@ public abstract class EntityDrone extends EntityES {
     protected void writeEntityToNBT(NBTTagCompound tag) {
         boolean flag = !targetQueue.isEmpty();
         tag.setBoolean("hasTargetSet", flag);
-        if (flag)
-            UtilMethods.writeQueueToNBT(targetQueue, tag);
+//        if (flag)
+//            UtilMethods.writeQueueToNBT(targetQueue, tag);
 
         writeDroneToNBT(tag);
     }
@@ -176,6 +173,7 @@ public abstract class EntityDrone extends EntityES {
         this.zSpeed = zSpeed;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean isInRangeToRenderDist(double par1) {
         double d1 = this.boundingBox.getAverageEdgeLength();

@@ -16,7 +16,6 @@ import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileCrystalObeliskRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TilePylonCrystalRenderer;
@@ -30,9 +29,7 @@ import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import me.jezzadabomb.es2.common.tileentity.TileObelisk;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TilePylonCrystalDummy;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -84,13 +81,11 @@ public class ClientProxy extends CommonProxy {
     private void initRenderers() {
         // initTileRenderers
         registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer(false));
-        registerTileEntityRenderer(TilePylonCrystalDummy.class, new TilePylonCrystalRenderer(true));
         registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
         registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());
         registerTileEntityRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
         registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
-        registerTileEntityRenderer(TileObelisk.class, new TileCrystalObeliskRenderer());
 
         // initItemRenderer
         registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());

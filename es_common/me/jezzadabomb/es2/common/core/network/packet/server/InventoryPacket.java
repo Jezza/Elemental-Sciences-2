@@ -5,12 +5,10 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
 import me.jezzadabomb.es2.common.core.utils.helpers.InventoryHelper;
@@ -18,9 +16,7 @@ import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class InventoryPacket implements IPacket {
@@ -29,14 +25,13 @@ public class InventoryPacket implements IPacket {
     public String loc = null;
     public int tickTiming;
     public CoordSet coordSet;
+    private boolean inventoryScanner = false;
 
-    public InventoryPacket(TileEntity tileEntity, String loc) {
-        if (tileEntity == null || !(tileEntity instanceof IInventory || tileEntity instanceof ISidedInventory))
-            return;
+    public InventoryPacket(IInventory inventory, String loc, boolean inventoryScanner) {
+        this.loc = loc;
+        this.inventoryScanner = inventoryScanner;
 
         itemStacks = new ArrayList<ItemStack>();
-        this.loc = loc;
-        IInventory inventory = ((IInventory) tileEntity);
         for (int i = 0; i < inventory.getSizeInventory(); i++)
             if (inventory.getStackInSlot(i) != null)
                 itemStacks.add(inventory.getStackInSlot(i));
@@ -46,18 +41,20 @@ public class InventoryPacket implements IPacket {
     }
 
     public boolean tick() {
-        ESLogger.info(tickTiming);
         return ++tickTiming >= 100;
     }
 
     public boolean canRemove() {
         int dis = Reference.HUD_BLOCK_RANGE;
+        if (inventoryScanner)
+            dis *= 2;
         return distanceToPlayer() > dis * dis;
     }
 
     @Override
     public void writeBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
         PacketUtils.writeStringByteBuffer(buffer, loc);
+        buffer.writeBoolean(inventoryScanner);
         buffer.writeShort(itemStacks != null ? (itemStacks.isEmpty() ? (short) 0 : (short) itemStacks.size()) : (short) 0);
         if (itemStacks != null)
             for (ItemStack i : itemStacks)
@@ -67,8 +64,9 @@ public class InventoryPacket implements IPacket {
     @Override
     public void readBytes(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
         loc = PacketUtils.readStringByteBuffer(buffer);
+        inventoryScanner = buffer.readBoolean();
         short length = buffer.readShort();
-        itemStacks = new ArrayList<ItemStack>(length);
+        itemStacks = new ArrayList<ItemStack>();
         for (int i = 0; i < length; i++)
             itemStacks.add(PacketUtils.readItemStack(buffer));
     }
@@ -80,21 +78,13 @@ public class InventoryPacket implements IPacket {
         if (tempSet == null)
             return;
         coordSet = tempSet;
-        ClientProxy.getHUDRenderer().addPacketToList(this);
+        ClientProxy.getHUDRenderer().addPacket(this);
         tickTiming = 0;
     }
 
     @Override
     public void executeServerSide(EntityPlayer player) {
         ESLogger.severe("Tried to send a packet to the wrong side!");
-    }
-
-    public String getItemStacksInfo() {
-        StringBuilder temp = new StringBuilder();
-        for (ItemStack tempStack : getItemStacks()) {
-            temp.append(tempStack.getUnlocalizedName() + ":" + tempStack.stackSize + ",");
-        }
-        return temp.toString();
     }
 
     public ArrayList<ItemStack> getItemStacks() {
@@ -115,22 +105,16 @@ public class InventoryPacket implements IPacket {
 
     @Override
     public String toString() {
-        return loc + " " + getItemStacksInfo();
+        return coordSet.toString();
     }
 
     @Override
     public boolean equals(Object other) {
-        return equals(other, false);
-    }
-
-    public boolean equals(Object other, boolean includeItemStacks) {
         if (other == null || !(other instanceof InventoryPacket))
             return false;
 
         InventoryPacket tempPacket = (InventoryPacket) other;
-        if (!includeItemStacks)
-            return coordSet.equals(tempPacket.coordSet);
-        return coordSet.equals(tempPacket.coordSet) && this.itemStacks.equals(tempPacket.itemStacks);
+        return coordSet.equals(tempPacket.coordSet);
     }
 
     @Override

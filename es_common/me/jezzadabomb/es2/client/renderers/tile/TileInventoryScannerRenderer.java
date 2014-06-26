@@ -1,17 +1,11 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
 import static org.lwjgl.opengl.GL11.*;
-import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

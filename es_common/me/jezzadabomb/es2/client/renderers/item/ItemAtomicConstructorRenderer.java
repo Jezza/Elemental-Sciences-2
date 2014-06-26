@@ -7,8 +7,6 @@ import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 
 public class ItemAtomicConstructorRenderer implements IItemRenderer {
 

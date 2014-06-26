@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.items.framework;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.ElementalSciences2;
@@ -10,10 +9,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,14 +16,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class ItemES extends Item {
 
     public ItemES(String name) {
-        setUnlocalizedName(name);
-        setTextureName(name);
+        setName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
         register(name);
     }
 
     public void register(String name) {
         GameRegistry.registerItem(this, name);
+    }
+
+    public ItemES setName(String name) {
+        setUnlocalizedName(name);
+        setTextureName(name);
+        return this;
     }
 
     @Override

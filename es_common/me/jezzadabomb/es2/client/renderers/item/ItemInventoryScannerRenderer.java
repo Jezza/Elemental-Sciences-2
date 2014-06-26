@@ -1,19 +1,20 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import me.jezzadabomb.es2.client.models.ModelInventoryScanner;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
-
-import static org.lwjgl.opengl.GL11.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ItemInventoryScannerRenderer implements IItemRenderer {

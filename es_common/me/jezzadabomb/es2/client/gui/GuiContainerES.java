@@ -1,8 +1,5 @@
 package me.jezzadabomb.es2.client.gui;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,15 +31,15 @@ public abstract class GuiContainerES extends GuiContainer {
         int x = (xSize - fontRendererObj.getStringWidth(text)) / 2;
         int y = ySize / 2;
 
-        fontRendererObj.drawString(text, x + xOffset, y + yOffset, Colour.WHITE.getInt());
+//        fontRendererObj.drawString(text, x + xOffset, y + yOffset, Colour.WHITE.getInt());
     }
 
-    protected void drawCentredText(int xOffset, int yOffset, String text, Colour colour) {
-        int x = (xSize - fontRendererObj.getStringWidth(text)) / 2;
-        int y = ySize / 2;
-
-        fontRendererObj.drawString(text, x + xOffset, y + yOffset, colour.getInt());
-    }
+//    protected void drawCentredText(int xOffset, int yOffset, String text, Colour colour) {
+//        int x = (xSize - fontRendererObj.getStringWidth(text)) / 2;
+//        int y = ySize / 2;
+//
+//        fontRendererObj.drawString(text, x + xOffset, y + yOffset, colour.getInt());
+//    }
 
     protected int addButton(int xPos, int yPos, int width, int height, String displayName) {
         buttonList.add(new GuiButton(nextId++, xPos, yPos, width, height, displayName));

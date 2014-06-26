@@ -11,8 +11,6 @@ import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import cpw.mods.fml.relauncher.Side;
 
 public class SetBlockChunkPacket implements IPacket {
 

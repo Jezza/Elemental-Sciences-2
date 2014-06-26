@@ -1,13 +1,6 @@
 package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class CoordSetF {

@@ -1,10 +1,8 @@
 package me.jezzadabomb.es2.common.core.utils.helpers;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
-
 public class MathHelper {
 
-    public static float isLessThanElse(float value, float secondaryValue) {
+    public static float expandAwayFrom(float value, float secondaryValue) {
         if (value < 0) {
             return value - secondaryValue;
         } else if (value > 0) {
@@ -83,9 +81,5 @@ public class MathHelper {
 
     public static float interpolate(float a, float b, float d) {
         return a + (b - a) * d;
-    }
-
-    public static void getAngleFromCoords(float droneX, float droneY, float droneZ, float droneTargetX, float droneTargetY, float droneTargetZ) {
-        ESLogger.severe(Math.atan2(droneX, droneY));
     }
 }

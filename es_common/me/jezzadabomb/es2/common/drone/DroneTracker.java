@@ -9,7 +9,6 @@ import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 
 public class DroneTracker implements IMasterable {
 

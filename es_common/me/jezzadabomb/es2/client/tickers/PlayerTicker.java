@@ -3,7 +3,6 @@ package me.jezzadabomb.es2.client.tickers;
 import me.jezzadabomb.es2.api.HUDBlackLists;
 import me.jezzadabomb.es2.client.hud.StoredQueues;
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.InventoryRequestPacket;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;

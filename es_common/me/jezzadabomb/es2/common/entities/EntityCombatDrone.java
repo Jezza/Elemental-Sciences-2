@@ -1,20 +1,13 @@
 package me.jezzadabomb.es2.common.entities;
 
-import java.util.Random;
-
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetD;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSetF;
-import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;

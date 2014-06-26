@@ -2,11 +2,11 @@ package me.jezzadabomb.es2.common.items.debug;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
+import me.jezzadabomb.es2.common.core.interfaces.IPylon;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
+import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.items.framework.ItemDebug;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -31,12 +31,15 @@ public class ItemPylonManager extends ItemDebug {
 
     @Override
     public boolean onItemDebugUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ, Side side) {
-        if (isDebugMode("Field Check")) {
-            int tier = IPylonRegistry.isPowered(world, x, y, z);
-            if (tier >= 0)
-                UtilMethods.addChatMessage(player, "Pylon found! Tier: " + (tier + 1));
-            else
-                UtilMethods.addChatMessage(player, "No pylon found");
+        if (!world.isRemote && isDebugMode("Field Check")) {
+            IPylon pylon = IPylonRegistry.isPowered(world, new CoordSet(x, y, z));
+            if (pylon != null) {
+                int tier = pylon.getPowerLevel();
+                if (tier >= 0)
+                    UtilMethods.addChatMessage(player, "Pylon found! Tier: " + (tier));
+                else
+                    UtilMethods.addChatMessage(player, "No pylon found");
+            }
         }
         return false;
     }

@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemDebug extends ItemES {
 
@@ -64,18 +63,16 @@ public abstract class ItemDebug extends ItemES {
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
         if (world.isRemote)
             return onItemDebugUse(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.CLIENT);
-        else
-            return onItemDebugUse(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.SERVER);
+        return onItemDebugUse(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.SERVER);
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
         if (world.isRemote)
             return onItemDebugUseFirst(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.CLIENT);
-        else
-            return onItemDebugUseFirst(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.SERVER);
+        return onItemDebugUseFirst(itemStack, player, world, x, y, z, sideHit, hitVecX, hitVecY, hitVecZ, Side.SERVER);
     }
-    
+
     @Override
     protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
         information.addInfoList("Debug Mode: " + debugMode);

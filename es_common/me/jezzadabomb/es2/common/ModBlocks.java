@@ -6,10 +6,10 @@ import me.jezzadabomb.es2.common.blocks.BlockAtomicShredder;
 import me.jezzadabomb.es2.common.blocks.BlockConsole;
 import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
-import me.jezzadabomb.es2.common.blocks.BlockObelisk;
 import me.jezzadabomb.es2.common.blocks.BlockPylonCrystal;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
-import me.jezzadabomb.es2.common.blocks.BlockStrengthenedIron;
+import me.jezzadabomb.es2.common.blocks.BlockResourceBlock;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,7 +25,6 @@ public class ModBlocks {
     public static Block droneBay;
 
     public static Block strengthenedIronBlock;
-    public static Block crystalObelisk;
     public static Block pylonCrystal;
     public static Block atomicShredder;
 
@@ -35,9 +34,8 @@ public class ModBlocks {
         quantumStateDisrupter = new BlockQuantumStateDisruptor(Material.anvil, Strings.QUANTUM_STATE_DISRUPTER);
         console = new BlockConsole(Material.anvil, Strings.CONSOLE);
         droneBay = new BlockDroneBay(Material.anvil, Strings.DRONE_BAY);
-        crystalObelisk = new BlockObelisk(Material.anvil, Strings.OBELISK);
         pylonCrystal = new BlockPylonCrystal(Material.anvil, Strings.PYLON_CRYSTAL);
-        strengthenedIronBlock = new BlockStrengthenedIron(Material.anvil, Strings.STRENGTHENED_IRON_BLOCK);
+        strengthenedIronBlock = new BlockResourceBlock(Material.anvil, Strings.STRENGTHENED_IRON_BLOCK);
         atomicShredder = new BlockAtomicShredder(Material.anvil, Strings.ATOMIC_SHREDDER);
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);

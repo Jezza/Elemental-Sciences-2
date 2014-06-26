@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
-import me.jezzadabomb.es2.common.core.interfaces.IDismantleable;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
@@ -12,11 +11,11 @@ import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class CoordSet {
 
@@ -96,13 +95,19 @@ public class CoordSet {
         return net.minecraft.util.MathHelper.sqrt_double(getDistanceSq(tempSet));
     }
 
-    public boolean isAdjacent(CoordSet tempSet) {
-        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(y, tempSet.getY(), 1))
-            return true;
-        if (MathHelper.withinRange(x, tempSet.getX(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1))
-            return true;
-        if (MathHelper.withinRange(y, tempSet.getY(), 1) && MathHelper.withinRange(z, tempSet.getZ(), 1))
-            return true;
+    public CoordSet addForgeDirection(ForgeDirection direction) {
+        x += direction.offsetX;
+        y += direction.offsetY;
+        z += direction.offsetZ;
+        return this;
+    }
+
+    public boolean isAdjacent(CoordSet coordSet) {
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+            CoordSet tempSet = coordSet.copy().addForgeDirection(direction);
+            if (tempSet.isAtXYZ(x, y, z))
+                return true;
+        }
         return false;
     }
 
@@ -127,7 +132,7 @@ public class CoordSet {
     }
 
     public void writeToNBT(NBTTagCompound tag) {
-        tag.setIntArray("coordSet", new int[] { x, y, z });
+        tag.setIntArray("coordSet", asArray());
     }
 
     public static CoordSet readFromNBT(NBTTagCompound tag) {
@@ -166,6 +171,10 @@ public class CoordSet {
         return new CoordSet(x, y, z);
     }
 
+    public int[] asArray() {
+        return new int[] { x, y, z };
+    }
+
     public CoordSetF toCoordSetF() {
         return new CoordSetF(x + 0.5F, y + 0.5F, z + 0.5F);
     }
@@ -178,8 +187,7 @@ public class CoordSet {
     public boolean equals(Object other) {
         if (other == null || !(other instanceof CoordSet))
             return false;
-        CoordSet coordSet = (CoordSet) other;
-        return (coordSet.x == x && coordSet.y == y && coordSet.z == z);
+        return ((CoordSet) other).isAtXYZ(x, y, z);
     }
 
     @Override
@@ -220,10 +228,6 @@ public class CoordSet {
 
     public boolean isScanner(IBlockAccess world) {
         return getTileEntity(world) instanceof TileInventoryScanner;
-    }
-
-    public boolean isDismantable(IBlockAccess world) {
-        return getTileEntity(world) instanceof IDismantleable;
     }
 
     public boolean isIInventory(IBlockAccess world) {

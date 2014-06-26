@@ -3,10 +3,7 @@ package me.jezzadabomb.es2.common.core.network;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import me.jezzadabomb.es2.common.core.network.packet.client.*;
-import me.jezzadabomb.es2.common.core.network.packet.server.*;
 
 public class PacketDispatcher {
 

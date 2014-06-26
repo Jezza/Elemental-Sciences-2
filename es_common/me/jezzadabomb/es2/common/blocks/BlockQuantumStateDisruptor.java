@@ -1,8 +1,7 @@
 package me.jezzadabomb.es2.common.blocks;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.lib.Reference;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -17,20 +16,14 @@ public class BlockQuantumStateDisruptor extends BlockES {
         setBlockUnbreakable();
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1F / 16F, 1.0F);
     }
-    
+
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-        super.breakBlock(world, x, y, z, block, meta);
-    }
-    
-    @Override
-    public boolean renderWithModel() {
-        return true;
+    public BlockType getBlockType() {
+        return BlockType.MODEL;
     }
 
     @Override
     public TileEntity getTileEntity(int metadata) {
         return new TileQuantumStateDisruptor();
     }
-
 }

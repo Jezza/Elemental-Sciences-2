@@ -3,15 +3,11 @@ package me.jezzadabomb.es2.client.gui;
 import me.jezzadabomb.es2.client.lib.GuiSheet;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.containers.ContainerAtomicCatalystDebug;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.client.AtomicCatalystDebugPacket;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

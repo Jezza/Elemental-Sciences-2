@@ -1,24 +1,13 @@
 package me.jezzadabomb.es2.common.tickers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
-import me.jezzadabomb.es2.common.core.utils.SteppingObject;
-import me.jezzadabomb.es2.common.core.utils.UtilMethods;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -36,13 +25,13 @@ public class CatalystTicker {
 
     private void breakTicks(World world) {
         int dim = world.provider.dimensionId;
-        LinkedBlockingQueue<VirtualBreaker> queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
+        LinkedBlockingQueue<VirtualBreaker> queue = breakList.get(Integer.valueOf(dim));
 
         if (queue != null) {
             boolean didSomething = false;
             int limit = 0;
             while (!didSomething) {
-                VirtualBreaker vb = (VirtualBreaker) queue.poll();
+                VirtualBreaker vb = queue.poll();
 
                 if (vb != null) {
                     Block block = world.getBlock(vb.x, vb.y, vb.z);
@@ -82,10 +71,10 @@ public class CatalystTicker {
         int dim = world.provider.dimensionId;
         if ((block == null) || (block.getBlockHardness(world, x, y, z) < 0.0F) || player == null)
             return;
-        LinkedBlockingQueue<VirtualBreaker> queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
+        LinkedBlockingQueue<VirtualBreaker> queue = breakList.get(Integer.valueOf(dim));
         if (queue == null) {
             breakList.put(Integer.valueOf(dim), new LinkedBlockingQueue<VirtualBreaker>());
-            queue = (LinkedBlockingQueue<VirtualBreaker>) breakList.get(Integer.valueOf(dim));
+            queue = breakList.get(Integer.valueOf(dim));
         }
         queue.offer(new VirtualBreaker(player, x, y, z, block, meta, strength, fortune, speed - 1));
         breakList.put(Integer.valueOf(dim), queue);

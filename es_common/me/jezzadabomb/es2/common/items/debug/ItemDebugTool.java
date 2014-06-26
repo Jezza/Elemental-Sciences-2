@@ -2,10 +2,8 @@ package me.jezzadabomb.es2.common.items.debug;
 
 import java.util.ArrayList;
 
-import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
-import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;

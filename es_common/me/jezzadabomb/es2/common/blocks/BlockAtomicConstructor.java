@@ -2,9 +2,8 @@ package me.jezzadabomb.es2.common.blocks;
 
 import java.util.List;
 
-import cpw.mods.fml.common.Loader;
-
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -110,13 +109,12 @@ public class BlockAtomicConstructor extends BlockES {
     }
 
     @Override
-    public boolean renderWithModel() {
-        return true;
+    public BlockType getBlockType() {
+        return BlockType.MODEL;
     }
 
     @Override
     public TileEntity getTileEntity(int metadata) {
         return new TileAtomicConstructor();
     }
-
 }

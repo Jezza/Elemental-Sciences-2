@@ -13,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.models.ModelPlate;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -68,7 +67,7 @@ public class ItemConsoleRenderer implements IItemRenderer {
         glPushMatrix();
         glDisable(GL_LIGHTING);
 
-        glTranslatef((float) x, (float) y, (float) z);
+        glTranslatef(x, y, z);
         glScalef(scale, scale, scale);
         if (renderType == 1)
             glRotatef(180F, 0.0F, 1.0F, 0.0F);

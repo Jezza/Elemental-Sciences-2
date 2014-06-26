@@ -200,13 +200,8 @@ public class HoverHandler {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof HoveringPlayer) {
-                HoveringPlayer hoveringPlayer = (HoveringPlayer) obj;
-                return equals(hoveringPlayer.getUsername());
-            } else if (obj instanceof EntityPlayer) {
-                EntityPlayer hoveringPlayer = (EntityPlayer) obj;
-                return equals(hoveringPlayer.getDisplayName());
-            }
+            if (obj instanceof HoveringPlayer)
+                return equals(((HoveringPlayer) obj).getUsername());
             return false;
         }
 

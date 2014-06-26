@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -25,19 +27,24 @@ public abstract class BlockES extends Block {
 
     public BlockES(Material material, String name) {
         super(material);
-        setBlockName(name);
         setCreativeTab(ElementalSciences2.creativeTab);
+        setName(name);
         register(name);
     }
 
-    public void register(String name) {
+    public BlockES register(String name) {
         GameRegistry.registerBlock(this, name);
+        return this;
+    }
+
+    public BlockES setName(String name) {
+        setBlockName(name);
+        setBlockTextureName(name);
+        return this;
     }
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {
-        int meta = world.getBlockMetadata(x, y, z);
-
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof IBlockNotifier)
             ((IBlockNotifier) tileEntity).onBlockAdded(world, x, y, z);
@@ -64,22 +71,7 @@ public abstract class BlockES extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + getUnlocalizedName().replace("tile.", ""));
-    }
-
-    @Override
-    public boolean renderAsNormalBlock() {
-        return !renderWithModel();
-    }
-
-    @Override
-    public boolean isOpaqueCube() {
-        return !renderWithModel();
-    }
-
-    @Override
-    public int getRenderType() {
-        return renderWithModel() ? -1 : super.getRenderType();
+        blockIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + getTextureName());
     }
 
     @Override
@@ -96,21 +88,17 @@ public abstract class BlockES extends Block {
         return false;
     }
 
-    /**
-     * A client side update method. Calls it inside TileES
-     */
+    public TileEntity getTileEntity(int metadata) {
+        return null;
+    };
+
+    // ----------------------------- Update methods -------------------------------
+
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        if (!canSendUpdatePacket()) {
-            super.onNeighborBlockChange(world, x, y, z, block);
-            return;
-        }
-        int metadata = world.getBlockMetadata(x, y, z);
-        if (getTileEntity(metadata) == null) {
-            super.onNeighborBlockChange(world, x, y, z, block);
-        } else if (getTileEntity(metadata) instanceof TileES) {
+        if (canSendUpdatePacket() && world.getTileEntity(x, y, z) instanceof TileES)
             PacketDispatcher.sendToAllAround(new NeighbourChangedPacket(new CoordSet(x, y, z)), new TargetPoint(world.provider.dimensionId, x, y, z, 64));
-        }
+
         super.onNeighborBlockChange(world, x, y, z, block);
     }
 
@@ -121,7 +109,33 @@ public abstract class BlockES extends Block {
         return tileentity != null ? tileentity.receiveClientEvent(ID, param) : false;
     }
 
-    public abstract boolean renderWithModel();
+    // ----------------------------- BlockType start -------------------------------
 
-    public abstract TileEntity getTileEntity(int metadata);
+    @Override
+    public boolean renderAsNormalBlock() {
+        BlockType blockType = getBlockType();
+        if (blockType.hasOverride("renderAsNormalBlock"))
+            return blockType.renderAsNormalBlock();
+        return super.renderAsNormalBlock();
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        BlockType blockType = getBlockType();
+        if (blockType.hasOverride("isOpaqueCube"))
+            return blockType.isOpaqueCube();
+        return super.isOpaqueCube();
+    }
+
+    @Override
+    public int getRenderType() {
+        BlockType blockType = getBlockType();
+        if (blockType.hasOverride("getRenderType"))
+            return blockType.getRenderType();
+        return super.getRenderType();
+    }
+
+    public BlockType getBlockType() {
+        return BlockType.NORMAL;
+    }
 }

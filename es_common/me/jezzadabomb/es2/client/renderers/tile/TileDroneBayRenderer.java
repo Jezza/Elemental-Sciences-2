@@ -5,9 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import me.jezzadabomb.es2.client.models.ModelDroneBay;
-import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;

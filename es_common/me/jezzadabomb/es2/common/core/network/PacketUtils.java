@@ -1,16 +1,8 @@
 package me.jezzadabomb.es2.common.core.network;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
-import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.network.packet.IPacket;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
 
 public class PacketUtils {
 

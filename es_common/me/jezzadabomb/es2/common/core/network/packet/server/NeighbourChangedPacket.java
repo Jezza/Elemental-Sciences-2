@@ -12,8 +12,6 @@ import me.jezzadabomb.es2.common.tileentity.framework.TileES;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import cpw.mods.fml.relauncher.Side;
 
 public class NeighbourChangedPacket implements IPacket {
 

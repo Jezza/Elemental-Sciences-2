@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.client.gui;
 
 import me.jezzadabomb.es2.client.lib.GuiSheet;
-import me.jezzadabomb.es2.client.utils.Colour;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.containers.ContainerConsole;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;

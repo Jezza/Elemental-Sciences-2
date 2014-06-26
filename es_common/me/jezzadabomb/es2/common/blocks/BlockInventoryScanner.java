@@ -1,11 +1,10 @@
 package me.jezzadabomb.es2.common.blocks;
 
-import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
+import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -36,12 +35,12 @@ public class BlockInventoryScanner extends BlockES {
     }
 
     @Override
-    public boolean renderWithModel() {
-        return true;
+    public TileEntity getTileEntity(int metadata) {
+        return new TileInventoryScanner();
     }
 
     @Override
-    public TileEntity getTileEntity(int metadata) {
-        return new TileInventoryScanner();
+    public BlockType getBlockType() {
+        return BlockType.MODEL;
     }
 }

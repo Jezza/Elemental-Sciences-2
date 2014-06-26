@@ -9,7 +9,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public abstract class ItemBlockES extends ItemBlock {
+public class ItemBlockES extends ItemBlock {
 
     private Block block;
 

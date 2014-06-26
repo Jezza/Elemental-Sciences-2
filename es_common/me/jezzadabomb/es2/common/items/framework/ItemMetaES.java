@@ -5,11 +5,9 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
-import me.jezzadabomb.es2.common.items.ItemPlaceHolder64;
 import me.jezzadabomb.es2.common.lib.Reference;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -54,6 +52,6 @@ public abstract class ItemMetaES extends ItemES {
         int damage = MathHelper.clipInt(itemStack.getItemDamage(), names.size() - 1);
         return "item." + names.get(damage);
     }
-    
+
     public abstract List<String> getNames();
 }

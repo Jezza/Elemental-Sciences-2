@@ -8,7 +8,6 @@ public class Strings {
     public static final String CONSOLE = "console";
     public static final String DRONE_BAY = "droneBay";
     public static final String BLOCK_PLACE_HOLDER = "blockPlaceHolder";
-    public static final String OBELISK = "crystalObelisk";
     public static final String PYLON_CRYSTAL = "pylonCrystal";
     public static final String PYLON_CRYSTAL_DUMMY = "pylonCrystalDummy";
 

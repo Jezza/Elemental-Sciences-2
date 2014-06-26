@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.tileentity.framework;
 
 import net.minecraft.world.World;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
@@ -28,7 +27,7 @@ public abstract class TilePylonUser extends TileES implements IPylonReceiver, IB
      */
     @Override
     public void notifyPylonUpdate() {
-        powered = IPylonRegistry.isPowered(worldObj, getCoordSet()) >= 0;
+        powered = IPylonRegistry.isPowered(worldObj, getCoordSet()) != null;
     }
 
     /**
