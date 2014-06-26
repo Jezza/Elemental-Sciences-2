@@ -1,7 +1,7 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.ESLogger;
+import me.jezzadabomb.es2.common.core.interfaces.IBlockInteract;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
 import me.jezzadabomb.es2.common.core.network.packet.server.NeighbourChangedPacket;
@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -41,6 +40,14 @@ public abstract class BlockES extends Block {
         setBlockName(name);
         setBlockTextureName(name);
         return this;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVecX, float hitVecY, float hitVecZ) {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof IBlockInteract)
+            return ((IBlockInteract) tileEntity).onActivated(world, x, y, z, player, side, hitVecX, hitVecY, hitVecZ);
+        return false;
     }
 
     @Override
