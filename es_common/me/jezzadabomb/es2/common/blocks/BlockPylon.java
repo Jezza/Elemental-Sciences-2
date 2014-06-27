@@ -6,11 +6,11 @@ import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 
-public class BlockPylonCrystal extends BlockESMeta {
+public class BlockPylon extends BlockESMeta {
 
     private static final String[] names = new String[] { "pylonCrystal0", "pylonCrystal1", "pylonCrystal2" };
 
-    public BlockPylonCrystal(Material material, String name) {
+    public BlockPylon(Material material, String name) {
         super(material, name);
         setHardness(2F);
         setBlockBounds(0.25F, 0.1F, 0.25F, 0.75F, 0.9F, 0.75F);

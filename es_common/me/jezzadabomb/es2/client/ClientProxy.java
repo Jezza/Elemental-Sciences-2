@@ -18,7 +18,8 @@ import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TilePylonCrystalRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TileObeliskRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.TilePylonRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileQuantumStateDisruptorRenderer;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
@@ -29,6 +30,7 @@ import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
+import me.jezzadabomb.es2.common.tileentity.TileObelisk;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.block.Block;
@@ -80,12 +82,13 @@ public class ClientProxy extends CommonProxy {
 
     private void initRenderers() {
         // initTileRenderers
-        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonCrystalRenderer(false));
+        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonRenderer(false));
         registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
         registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
         registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());
         registerTileEntityRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
         registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
+        registerTileEntityRenderer(TileObelisk.class, new TileObeliskRenderer());
 
         // initItemRenderer
         registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());

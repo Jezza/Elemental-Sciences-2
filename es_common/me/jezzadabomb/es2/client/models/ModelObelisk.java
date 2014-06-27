@@ -4,16 +4,16 @@ import me.jezzadabomb.es2.client.lib.Models;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
-public class ModelPylonCrystal {
+public class ModelObelisk {
 
-    IModelCustom model;
+    IModelCustom modelObelisk;
 
-    public ModelPylonCrystal() {
-        model = AdvancedModelLoader.loadModel(Models.PYLON);
+    public ModelObelisk() {
+        modelObelisk = AdvancedModelLoader.loadModel(Models.OBELISK);
     }
 
     public void renderAll() {
-        model.renderAll();
+        modelObelisk.renderAll();
     }
 
 }

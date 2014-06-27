@@ -37,7 +37,7 @@ public class TileQuantumStateDisruptor extends TileES {
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getAABBPool().getAABB(xCoord - 1, yCoord, zCoord - 1, xCoord + 2, yCoord, zCoord + 2);
+        return AxisAlignedBB.getBoundingBox(xCoord - 1, yCoord, zCoord - 1, xCoord + 2, yCoord, zCoord + 2);
     }
 
     public void removeSelf() {

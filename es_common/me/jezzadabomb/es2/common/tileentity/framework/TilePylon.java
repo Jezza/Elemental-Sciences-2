@@ -30,7 +30,7 @@ public abstract class TilePylon extends TileES implements IPylon, IBlockNotifier
 
     @Override
     public boolean isPowering(CoordSet coordSet) {
-        int range = 16 * getPowerLevel();
-        return false;
+        int range = getPowerLevel() * 16;
+        return coordSet.getDistanceSq(getCoordSet()) < (range * range);
     }
 }

@@ -37,8 +37,8 @@ public class ItemPylonManager extends ItemDebug {
                 int tier = pylon.getPowerLevel();
                 if (tier >= 0)
                     UtilMethods.addChatMessage(player, "Pylon found! Tier: " + (tier));
-                else
-                    UtilMethods.addChatMessage(player, "No pylon found");
+            } else {
+                UtilMethods.addChatMessage(player, "No plyon found");
             }
         }
         return false;

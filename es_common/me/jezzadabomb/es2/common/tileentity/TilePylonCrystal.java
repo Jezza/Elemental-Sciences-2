@@ -10,4 +10,5 @@ public class TilePylonCrystal extends TilePylon implements IPylon, IBlockNotifie
     public int getPowerLevel() {
         return 3;
     }
+
 }

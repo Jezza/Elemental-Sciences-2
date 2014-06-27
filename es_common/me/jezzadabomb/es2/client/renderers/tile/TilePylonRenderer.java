@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotated;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import me.jezzadabomb.es2.client.models.ModelPylonCrystal;
@@ -18,12 +19,12 @@ import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
-public class TilePylonCrystalRenderer extends TileEntitySpecialRenderer {
+public class TilePylonRenderer extends TileEntitySpecialRenderer {
 
     ModelPylonCrystal modelPylonCrystal;
     boolean dummy = false;
 
-    public TilePylonCrystalRenderer(boolean dummy) {
+    public TilePylonRenderer(boolean dummy) {
         this.dummy = dummy;
         modelPylonCrystal = new ModelPylonCrystal();
     }
@@ -35,9 +36,10 @@ public class TilePylonCrystalRenderer extends TileEntitySpecialRenderer {
 
         glTranslated(x + 0.5F, y + 0.5F, z + 0.5F);
 
-        // glRotated(180, 0.0, 0.0, 1.0);
+        glRotated(RenderUtils.rotationEquation(-1, 0), 0.0F, 1.0F, 0.0F);
+        glRotated(180, 1.0F, 0.0F, 0.0F);
 
-        float scale = 0.35F;
+        float scale = 0.30F;
         glScalef(scale, scale, scale);
         glScalef(0.65F, 1.0F, 0.65F);
 
