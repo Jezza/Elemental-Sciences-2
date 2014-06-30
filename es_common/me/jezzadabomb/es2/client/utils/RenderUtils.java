@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.GL11;
@@ -57,7 +58,7 @@ public class RenderUtils {
 
     public static void translateToOtherPlayer(EntityPlayer player, double partialTicks) {
         EntityPlayer renderView = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-        translateToWorldCoordsShifted(renderView, partialTicks, player.posX, player.posY, player.posZ);
+        worldCoordShifted(renderView, partialTicks, player.posX, player.posY, player.posZ, true);
     }
 
     public static void drawTexturedQuadAtPlayer(ResourceLocation rl, int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
@@ -66,35 +67,25 @@ public class RenderUtils {
     }
 
     public static void drawTexturedQuad(int x, int y, int u, int v, int uLength, int vLength, double zLevel) {
-        float var7 = 0.0039063F;
-        float var8 = 0.0039063F;
+        float constant = 0.0039063F;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x + 0, y + vLength, zLevel, (u + 0) * var7, (v + vLength) * var8);
-        tessellator.addVertexWithUV(x + uLength, y + vLength, zLevel, (u + uLength) * var7, (v + vLength) * var8);
-        tessellator.addVertexWithUV(x + uLength, y + 0, zLevel, (u + uLength) * var7, (v + 0) * var8);
-        tessellator.addVertexWithUV(x + 0, y + 0, zLevel, (u + 0) * var7, (v + 0) * var8);
+        // @formatter:off
+        tessellator.addVertexWithUV(x + 0,       y + vLength,   zLevel, (u + 0)       * constant,   (v + vLength) * constant);
+        tessellator.addVertexWithUV(x + uLength, y + vLength,   zLevel, (u + uLength) * constant,   (v + vLength) * constant);
+        tessellator.addVertexWithUV(x + uLength, y + 0,         zLevel, (u + uLength) * constant,   (v + 0)       * constant);
+        tessellator.addVertexWithUV(x + 0,       y + 0,         zLevel, (u + 0)       * constant,   (v + 0)       * constant);
+        // @formatter:on
         tessellator.draw();
     }
 
-    public static double[] translateToWorldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
+    public static double[] worldCoordShifted(Entity entity, double frame, double x, double y, double z, boolean shouldTranslate) {
         double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
         double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
         double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
 
-        GL11.glTranslated(-interpPosX + x, -interpPosY + y, -interpPosZ + z);
-
-        double[] temp = new double[3];
-        temp[0] = interpPosX - (x + 0.5D);
-        temp[1] = interpPosZ - (z + 0.5D);
-        temp[2] = interpPosY - (y + entity.getEyeHeight());
-        return temp;
-    }
-
-    public static double[] worldCoordsShifted(Entity entity, double frame, double x, double y, double z) {
-        double interpPosX = MathHelper.interpolate(entity.lastTickPosX, entity.posX, frame);
-        double interpPosY = MathHelper.interpolate(entity.lastTickPosY, entity.posY, frame);
-        double interpPosZ = MathHelper.interpolate(entity.lastTickPosZ, entity.posZ, frame);
+        if (shouldTranslate)
+            glTranslated(-interpPosX + x, -interpPosY + y, -interpPosZ + z);
 
         double[] temp = new double[3];
         temp[0] = interpPosX - (x + 0.5D);
@@ -105,7 +96,7 @@ public class RenderUtils {
 
     public static boolean isPlayerRendering(String username) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        return (player != null && player.getDisplayName().equals(username));
+        return (player != null && player.getCommandSenderName().equals(username));
     }
 
     public static void drawItemAndSlot(int x, int y, ItemStack itemStack, int zLevel, int indexNum, int rowNum) {

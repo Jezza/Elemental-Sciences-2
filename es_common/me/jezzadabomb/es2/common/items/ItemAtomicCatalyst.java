@@ -37,8 +37,23 @@ public class ItemAtomicCatalyst extends ItemES {
 
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-        if (player.isSneaking())
+        if (player.isSneaking()) {
+            Block block = world.getBlock(x, y, z);
+            boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));
+            if (!world.isRemote && notOnList) {
+                AtomicCatalystAttribute atomic = AtomicCatalystAttribute.readFromNBT(itemStack.getTagCompound());
+
+                int strength = 0;
+                int fortune = atomic.getFortune();
+                int speed = atomic.getSpeed();
+                int meta = world.getBlockMetadata(x, y, z);
+
+                CatalystTicker.addBreaker(world, x, y, z, block, meta, strength, player, fortune, speed);
+                Sounds.CATALYST_PULSE.play(player, 1.0F, 0.8F);
+                itemStack.damageItem(1, player);
+            }
             return true;
+        }
 
         Block block = world.getBlock(x, y, z);
         boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));

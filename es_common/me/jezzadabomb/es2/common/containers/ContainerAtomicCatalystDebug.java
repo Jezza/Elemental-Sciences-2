@@ -10,7 +10,7 @@ public class ContainerAtomicCatalystDebug extends ContainerES {
     ItemStack itemStack;
 
     public ContainerAtomicCatalystDebug(EntityPlayer player, ItemStack itemStack) {
-        super(new CoordSet(player));
+        super(new CoordSet(player), 8);
         this.player = player;
         this.itemStack = itemStack;
     }

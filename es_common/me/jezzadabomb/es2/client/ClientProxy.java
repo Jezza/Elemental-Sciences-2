@@ -2,7 +2,6 @@ package me.jezzadabomb.es2.client;
 
 import me.jezzadabomb.es2.CommonProxy;
 import me.jezzadabomb.es2.client.gui.GuiAtomicCatalystDebug;
-import me.jezzadabomb.es2.client.gui.GuiConsole;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.HoverRenderer;
@@ -116,14 +115,12 @@ public class ClientProxy extends CommonProxy {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
-            case 0:
-                TileEntity tileEntity = world.getTileEntity(x, y, z);
-                if (tileEntity instanceof TileConsole)
-                    return new GuiConsole(player.inventory, (TileConsole) tileEntity);
             case 32:
                 ItemStack itemStack = player.getCurrentEquippedItem();
                 if (itemStack.getItem() == ModItems.atomicCatalyst)
                     return new GuiAtomicCatalystDebug(player, itemStack);
+            default:
+                break;
         }
         return null;
     }

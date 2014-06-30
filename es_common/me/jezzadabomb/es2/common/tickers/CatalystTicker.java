@@ -19,7 +19,6 @@ public class CatalystTicker {
 
     @SubscribeEvent
     public void worldTick(TickEvent.WorldTickEvent event) {
-        // TODO Fix the random null entry.
         breakTicks(event.world);
     }
 
@@ -35,13 +34,13 @@ public class CatalystTicker {
 
                 if (vb != null) {
                     Block block = world.getBlock(vb.x, vb.y, vb.z);
-                    int md = world.getBlockMetadata(vb.x, vb.y, vb.z);
-
+                    int meta = world.getBlockMetadata(vb.x, vb.y, vb.z);
                     boolean skip = vb.block.isWood(world, vb.x, vb.y, vb.z);
-                    if ((vb.block.equals(block)) && ((vb.meta == md) || skip)) {
+
+                    if ((vb.block.equals(block)) && ((vb.meta == meta) || skip)) {
                         if (limit++ > vb.speed * 3)
                             didSomething = true;
-                        ArrayList<ItemStack> ret = vb.block.getDrops(world, vb.x, vb.y, vb.z, md, vb.fortune);
+                        ArrayList<ItemStack> ret = vb.block.getDrops(world, vb.x, vb.y, vb.z, meta, vb.fortune);
                         for (ItemStack is : ret)
                             if (!vb.player.capabilities.isCreativeMode && !vb.player.inventory.addItemStackToInventory(is))
                                 world.spawnEntityInWorld(new EntityItem(world, vb.x + 0.5D, vb.y + 0.5D, vb.z + 0.5D, is));

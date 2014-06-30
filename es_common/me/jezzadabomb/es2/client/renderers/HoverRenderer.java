@@ -56,7 +56,7 @@ public class HoverRenderer {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glDisable(GL_CULL_FACE);
 
-                boolean flag = !player.equals(renderView.getDisplayName());
+                boolean flag = !player.equals(renderView.getCommandSenderName());
                 if (flag) {
                     RenderUtils.translateToOtherPlayer(renderView.worldObj.getPlayerEntityByName(player.getUsername()), event.partialTicks);
                     glTranslated(0.0D, 1.55D, 0.0D);

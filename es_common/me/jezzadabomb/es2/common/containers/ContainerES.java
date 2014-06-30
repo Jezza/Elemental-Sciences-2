@@ -7,15 +7,20 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
 public abstract class ContainerES extends Container {
-    CoordSet coordSet;
+    private CoordSet coordSet;
+    private int range;
 
-    public ContainerES(CoordSet coordSet) {
+    /**
+     * Range should be squared
+     */
+    public ContainerES(CoordSet coordSet, int range) {
         this.coordSet = coordSet;
+        this.range = range;
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return player.getDistanceSq(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < 64;
+        return player.getDistanceSq(coordSet.getX(), coordSet.getY(), coordSet.getZ()) < range;
     }
 
     protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {

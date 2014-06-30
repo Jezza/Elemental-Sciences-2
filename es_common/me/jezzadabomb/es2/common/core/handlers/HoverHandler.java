@@ -100,7 +100,7 @@ public class HoverHandler {
     }
 
     private HoveringPlayer getHoveringPlayer(EntityPlayer player) {
-        String username = player.getDisplayName();
+        String username = player.getCommandSenderName();
         for (HoveringPlayer temp : playerList)
             if (temp.getUsername().equals(username))
                 return temp;
@@ -162,7 +162,7 @@ public class HoverHandler {
         }
 
         public String getUsername() {
-            return player.getDisplayName();
+            return player.getCommandSenderName();
         }
 
         public EntityPlayer getPlayer() {

@@ -24,10 +24,19 @@ public class AtomicCatalystAttribute {
         return strength;
     }
 
-    public void updateValues(int fortune, int speed, int strength) {
+    public AtomicCatalystAttribute setFortune(int fortune) {
         this.fortune = fortune;
+        return this;
+    }
+
+    public AtomicCatalystAttribute setSpeed(int speed) {
         this.speed = speed;
+        return this;
+    }
+
+    public AtomicCatalystAttribute setStrength(int strength) {
         this.strength = strength;
+        return this;
     }
 
     public void writeToNBT(NBTTagCompound tag) {

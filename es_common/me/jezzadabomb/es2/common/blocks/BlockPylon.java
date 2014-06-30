@@ -28,7 +28,7 @@ public class BlockPylon extends BlockESMeta {
 
     @Override
     public TileEntity getTileEntity(int metadata) {
-        return new TilePylonCrystal();
+        return new TilePylonCrystal(metadata + 1);
     }
 
 }

@@ -41,8 +41,8 @@ public class GuiAtomicCatalystDebug extends GuiContainerES {
         int yOffset = 30;
 
         for (int i = 0; i <= 2; i++) {
-            addButton(guiLeft + 20          , guiTop + 10 + (i * yOffset), 20, 20, "<");
-            addButton(guiLeft + xSize - 40  , guiTop + 10 + (i * yOffset), 20, 20, ">");
+            addButton(guiLeft + 20, guiTop + 10 + (i * yOffset), 20, 20, "<");
+            addButton(guiLeft + xSize - 40, guiTop + 10 + (i * yOffset), 20, 20, ">");
         }
         addButton(guiLeft + xSize / 2 - 20, guiTop + ySize - 30, 40, 20, "Done");
     }
@@ -81,7 +81,7 @@ public class GuiAtomicCatalystDebug extends GuiContainerES {
         speed = MathHelper.clipInt(speed, 0, 5);
         strength = MathHelper.clipInt(strength, 1, 7);
 
-        attribute.updateValues(fortune, speed, strength);
+        attribute.setFortune(fortune).setSpeed(speed).setStrength(strength);
     }
 
     @Override

@@ -108,15 +108,15 @@ public class HUDRenderer {
         if (underBlock)
             glClear(GL_DEPTH_BUFFER_BIT);
 
-        double[] num = RenderUtils.translateToWorldCoordsShifted(player, partialTicks, x, y, z);
+        double[] num = RenderUtils.worldCoordShifted(player, partialTicks, x, y, z, true);
 
         if (num == null) {
             glEnable(GL_CULL_FACE);
             glDisable(GL_BLEND);
             glPopMatrix();
 
-//            if (DebugHelper.canShowDebugHUD())
-//                RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour());
+            // if (DebugHelper.canShowDebugHUD())
+            // RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour());
             return;
         }
 
@@ -160,8 +160,8 @@ public class HUDRenderer {
         glDisable(GL_BLEND);
         glPopMatrix();
 
-//        if (underBlock && DebugHelper.canShowDebugHUD())
-//            RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(0.0F, 1.0F, 0.0F, 0.5F));
+        // if (underBlock && DebugHelper.canShowDebugHUD())
+        // RenderUtils.renderColouredBox(partialTicks, p.coordSet, new Colour(0.0F, 1.0F, 0.0F, 0.5F));
     }
 
     private void drawItemStacks(ArrayList<ItemStack> itemStacks) {

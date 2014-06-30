@@ -2,6 +2,7 @@ package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
 import me.jezzadabomb.es2.common.core.interfaces.IMasterable;
+import me.jezzadabomb.es2.common.core.interfaces.IPylon;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
@@ -240,6 +241,10 @@ public class CoordSet {
 
     public boolean isMasterable(World world) {
         return getTileEntity(world) instanceof IMasterable;
+    }
+
+    public boolean isPylon(World world) {
+        return getTileEntity(world) instanceof IPylon;
     }
 
     public boolean isPylonReciever(World world) {

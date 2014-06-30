@@ -1,6 +1,7 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
+import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockInteract;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;

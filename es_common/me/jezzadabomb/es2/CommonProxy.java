@@ -1,12 +1,12 @@
 package me.jezzadabomb.es2;
 
-import me.jezzadabomb.es2.common.containers.ContainerConsole;
 import me.jezzadabomb.es2.common.core.handlers.HoverHandler;
 import me.jezzadabomb.es2.common.core.handlers.MiscEventHandler;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
 import me.jezzadabomb.es2.common.tickers.QuantumBombTicker;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
+import me.jezzadabomb.es2.common.tileentity.TileAtomicShredder;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
 import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
 import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
@@ -14,7 +14,6 @@ import me.jezzadabomb.es2.common.tileentity.TileObelisk;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -50,6 +49,7 @@ public class CommonProxy implements IGuiHandler {
         GameRegistry.registerTileEntity(TileDroneBay.class, Strings.DRONE_BAY);
         GameRegistry.registerTileEntity(TilePylonCrystal.class, Strings.PYLON_CRYSTAL);
         GameRegistry.registerTileEntity(TileObelisk.class, Strings.OBELISK);
+        GameRegistry.registerTileEntity(TileAtomicShredder.class, Strings.ATOMIC_SHREDDER);
     }
 
     public void registerTickHandler(Object target) {
@@ -63,10 +63,6 @@ public class CommonProxy implements IGuiHandler {
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch (ID) {
-            case 0:
-                TileEntity tileEntity = world.getTileEntity(x, y, z);
-                if (tileEntity instanceof TileConsole)
-                    return new ContainerConsole(player.inventory, (TileConsole) tileEntity);
         }
         return null;
     }

@@ -1,14 +1,20 @@
 package me.jezzadabomb.es2.common.tileentity;
 
-import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
-import me.jezzadabomb.es2.common.core.interfaces.IPylon;
 import me.jezzadabomb.es2.common.tileentity.framework.TilePylon;
 
-public class TilePylonCrystal extends TilePylon implements IPylon, IBlockNotifier {
+public class TilePylonCrystal extends TilePylon {
+
+    private int powerLevel = 1;
+
+    public TilePylonCrystal(int powerLevel) {
+        this.powerLevel = powerLevel;
+    }
+
+    public TilePylonCrystal() {
+    }
 
     @Override
     public int getPowerLevel() {
-        return 3;
+        return powerLevel;
     }
-
 }

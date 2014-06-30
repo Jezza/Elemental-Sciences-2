@@ -56,7 +56,7 @@ public class EntityCombatDrone extends EntityDrone implements IEntityOwnable {
 
     public void setOwner(EntityPlayer player) {
         this.player = player;
-        playerName = player.getDisplayName();
+        playerName = player.getCommandSenderName();
     }
 
     @Override
