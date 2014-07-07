@@ -8,16 +8,10 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
 @SideOnly(Side.CLIENT)
-public class ModelDroneBay extends ModelBase {
-
-    IModelCustom droneBay;
+public class ModelDroneBay extends ModelCustomAbstract {
 
     public ModelDroneBay() {
-        droneBay = AdvancedModelLoader.loadModel(Models.DRONE_BAY);
-    }
-
-    public void renderPart(String part) {
-        droneBay.renderPart(part);
+        super(Models.DRONE_BAY);
     }
 
     public void renderDoor(int door) {
@@ -28,9 +22,4 @@ public class ModelDroneBay extends ModelBase {
         for (int i = 0; i < 32; i++)
             renderDoor(i);
     }
-
-    public void render() {
-        droneBay.renderAll();
-    }
-
 }

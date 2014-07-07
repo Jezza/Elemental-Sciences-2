@@ -1,31 +1,20 @@
 package me.jezzadabomb.es2.client.models;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.lib.Models;
 import net.minecraft.client.model.ModelBase;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
-public class ModelAtomicShredder extends ModelBase {
-
-    IModelCustom modelAtomicShredder;
+@SideOnly(Side.CLIENT)
+public class ModelAtomicShredder extends ModelCustomAbstract {
 
     public ModelAtomicShredder() {
-        modelAtomicShredder = AdvancedModelLoader.loadModel(Models.ATOMIC_SHREDDER);
-    }
-
-    public void render() {
-        modelAtomicShredder.renderAll();
-    }
-
-    public void renderPart(String part) {
-        modelAtomicShredder.renderPart(part);
+        super(Models.ATOMIC_SHREDDER);
     }
 
     public void renderCasing(int casingNumber) {
-        modelAtomicShredder.renderPart("InnerCasing" + casingNumber);
-    }
-
-    public IModelCustom getModel() {
-        return modelAtomicShredder;
+        renderPart("InnerCasing" + casingNumber);
     }
 }

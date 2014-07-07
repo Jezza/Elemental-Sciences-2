@@ -8,14 +8,10 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
 @SideOnly(Side.CLIENT)
-public class ModelCube extends ModelBase {
-    IModelCustom cube;
+public class ModelCube extends ModelCustomAbstract {
 
     public ModelCube() {
-        cube = AdvancedModelLoader.loadModel(Models.CUBE);
+        super(Models.CUBE);
     }
 
-    public void renderAll() {
-        cube.renderAll();
-    }
 }
