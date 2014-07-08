@@ -1,18 +1,15 @@
 package me.jezzadabomb.es2.common.tileentity.framework;
 
-import net.minecraft.world.World;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylon;
 import me.jezzadabomb.es2.common.core.interfaces.IPylonReceiver;
+import net.minecraft.world.World;
 
 public abstract class TilePylonUser extends TileES implements IPylonReceiver, IBlockNotifier {
 
     private IPylon powered = null;
     private boolean registered = false;
-
-    private int timeTicked = -1;
 
     /**
      * Call this, or no power for you.

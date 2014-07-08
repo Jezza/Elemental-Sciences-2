@@ -16,18 +16,41 @@ public class Strings {
     public static final String COMPUTER_EXTERNAL = "computerExternal";
 
     public static final String ATOMIC_SHREDDER = "atomicShredder";
-
     public static final String RESOURCE_BLOCK = "resourceBlock";
 
-    // Item Name Constants
-    public static final String ATOMIC_CATALYST = "atomicCatalyst";
-    public static final String GLASSES = "spectralGlasses";
+    // Debug
     public static final String DEBUG_TOOL = "debugTool";
-    public static final String HOVER_BOOTS = "hoverBoots";
-    public static final String PLACEHOLDER = "placeHolder";
-    public static final String PLACEHOLDER_64 = "placeHolder64";
-    public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
+    public static final String PYLON_TOOL = "pylonTool";
+
+    // Crafting
+    public static final String ATOMIC_FRAME = "atomicFrame";
+    public static final String IRON_BAR = "ironBar";
+    public static final String IRON_PLATE = "ironPlate";
+    public static final String GLASSES_LENS = "glassesLens";
+    public static final String SPECTRUM_SENSOR = "spectrumSensor";
+    public static final String STRENGTHENED_IRON = "strengthenedIron";
+    public static final String STRENGTHENED_IRON_BAR = "strengthenedIronBar";
+    public static final String STRENGTHENED_IRON_STRIP = "strengthenedIronStrip";
+    public static final String STRENGTHENED_PLATE = "strengthenedPlate";
+
+    // Items
     public static final String WOODEN_BUCKET = "woodenBucket";
+
+    // Armour
+    public static final String GLASSES = "spectralGlasses";
+    public static final String HOVER_BOOTS = "hoverBoots";
+
+    // Equipment
+    public static final String CONSTRUCTOR_DRONE = "constructorDrone";
+    public static final String COMBAT_DRONE = "combatDrone";
+    public static final String EMP_TRIGGER = "empTrigger";
+    public static final String SELECTIVE_EMP_TRIGGER = "selectiveEMPTrigger";
+
+    // Relics
+    public static final String DEAD_COIN = "deadCoin";
+    public static final String LIFE_COIN = "lifeCoin";
+    public static final String ATOMIC_CATALYST = "atomicCatalyst";
+    public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";
@@ -42,6 +65,6 @@ public class Strings {
     public static final String CAN_DEBUG = "Enable debug mode";
 
     // Entity Constants
-    public static final String CONSTRUCTOR_DRONE = "EntityConstructorDrone";
-    public static final String COMBAT_DRONE = "EntityConstructorDrone";
+    public static final String ENTITY_CONSTRUCTOR_DRONE = "EntityConstructorDrone";
+    public static final String ENTITY_COMBAT_DRONE = "EntityConstructorDrone";
 }

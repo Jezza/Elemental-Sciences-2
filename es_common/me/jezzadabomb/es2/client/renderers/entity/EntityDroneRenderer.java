@@ -2,7 +2,7 @@ package me.jezzadabomb.es2.client.renderers.entity;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import me.jezzadabomb.es2.client.models.drones.ModelDrone;
+import me.jezzadabomb.es2.client.models.ModelCustomAbstract;
 import me.jezzadabomb.es2.common.entities.EntityDrone;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.client.renderer.entity.Render;
@@ -14,11 +14,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EntityDroneRenderer extends Render {
 
-    ModelDrone modelConstructorDrone;
+    ModelCustomAbstract model;
     boolean shouldHover;
 
-    public EntityDroneRenderer(ModelDrone modelDrone, boolean shouldHover) {
-        modelConstructorDrone = modelDrone;
+    public EntityDroneRenderer(ModelCustomAbstract model, boolean shouldHover) {
+        this.model = model;
         this.shouldHover = shouldHover;
         shadowSize = 0.1F;
     }
@@ -39,7 +39,7 @@ public class EntityDroneRenderer extends Render {
 
         bindEntityTexture(drone);
 
-        modelConstructorDrone.render();
+        model.renderAll();
 
         glPopMatrix();
     }

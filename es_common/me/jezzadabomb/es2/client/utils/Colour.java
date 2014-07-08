@@ -2,8 +2,6 @@ package me.jezzadabomb.es2.client.utils;
 
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-
 /**
  * A class representing an RGBA colour and various helper functions. Mainly to improve readability elsewhere.
  * 

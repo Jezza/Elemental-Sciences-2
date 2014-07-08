@@ -145,7 +145,7 @@ public class ItemDebugTool extends ItemDebug {
                 player.addChatMessage(new ChatComponentText("HUD Rotation: " + !temp));
                 break;
             case 12:
-                player.inventory.addItemStackToInventory(ModItems.getPlaceHolderStack("lifeCoin"));
+                player.inventory.addItemStackToInventory(new ItemStack(ModItems.lifeCoin));
                 break;
         }
     }

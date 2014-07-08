@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.tileentity.framework;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.IPylonRegistry;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.interfaces.IPylon;

@@ -45,5 +45,6 @@ public abstract class ItemES extends Item {
         information.addToList(list);
     }
 
-    protected abstract void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information);
+    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
+    };
 }

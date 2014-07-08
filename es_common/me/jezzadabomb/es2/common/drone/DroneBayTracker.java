@@ -101,7 +101,7 @@ public class DroneBayTracker implements IMasterable {
         if (world.isRemote)
             return dronesToSpawn;
 
-        int rt = spawnDrone(dronesToSpawn, coordSetD);
+        spawnDrone(dronesToSpawn, coordSetD);
 
         ArrayList<EntityConstructorDrone> utilList = new ArrayList<EntityConstructorDrone>();
         utilList.addAll(controllableList);

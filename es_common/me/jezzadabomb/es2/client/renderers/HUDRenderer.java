@@ -12,7 +12,6 @@ import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.network.packet.server.InventoryPacket;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.helpers.DebugHelper;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.core.utils.helpers.PlayerHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -211,6 +210,11 @@ public class HUDRenderer {
 
         public boolean tickTimeout() {
             return --timeout <= 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return coordSet.hashCode();
         }
     }
 }

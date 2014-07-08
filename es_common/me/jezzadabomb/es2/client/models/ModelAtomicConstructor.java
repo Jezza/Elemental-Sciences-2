@@ -1,13 +1,8 @@
 package me.jezzadabomb.es2.client.models;
 
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.client.lib.Models;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
 public class ModelAtomicConstructor extends ModelCustomAbstract {
@@ -87,9 +82,5 @@ public class ModelAtomicConstructor extends ModelCustomAbstract {
         if (checkState[20])
             // NEG X
             renderPart("BaseNegX");
-    }
-
-    public void renderFrame() {
-        renderAllExcept("BasePlate");
     }
 }

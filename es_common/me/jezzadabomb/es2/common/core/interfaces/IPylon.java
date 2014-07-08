@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.core.interfaces;
 
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
-import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet4;
 
 public interface IPylon {
     public int getPowerLevel();

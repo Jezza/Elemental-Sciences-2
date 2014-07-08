@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import me.jezzadabomb.es2.client.ClientProxy;
 import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.network.PacketUtils;
@@ -17,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class InventoryPacket implements IPacket {
 
@@ -73,7 +73,6 @@ public class InventoryPacket implements IPacket {
 
     @Override
     public void executeClientSide(EntityPlayer player) {
-        World world = player.worldObj;
         CoordSet tempSet = CoordSet.getArrayFromString(loc);
         if (tempSet == null)
             return;

@@ -12,8 +12,8 @@ public class Entities {
     private static int index = 0;
 
     public static void init() {
-        registerEntity(EntityConstructorDrone.class, Strings.CONSTRUCTOR_DRONE, 3);
-        registerEntity(EntityCombatDrone.class, Strings.COMBAT_DRONE, 2);
+        registerEntity(EntityConstructorDrone.class, Strings.ENTITY_CONSTRUCTOR_DRONE, 3);
+        registerEntity(EntityCombatDrone.class, Strings.ENTITY_COMBAT_DRONE, 2);
     }
 
     private static void registerEntity(Class<? extends Entity> clazz, String entityName, int updateTime) {

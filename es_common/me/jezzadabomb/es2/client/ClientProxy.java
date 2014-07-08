@@ -7,12 +7,13 @@ import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.client.renderers.HoverRenderer;
 import me.jezzadabomb.es2.client.renderers.entity.EntityDroneRenderer;
 import me.jezzadabomb.es2.client.renderers.item.ItemAtomicCatalystRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemAtomicConstructorRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemConsoleRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemDroneBayRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemInventoryScannerRenderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolder64Renderer;
-import me.jezzadabomb.es2.client.renderers.item.ItemPlaceHolderRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemAtomicFrameRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemConstructorDroneRenderer;
+import me.jezzadabomb.es2.client.renderers.item.ItemStrengthenedIronBarRenderer;
+import me.jezzadabomb.es2.client.renderers.itemblock.ItemAtomicConstructorRenderer;
+import me.jezzadabomb.es2.client.renderers.itemblock.ItemConsoleRenderer;
+import me.jezzadabomb.es2.client.renderers.itemblock.ItemDroneBayRenderer;
+import me.jezzadabomb.es2.client.renderers.itemblock.ItemInventoryScannerRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
@@ -68,6 +69,7 @@ public class ClientProxy extends CommonProxy {
 
     private void initHandlers() {
         // initEntityHandler
+        // TODO Yep...
         RenderingRegistry.registerEntityRenderingHandler(EntityConstructorDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
         RenderingRegistry.registerEntityRenderingHandler(EntityCombatDrone.class, new EntityDroneRenderer(new ModelConstructorDrone(), true));
 
@@ -89,14 +91,19 @@ public class ClientProxy extends CommonProxy {
         registerTileRenderer(TileDroneBay.class, new TileDroneBayRenderer());
         registerTileRenderer(TileObelisk.class, new TileObeliskRenderer());
 
-        // initItemRenderer
-        registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
-        registerItemRenderer(ModItems.placeHolders, new ItemPlaceHolderRenderer());
-        registerItemRenderer(ModItems.placeHolders64, new ItemPlaceHolder64Renderer());
+        // Crafting
+        registerItemRenderer(ModItems.strengthenedIronBar, new ItemStrengthenedIronBarRenderer());
+
+        // Equipment
+        registerItemRenderer(ModItems.atomicFrame, new ItemAtomicFrameRenderer());
+        registerItemRenderer(ModItems.constructorDrone, new ItemConstructorDroneRenderer());
         registerItemRenderer(ModBlocks.inventoryScanner, new ItemInventoryScannerRenderer());
         registerItemRenderer(ModBlocks.atomicConstructor, new ItemAtomicConstructorRenderer());
         registerItemRenderer(ModBlocks.console, new ItemConsoleRenderer());
         registerItemRenderer(ModBlocks.droneBay, new ItemDroneBayRenderer());
+
+        // Relics
+        registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
 
     }
 

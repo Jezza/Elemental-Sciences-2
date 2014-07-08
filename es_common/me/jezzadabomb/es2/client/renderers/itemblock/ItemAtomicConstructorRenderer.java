@@ -1,10 +1,9 @@
-package me.jezzadabomb.es2.client.renderers.item;
+package me.jezzadabomb.es2.client.renderers.itemblock;
 
 import static org.lwjgl.opengl.GL11.*;
 import me.jezzadabomb.es2.client.models.ModelAtomicConstructor;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 

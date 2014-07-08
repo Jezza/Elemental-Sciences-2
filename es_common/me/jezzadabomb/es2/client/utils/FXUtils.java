@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.client.utils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
 public class FXUtils {

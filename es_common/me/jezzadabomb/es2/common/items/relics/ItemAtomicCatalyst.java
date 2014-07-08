@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.items;
+package me.jezzadabomb.es2.common.items.relics;
 
 import java.util.List;
 import java.util.Random;

@@ -1,20 +1,11 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glRotatef;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.BitSet;
 
 import me.jezzadabomb.es2.client.models.ModelCube;
 import me.jezzadabomb.es2.client.models.ModelPlate;
-import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import me.jezzadabomb.es2.common.tileentity.TileConsole;
@@ -28,12 +19,10 @@ public class TileConsoleRenderer extends TileEntitySpecialRenderer {
 
     private ModelPlate modelPlate;
     private ModelCube modelPixel;
-    private ModelConstructorDrone modelConstructorDrone;
 
     public TileConsoleRenderer() {
         modelPlate = new ModelPlate();
         modelPixel = new ModelCube();
-        modelConstructorDrone = new ModelConstructorDrone();
     }
 
     public void renderConsole(TileConsole tileConsole, double x, double y, double z, float tick) {

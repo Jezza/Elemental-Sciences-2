@@ -2,7 +2,6 @@ package me.jezzadabomb.es2.client.utils;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import me.jezzadabomb.es2.client.renderers.HUDRenderer;
 import me.jezzadabomb.es2.common.core.utils.coordset.CoordSet;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.lib.Reference;
@@ -21,10 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-
-import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

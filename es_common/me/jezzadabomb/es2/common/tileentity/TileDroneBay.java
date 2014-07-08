@@ -136,7 +136,7 @@ public class TileDroneBay extends TileES {
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
-            if (itemStack == null || !(InventoryHelper.areItemStacksEqual(itemStack, ModItems.getPlaceHolderStack("constructorDrone"))))
+            if (itemStack == null || !(InventoryHelper.areItemStacksEqual(itemStack, new ItemStack(ModItems.constructorDrone))))
                 continue;
             count++;
         }
@@ -145,11 +145,11 @@ public class TileDroneBay extends TileES {
     }
 
     public int removeItemDrones(int count) {
-        return InventoryHelper.removeItemStackFromIInventory(getInventory(), ModItems.getPlaceHolderStack("constructorDrone"), count);
+        return InventoryHelper.removeItemStackFromIInventory(getInventory(), new ItemStack(ModItems.constructorDrone), count);
     }
 
     public boolean addDroneToChest(EntityConstructorDrone drone) {
-        ItemStack itemStack = ModItems.getPlaceHolderStack("constructorDrone");
+        ItemStack itemStack = new ItemStack(ModItems.constructorDrone);
 
         IInventory inventory = getInventory();
         boolean flag = InventoryHelper.addItemStackToIInventory(inventory, itemStack);

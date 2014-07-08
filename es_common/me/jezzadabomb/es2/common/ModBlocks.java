@@ -56,6 +56,6 @@ public class ModBlocks {
     public static void initBlockRecipes() {
         CraftingManager craftingManager = CraftingManager.getInstance();
 
-        craftingManager.addShapelessRecipe(new ItemStack(atomicConstructor), new Object[] { ModItems.getPlaceHolderStack("atomicFrame"), ModItems.getPlaceHolderStack("strengthenedPlate") });
+        craftingManager.addShapelessRecipe(new ItemStack(atomicConstructor), new Object[] { ModItems.atomicFrame, ModItems.strengthenedPlate });
     }
 }

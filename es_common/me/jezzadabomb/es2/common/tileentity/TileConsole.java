@@ -123,7 +123,7 @@ public class TileConsole extends TileES implements IRotatable {
 
         droneBayMaintenance();
 
-        int result = droneBayTracker.sendDronesToXYZ(1, tileAtomic.getCoordSet().toCoordSetD());
+        droneBayTracker.sendDronesToXYZ(1, tileAtomic.getCoordSet().toCoordSetD());
     }
 
     public void updateRenderCables() {

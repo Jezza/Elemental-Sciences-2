@@ -12,12 +12,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public abstract class ItemMetaES extends ItemES {
+public abstract class ItemESMeta extends ItemES {
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
 
-    public ItemMetaES(String name) {
+    public ItemESMeta(String name) {
         super(name);
         setHasSubtypes(true);
     }
@@ -51,6 +51,16 @@ public abstract class ItemMetaES extends ItemES {
         List<String> names = getNames();
         int damage = MathHelper.clipInt(itemStack.getItemDamage(), names.size() - 1);
         return "item." + names.get(damage);
+    }
+
+    public boolean isValidStack(ItemStack itemStack, String name) {
+        int damage = itemStack.getItemDamage();
+        try {
+            String temp = getNames().get(damage);
+            return name.equals(temp);
+        } catch (IndexOutOfBoundsException e) {
+        }
+        return false;
     }
 
     public abstract List<String> getNames();

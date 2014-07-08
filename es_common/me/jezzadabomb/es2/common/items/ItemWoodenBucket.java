@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.jezzadabomb.es2.common.ModItems;
-import me.jezzadabomb.es2.common.core.utils.ItemInformation;
-import me.jezzadabomb.es2.common.items.framework.ItemMetaES;
+import me.jezzadabomb.es2.common.items.framework.ItemESMeta;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,7 +23,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemWoodenBucket extends ItemMetaES {
+public class ItemWoodenBucket extends ItemESMeta {
 
     private Fluid fluid = null;
 
@@ -147,10 +146,6 @@ public class ItemWoodenBucket extends ItemMetaES {
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         list.add(getEmptyBucket());
         list.add(getFilledBucket());
-    }
-
-    @Override
-    protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
     }
 
     public static ItemStack getEmptyBucket() {

@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.core.utils.helpers;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -55,23 +54,16 @@ public class PlayerHelper {
 
     // No NBT Comparision.
     public static boolean hasItemInInventory(EntityPlayer player, ItemStack itemStack, boolean shouldConsume, ItemStack replaceStack) {
-        if (shouldConsume)
-            ESLogger.info("Hitting");
         int index = 0;
         for (ItemStack tempStack : player.inventory.mainInventory) {
             if (tempStack != null && ItemStack.areItemStacksEqual(itemStack, tempStack)) {
-                if (shouldConsume) {
+                if (shouldConsume)
                     player.inventory.mainInventory[index] = replaceStack;
-                }
                 return true;
             }
             index++;
         }
         return false;
-    }
-
-    public static ItemStack decrCurrentItem(EntityPlayer player) {
-        return player.inventory.decrStackSize(player.inventory.currentItem, 1);
     }
 
     public static int getSlotFromIndex(int index) {

@@ -15,6 +15,7 @@ import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -64,7 +65,7 @@ public class QuantumBombTicker {
                 if (entity instanceof EntityPlayer) {
                     EntityPlayer player = (EntityPlayer) entity;
 
-                    if (PlayerHelper.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), false, null))
+                    if (PlayerHelper.hasItemInInventory(player, new ItemStack(ModItems.lifeCoin), false, null))
                         continue;
 
                     if (player.capabilities.isFlying)
@@ -93,7 +94,7 @@ public class QuantumBombTicker {
         for (Object object : playerEntities) {
             if (object instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) object;
-                if (PlayerHelper.hasItemInInventory(player, ModItems.getPlaceHolderStack("lifeCoin"), true, ModItems.getPlaceHolderStack("deadCoin"))) {
+                if (PlayerHelper.hasItemInInventory(player, new ItemStack(ModItems.lifeCoin), true, new ItemStack(ModItems.deadCoin))) {
                     UtilMethods.addChatMessage(player, "You're lucky you managed to play a perfect game.");
                     continue;
                 }

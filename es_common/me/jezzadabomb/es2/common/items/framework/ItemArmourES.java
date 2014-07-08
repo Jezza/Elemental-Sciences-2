@@ -20,8 +20,8 @@ public abstract class ItemArmourES extends ItemArmor {
     String textureLocation;
     int slot;
 
-    public ItemArmourES(ArmorMaterial armorMaterial, int renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
-        super(armorMaterial, renderIndex, armourIndex.ordinal());
+    public ItemArmourES(ArmorMaterial armorMaterial, ArmourRenderIndex renderIndex, ArmourSlotIndex armourIndex, String name, String textureLocation) {
+        super(armorMaterial, renderIndex.ordinal(), armourIndex.ordinal());
         slot = armourIndex.ordinal();
         this.textureLocation = textureLocation;
         setCreativeTab(ElementalSciences2.creativeTab);
@@ -74,5 +74,9 @@ public abstract class ItemArmourES extends ItemArmor {
 
     public enum ArmourSlotIndex {
         HEAD, CHESTPLATE, LEGGINGS, BOOTS;
+    }
+
+    public enum ArmourRenderIndex {
+        CLOTH, CHAIN, IRON, DIAMOND, GOLD;
     }
 }

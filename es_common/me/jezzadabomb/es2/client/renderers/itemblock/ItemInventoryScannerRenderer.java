@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.client.renderers.item;
+package me.jezzadabomb.es2.client.renderers.itemblock;
 
 import static org.lwjgl.opengl.GL11.GL_LIGHTING;
 import static org.lwjgl.opengl.GL11.glDisable;

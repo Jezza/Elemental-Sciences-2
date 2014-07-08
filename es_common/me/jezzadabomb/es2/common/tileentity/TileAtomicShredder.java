@@ -1,6 +1,5 @@
 package me.jezzadabomb.es2.common.tileentity;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.tileentity.framework.TilePylonUser;
 
 public class TileAtomicShredder extends TilePylonUser {
