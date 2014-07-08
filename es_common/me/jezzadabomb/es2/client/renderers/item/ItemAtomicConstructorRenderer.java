@@ -30,19 +30,19 @@ public class ItemAtomicConstructorRenderer implements IItemRenderer {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY: {
-                renderAtomicConstructor(0.0F, 1.2F, 0.0F, 1.0F);
+                renderAtomicConstructor(0.0F, 1.7F, 0.0F, 0.5F);
                 break;
             }
             case EQUIPPED_FIRST_PERSON: {
-                renderAtomicConstructor(0.4F, 1.5F, 0.5F, 1.0F);
+                renderAtomicConstructor(0.55F, 2F, 0.45F, 0.5F);
                 break;
             }
             case INVENTORY: {
-                renderAtomicConstructor(0.0F, 1.0F, 0.0F, 1.0F);
+                renderAtomicConstructor(0.5F, 1.94F, 0.5F, 0.5F);
                 break;
             }
             case EQUIPPED: {
-                renderAtomicConstructor(0.4F, 1.5F, 0.4F, 1.0F);
+                renderAtomicConstructor(0.5F, 2F, 0.5F, 0.5F);
                 break;
             }
             default:
@@ -54,15 +54,13 @@ public class ItemAtomicConstructorRenderer implements IItemRenderer {
         glPushMatrix();
         glDisable(GL_LIGHTING);
 
-        glTranslatef(x, y, z);
-
-        glRotatef(180F, 1.0F, 0.0F, 0.0F);
+        glTranslatef(x, y - 2, z);
 
         glScalef(scale, scale, scale);
 
         RenderUtils.bindTexture(TextureMaps.ATOMIC_CONSTRUCTOR);
 
-        modelAtomicConstructor.render((Entity) null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        modelAtomicConstructor.renderAll();
 
         glEnable(GL_LIGHTING);
         glPopMatrix();

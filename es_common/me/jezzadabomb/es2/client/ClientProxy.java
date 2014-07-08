@@ -81,13 +81,13 @@ public class ClientProxy extends CommonProxy {
 
     private void initRenderers() {
         // initTileRenderers
-        registerTileEntityRenderer(TilePylonCrystal.class, new TilePylonRenderer(false));
-        registerTileEntityRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
-        registerTileEntityRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
-        registerTileEntityRenderer(TileConsole.class, new TileConsoleRenderer());
-        registerTileEntityRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
-        registerTileEntityRenderer(TileDroneBay.class, new TileDroneBayRenderer());
-        registerTileEntityRenderer(TileObelisk.class, new TileObeliskRenderer());
+        registerTileRenderer(TilePylonCrystal.class, new TilePylonRenderer(false));
+        registerTileRenderer(TileInventoryScanner.class, new TileInventoryScannerRenderer());
+        registerTileRenderer(TileAtomicConstructor.class, new TileAtomicConstructorRenderer());
+        registerTileRenderer(TileConsole.class, new TileConsoleRenderer());
+        registerTileRenderer(TileQuantumStateDisruptor.class, new TileQuantumStateDisruptorRenderer());
+        registerTileRenderer(TileDroneBay.class, new TileDroneBayRenderer());
+        registerTileRenderer(TileObelisk.class, new TileObeliskRenderer());
 
         // initItemRenderer
         registerItemRenderer(ModItems.atomicCatalyst, new ItemAtomicCatalystRenderer());
@@ -100,7 +100,7 @@ public class ClientProxy extends CommonProxy {
 
     }
 
-    private void registerTileEntityRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
+    private void registerTileRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
         ClientRegistry.bindTileEntitySpecialRenderer(clazz, renderer);
     }
 
@@ -117,7 +117,7 @@ public class ClientProxy extends CommonProxy {
         switch (ID) {
             case 32:
                 ItemStack itemStack = player.getCurrentEquippedItem();
-                if (itemStack.getItem() == ModItems.atomicCatalyst)
+                if (itemStack != null && itemStack.getItem() == ModItems.atomicCatalyst)
                     return new GuiAtomicCatalystDebug(player, itemStack);
             default:
                 break;

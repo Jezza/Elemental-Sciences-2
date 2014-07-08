@@ -1,5 +1,7 @@
 package me.jezzadabomb.es2.common.blocks;
 
+import java.util.ArrayList;
+
 import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
 import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
@@ -8,7 +10,13 @@ import net.minecraft.tileentity.TileEntity;
 
 public class BlockPylon extends BlockESMeta {
 
-    private static final String[] names = new String[] { "pylonCrystal0", "pylonCrystal1", "pylonCrystal2" };
+    private static final ArrayList<String> names = new ArrayList<String>() {
+        {
+            add("pylonCrystal0");
+            add("pylonCrystal1");
+            add("pylonCrystal2");
+        }
+    };
 
     public BlockPylon(Material material, String name) {
         super(material, name);
@@ -17,7 +25,7 @@ public class BlockPylon extends BlockESMeta {
     }
 
     @Override
-    public String[] getNames() {
+    public ArrayList<String> getNames() {
         return names;
     }
 

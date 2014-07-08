@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.core.utils.coordset;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class CoordSet4 extends CoordSet {
 

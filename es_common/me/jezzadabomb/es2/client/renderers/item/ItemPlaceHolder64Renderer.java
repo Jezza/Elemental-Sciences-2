@@ -59,15 +59,15 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
                     break;
                 }
                 case EQUIPPED_FIRST_PERSON: {
-                    renderAtomicFrame(0.4F, 1.5F, 0.5F, 1.0F, type);
+                    renderAtomicFrame(0F, 0.75F, 0F, 0.5F, type);
                     break;
                 }
                 case INVENTORY: {
-                    renderAtomicFrame(0.0F, 1.0F, 0.0F, 1.0F, type);
+                    renderAtomicFrame(0.0F, 0.68F, 0.0F, 0.5F, type);
                     break;
                 }
                 case EQUIPPED: {
-                    renderAtomicFrame(0.4F, 1.5F, 0.4F, 1.0F, type);
+                    renderAtomicFrame(0F, 0.7F, 0F, 0.5F, type);
                     break;
                 }
                 default:
@@ -103,6 +103,7 @@ public class ItemPlaceHolder64Renderer implements IItemRenderer {
         glDisable(GL_LIGHTING);
 
         glTranslatef(x, y, z);
+        glTranslatef(0.5F, 0.2F, 0.5F);
 
         glRotated(180.0D, 1.0D, 0.0D, 0.0D);
 

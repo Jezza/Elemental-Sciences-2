@@ -1,29 +1,49 @@
 package me.jezzadabomb.es2.common.items;
 
+import java.util.List;
 import java.util.Random;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.sound.Sounds;
+import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
+import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
 import me.jezzadabomb.es2.common.tickers.CatalystTicker;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemAtomicCatalyst extends ItemES {
     public ItemAtomicCatalyst(String name) {
         super(name);
         setMaxDamage(511);
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item, CreativeTabs tab, List list) {
+        list.add(getDefault());
+    }
+
+    public static ItemStack getDefault() {
+        ItemStack itemStack = new ItemStack(ModItems.atomicCatalyst);
+        itemStack.setTagCompound(new NBTTagCompound());
+        new AtomicCatalystAttribute(2, 0, 0).writeToNBT(itemStack.getTagCompound());
+        return itemStack;
     }
 
     @Override
@@ -74,8 +94,10 @@ public class ItemAtomicCatalyst extends ItemES {
 
     @Override
     protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
-        if (!stack.hasTagCompound())
-            setTag(stack);
+        if (!stack.hasTagCompound()) {
+            information.addToBothLists(EnumChatFormatting.RED + "Errr, this is awkward...");
+            return;
+        }
 
         AtomicCatalystAttribute attribute = AtomicCatalystAttribute.readFromNBT(stack.getTagCompound());
 
@@ -99,32 +121,16 @@ public class ItemAtomicCatalyst extends ItemES {
 
     @Override
     public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase target) {
+        if (!itemStack.hasTagCompound())
+            return false;
+
         if (!player.worldObj.isRemote && !(target instanceof EntityPlayerMP && ((EntityPlayerMP) target).capabilities.isCreativeMode)) {
-            if (!itemStack.hasTagCompound())
-                setTag(itemStack);
             AtomicCatalystAttribute attribute = AtomicCatalystAttribute.readFromNBT(itemStack.getTagCompound());
 
             itemStack.damageItem(20, player);
-            String name = DamageSource.outOfWorld.damageType;
-            DamageSource.outOfWorld.damageType = "atomicWave" + (new Random().nextInt(3));
-            target.attackEntityFrom(DamageSource.outOfWorld, 5 * attribute.getStrength());
-            DamageSource.outOfWorld.damageType = name;
+            UtilMethods.damageEntityWith(target, DamageSource.outOfWorld, 5 * attribute.getStrength(), "atomicWave" + (new Random().nextInt(3)));
         }
         player.swingItem();
         return true;
-    }
-
-    @Override
-    public void onUpdate(ItemStack itemStack, World world, Entity entity, int par4, boolean par5) {
-        world.setRainStrength(0.0F);
-        if (!world.isRemote && !itemStack.hasTagCompound())
-            setTag(itemStack);
-
-        super.onUpdate(itemStack, world, entity, par4, par5);
-    }
-
-    public static void setTag(ItemStack itemStack) {
-        itemStack.setTagCompound(new NBTTagCompound());
-        new AtomicCatalystAttribute(2, 0, 0).writeToNBT(itemStack.getTagCompound());
     }
 }

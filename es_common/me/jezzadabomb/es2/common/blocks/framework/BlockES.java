@@ -1,7 +1,6 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
 import me.jezzadabomb.es2.ElementalSciences2;
-import me.jezzadabomb.es2.common.core.ESLogger;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockInteract;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
 import me.jezzadabomb.es2.common.core.network.PacketDispatcher;
@@ -79,6 +78,8 @@ public abstract class BlockES extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
+        if (getBlockType() == BlockType.MODEL)
+            return;
         blockIcon = iconRegister.registerIcon(Reference.MOD_IDENTIFIER + getTextureName());
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemBlockES;
 import me.jezzadabomb.es2.common.lib.Reference;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -35,18 +34,26 @@ public abstract class BlockESMeta extends BlockES {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-        String[] names = getNames();
-        for (int i = 0; i < names.length; i++)
+        List<String> names = getNames();
+        for (int i = 0; i < names.size(); i++)
             list.add(new ItemStack(item, 1, i));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        String[] names = getNames();
-        icons = new IIcon[names.length];
+        List<String> names = getNames();
+        icons = new IIcon[names.size()];
+
+        // TODO Remove all this shit.
+        StringBuilder registryBuilder = new StringBuilder(Reference.MOD_IDENTIFIER);
+        String subDirectory = getTextureSubDirectory();
+        if (subDirectory != null)
+            registryBuilder.append(subDirectory + "/");
+        String registryString = registryBuilder.toString();
+
         for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[MathHelper.clipInt(i, names.length)]);
+            icons[i] = iconRegister.registerIcon(registryString + names.get(MathHelper.clipInt(i, names.size())));
     }
 
     @Override
@@ -64,5 +71,9 @@ public abstract class BlockESMeta extends BlockES {
         return ItemBlockES.class;
     }
 
-    public abstract String[] getNames();
+    public String getTextureSubDirectory() {
+        return null;
+    }
+
+    public abstract List<String> getNames();
 }

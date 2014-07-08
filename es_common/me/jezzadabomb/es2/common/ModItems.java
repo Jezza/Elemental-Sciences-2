@@ -8,6 +8,7 @@ import me.jezzadabomb.es2.common.items.ItemHoverBoots;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder;
 import me.jezzadabomb.es2.common.items.ItemPlaceHolder64;
 import me.jezzadabomb.es2.common.items.ItemQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.items.ItemWoodenBucket;
 import me.jezzadabomb.es2.common.items.debug.ItemDebugTool;
 import me.jezzadabomb.es2.common.items.debug.ItemPylonManager;
 import me.jezzadabomb.es2.common.items.framework.ItemArmourES.ArmourSlotIndex;
@@ -32,6 +33,7 @@ public class ModItems {
 
     public static Item debugItem;
     public static Item pylonControl;
+    public static Item woodenBucket;
 
     private static int ironRenderIndex = 2;
 
@@ -42,6 +44,8 @@ public class ModItems {
         quantumStateDisrupter = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTER);
         placeHolders = new ItemPlaceHolder(Strings.PLACEHOLDER);
         placeHolders64 = new ItemPlaceHolder64(Strings.PLACEHOLDER_64);
+
+        woodenBucket = new ItemWoodenBucket(Strings.WOODEN_BUCKET);
 
         if (Reference.isDebugMode) {
             debugItem = new ItemDebugTool(Strings.DEBUG_TOOL);

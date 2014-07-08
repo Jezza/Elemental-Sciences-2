@@ -3,10 +3,8 @@ package me.jezzadabomb.es2.common.blocks;
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.blocks.framework.BlockType;
 import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 public class BlockQuantumStateDisruptor extends BlockES {
 

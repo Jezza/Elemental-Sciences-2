@@ -21,16 +21,15 @@ public class TileAtomicConstructorRenderer extends TileEntitySpecialRenderer {
 
     public void renderAtomicConstructorAt(TileAtomicConstructor tAC, double x, double y, double z, float tick) {
         glPushMatrix();
-        glDisable(GL_LIGHTING);
 
-        glTranslatef((float) x, (float) y, (float) z);
+        glTranslated(x, y, z);
+        glTranslatef(0.5F, 0.035F, 0.5F);
 
-        glTranslatef(0.5F, 1.5F, 0.5F);
-        glRotated(180.0D, 1.0D, 0.0D, 0.0D);
+        float scale = 0.50025F;
+        glScalef(scale, scale, scale);
         RenderUtils.bindTexture(TextureMaps.ATOMIC_CONSTRUCTOR);
         modelAtomicConstructor.render(tAC.getRenderMatrix());
-        
-        glEnable(GL_LIGHTING);
+
         glPopMatrix();
     }
 

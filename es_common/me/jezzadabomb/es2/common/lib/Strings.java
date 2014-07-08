@@ -10,12 +10,14 @@ public class Strings {
     public static final String PYLON_CRYSTAL = "pylonCrystal";
     public static final String OBELISK = "obelisk";
 
+    public static final String PURE_COLOUR = "pureColour";
+
     public static final String COMPUTER_FRAME = "computerFrame";
     public static final String COMPUTER_EXTERNAL = "computerExternal";
 
     public static final String ATOMIC_SHREDDER = "atomicShredder";
 
-    public static final String STRENGTHENED_IRON_BLOCK = "strengthenedIronBlock";
+    public static final String RESOURCE_BLOCK = "resourceBlock";
 
     // Item Name Constants
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
@@ -25,6 +27,7 @@ public class Strings {
     public static final String PLACEHOLDER = "placeHolder";
     public static final String PLACEHOLDER_64 = "placeHolder64";
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
+    public static final String WOODEN_BUCKET = "woodenBucket";
 
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";

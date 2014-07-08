@@ -8,7 +8,7 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
 @SideOnly(Side.CLIENT)
-public abstract class ModelCustomAbstract extends ModelBase {
+public abstract class ModelCustomAbstract {
 
     private IModelCustom customModel;
 

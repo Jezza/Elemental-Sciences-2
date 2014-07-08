@@ -7,11 +7,11 @@ public class FXUtils {
 
     public static void renderShreddedItem(double x, double y, double z, double tx, double ty, double tz, ItemStack itemStack, float speed) {
         // TODO Well, this. Thanks future me!
-        Minecraft.getMinecraft().thePlayer.renderBrokenItemStack(itemStack);
+        // Minecraft.getMinecraft().thePlayer.renderBrokenItemStack(itemStack);
     }
 
     public static void renderShatteredItem() {
-        
+
     }
 
 }

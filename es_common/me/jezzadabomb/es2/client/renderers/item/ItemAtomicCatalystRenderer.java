@@ -1,12 +1,17 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
-import static org.lwjgl.opengl.GL11.*;
-
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotated;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import me.jezzadabomb.es2.client.models.ModelCube;
 import me.jezzadabomb.es2.client.utils.AtomicCatalystRenderState;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
-import me.jezzadabomb.es2.common.items.ItemAtomicCatalyst;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -59,8 +64,6 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
         glTranslatef(x, y, z);
         glScalef(scale, scale, scale);
 
-        if (!itemStack.hasTagCompound())
-            ItemAtomicCatalyst.setTag(itemStack);
         AtomicCatalystAttribute atomic = AtomicCatalystAttribute.readFromNBT(itemStack.getTagCompound());
 
         int fortune = atomic.getFortune();

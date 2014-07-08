@@ -2,8 +2,6 @@ package me.jezzadabomb.es2.common.blocks.framework;
 
 import java.util.HashSet;
 
-import me.jezzadabomb.es2.common.core.ESLogger;
-
 public enum BlockType {
     NORMAL, MODEL, GLASS;
 
@@ -11,7 +9,6 @@ public enum BlockType {
 
     private boolean isOpaqueCube = false;
     private boolean renderAsNormalBlock = false;
-    private boolean shouldSideBeRendered = false;
     private int renderType = 0;
 
     private BlockType() {

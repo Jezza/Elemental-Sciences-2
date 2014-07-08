@@ -16,7 +16,7 @@ public class BlockAtomicConstructor extends BlockES {
 
     public BlockAtomicConstructor(Material material, String name) {
         super(material, name);
-        setHardness(7F);
+        setHardness(1.5F);
     }
 
     @Override

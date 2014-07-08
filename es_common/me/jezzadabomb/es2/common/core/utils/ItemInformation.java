@@ -25,6 +25,11 @@ public class ItemInformation {
         infoList.add("Press" + EnumChatFormatting.DARK_RED + " Shift" + EnumChatFormatting.GRAY + " for more info.");
     }
 
+    public void addToBothLists(String string) {
+        infoList.add(string);
+        shiftList.add(string);
+    }
+
     public void addShiftList(String string) {
         shiftList.add(string);
     }

@@ -13,6 +13,7 @@ public class Models {
     public static final ResourceLocation DRONE_BAY = getModelLocation("droneBay");
     public static final ResourceLocation CONSTRUCTOR_DRONE = getModelLocation("constructorDrone");
     public static final ResourceLocation ATOMIC_SHREDDER = getModelLocation("atomicShredder");
+    public static final ResourceLocation ATOMIC_CONSTRUCTOR = getModelLocation("atomicConstructor");
     public static final ResourceLocation OBELISK = getModelLocation("obelisk");
     public static final ResourceLocation PYLON = getModelLocation("crystal");
 

@@ -7,10 +7,11 @@ import me.jezzadabomb.es2.common.blocks.BlockConsole;
 import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
 import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
 import me.jezzadabomb.es2.common.blocks.BlockObelisk;
+import me.jezzadabomb.es2.common.blocks.BlockPureColour;
 import me.jezzadabomb.es2.common.blocks.BlockPylon;
 import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
 import me.jezzadabomb.es2.common.blocks.BlockResourceBlock;
-import me.jezzadabomb.es2.common.blocks.framework.BlockType;
+import me.jezzadabomb.es2.common.blocks.BlockTesting;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -19,27 +20,34 @@ import net.minecraft.item.crafting.CraftingManager;
 
 public class ModBlocks {
 
+    public static Block resourceBlock;
+    public static Block pureColour;
     public static Block inventoryScanner;
     public static Block atomicConstructor;
     public static Block quantumStateDisrupter;
     public static Block console;
     public static Block droneBay;
 
-    public static Block strengthenedIronBlock;
     public static Block pylonCrystal;
     public static Block atomicShredder;
     public static Block obelisk;
 
+    public static Block testing;
+
     public static void init() {
+        resourceBlock = new BlockResourceBlock(Material.anvil, Strings.RESOURCE_BLOCK);
+
         inventoryScanner = new BlockInventoryScanner(Material.anvil, Strings.INVENTORY_SCANNER);
         atomicConstructor = new BlockAtomicConstructor(Material.anvil, Strings.ATOMIC_CONSTRUCTOR);
         quantumStateDisrupter = new BlockQuantumStateDisruptor(Material.anvil, Strings.QUANTUM_STATE_DISRUPTER);
         console = new BlockConsole(Material.anvil, Strings.CONSOLE);
         droneBay = new BlockDroneBay(Material.anvil, Strings.DRONE_BAY);
         pylonCrystal = new BlockPylon(Material.anvil, Strings.PYLON_CRYSTAL);
-        strengthenedIronBlock = new BlockResourceBlock(Material.anvil, Strings.STRENGTHENED_IRON_BLOCK);
         atomicShredder = new BlockAtomicShredder(Material.anvil, Strings.ATOMIC_SHREDDER);
         obelisk = new BlockObelisk(Material.anvil, Strings.OBELISK);
+        pureColour = new BlockPureColour(Material.cloth, Strings.PURE_COLOUR);
+
+        testing = new BlockTesting(Material.rock, "testing");
 
         HUDBlackLists.addToHUDIgnoreList(inventoryScanner);
         HUDBlackLists.addToHUDIgnoreList(droneBay);
