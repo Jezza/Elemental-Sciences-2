@@ -11,9 +11,4 @@ public class ModelIronBar extends ModelCustomAbstract {
         super(Models.ATOMIC_CONSTRUCTOR);
     }
 
-    @Override
-    public void renderAll() {
-        renderPart("SupportPosXNegZ");
-    }
-
 }

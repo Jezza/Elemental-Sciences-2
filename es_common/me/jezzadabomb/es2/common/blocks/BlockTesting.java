@@ -21,7 +21,6 @@ public class BlockTesting extends BlockESMeta {
             add("fireRock");
             add("plasticBlock");
             add("console");
-            add("test");
         }
     };
 

@@ -1,40 +1,22 @@
 package me.jezzadabomb.es2.client.renderers.item;
 
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.*;
+
 import me.jezzadabomb.es2.client.models.ModelCube;
+import me.jezzadabomb.es2.client.renderers.ItemRendererAbstract;
 import me.jezzadabomb.es2.client.utils.AtomicCatalystRenderState;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ItemAtomicCatalystRenderer implements IItemRenderer {
-
-    private ModelCube cube;
+public class ItemAtomicCatalystRenderer extends ItemRendererAbstract {
 
     public ItemAtomicCatalystRenderer() {
-        cube = new ModelCube();
-    }
-
-    @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return true;
+        super(new ModelCube(), TextureMaps.ATOMIC_CATALYST_MAIN);
     }
 
     @Override
@@ -75,7 +57,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
             glRotated(RenderUtils.rotationEquation(fortune, 0), 1.0F, 1.0F, 1.0F);
 
         RenderUtils.bindTexture(TextureMaps.ATOMIC_CATALYST_MAIN);
-        cube.renderAll();
+        mainModel.renderAll();
         glPopMatrix();
 
         double angle = (speed * 6 * Math.PI * (System.currentTimeMillis() & 0x3FFFL) / 0x3FFFL);
@@ -96,7 +78,7 @@ public class ItemAtomicCatalystRenderer implements IItemRenderer {
         getRelativeDirection(electron).translate(cosDis, sinDis);
 
         RenderUtils.bindTexture(TextureMaps.ATOMIC_CATALYST_ELECTRON);
-        cube.renderAll();
+        mainModel.renderAll();
 
         glPopMatrix();
     }

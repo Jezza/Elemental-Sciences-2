@@ -15,20 +15,25 @@ public class ItemStrengthenedIronBarRenderer extends ItemRendererAbstract {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY:
-                renderItem(0.0F, 1.5F, 0.0F, 1.0F);
-                break;
-            case EQUIPPED:
-                renderItem(-0.4F, 3F, -0.3F, 2F);
+                renderItem(-0.2F, -0.1F, 0.2F, 0.25F);
                 break;
             case EQUIPPED_FIRST_PERSON:
-                renderItem(0.5F, 2.0F, 0.5F, 1.5F);
+                renderItem(0.2F, 0.2F, 0.8F, 0.43F);
                 break;
             case INVENTORY:
-                renderItem(0.0F, 1.5F, 0.1F, 1.5F);
+                renderItem(-1.1F, -1F, 0.0F, 0.6F);
+                break;
+            case EQUIPPED:
+                renderItem(0F, 0.0F, 0.6F, 0.4F);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void renderModel() {
+        mainModel.renderPart("SupportPosXPosZ");
     }
 
 }

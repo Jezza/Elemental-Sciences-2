@@ -15,16 +15,16 @@ public class ItemAtomicFrameRenderer extends ItemRendererAbstract {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY:
-                renderItem(0.0F, 0.55F, 0.0F, 0.5F);
+                renderItem(0.0F, -0.1F, 0.0F, 0.25F);
                 break;
             case EQUIPPED_FIRST_PERSON:
-                renderItem(0F, 0.75F, 0F, 0.5F);
+                renderItem(0.2F, 0.25F, 0.5F, 0.43F);
                 break;
             case INVENTORY:
-                renderItem(0.0F, 0.68F, 0.0F, 0.5F);
+                renderItem(0.0F, -0.5F, 0.0F, 0.5F);
                 break;
             case EQUIPPED:
-                renderItem(0F, 0.7F, 0F, 0.5F);
+                renderItem(0.35F, 0.0F, 0.35F, 0.4F);
                 break;
             default:
                 return;
