@@ -8,7 +8,7 @@ import net.minecraft.world.IBlockAccess;
 
 public class BlockResourceBlock extends BlockESMeta {
 
-    private static final ArrayList<String> names = new ArrayList<String>() {
+    public static final ArrayList<String> names = new ArrayList<String>() {
         {
             add("strengthenedIronBlock");
             add("crystalBlock");

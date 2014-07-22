@@ -14,12 +14,12 @@ public class IPylonRegistry {
     private static HashMap<Integer, HashSet<CoordSet>> userMap = new HashMap<Integer, HashSet<CoordSet>>();
 
     public static void debug(int dim) {
-        HashSet<CoordSet> pylonSet = pylonMap.get(dim);
+        HashSet<CoordSet> pylonSet = pylonMap.get(Integer.valueOf(dim));
         // if (pylonSet != null)
         // pylonSet.clear();
         ESLogger.info(pylonSet);
 
-        HashSet<CoordSet> userSet = userMap.get(dim);
+        HashSet<CoordSet> userSet = userMap.get(Integer.valueOf(dim));
         // if (userSet != null)
         // userSet.clear();
         ESLogger.info(userSet);
@@ -32,9 +32,9 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        pylonMap.get(dimID).add(pylon);
+        pylonMap.get(Integer.valueOf(dimID)).add(pylon);
         broadcastPylonUpdate(world);
-        return pylonMap.get(dimID).contains(pylon);
+        return pylonMap.get(Integer.valueOf(dimID)).contains(pylon);
     }
 
     public static boolean removePylon(World world, CoordSet pylon) {
@@ -44,9 +44,9 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        pylonMap.get(dimID).remove(pylon);
+        pylonMap.get(Integer.valueOf(dimID)).remove(pylon);
         broadcastPylonUpdate(world);
-        return !pylonMap.get(dimID).contains(pylon);
+        return !pylonMap.get(Integer.valueOf(dimID)).contains(pylon);
     }
 
     public static boolean registerUser(World world, CoordSet pylonReceiver) {
@@ -56,8 +56,8 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmUser(dimID);
 
-        userMap.get(dimID).add(pylonReceiver);
-        return userMap.get(dimID).contains(pylonReceiver);
+        userMap.get(Integer.valueOf(dimID)).add(pylonReceiver);
+        return userMap.get(Integer.valueOf(dimID)).contains(pylonReceiver);
     }
 
     public static boolean removeUser(World world, CoordSet pylonReceiver) {
@@ -67,8 +67,8 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmUser(dimID);
 
-        userMap.get(dimID).remove(pylonReceiver);
-        return !userMap.get(dimID).contains(pylonReceiver);
+        userMap.get(Integer.valueOf(dimID)).remove(pylonReceiver);
+        return !userMap.get(Integer.valueOf(dimID)).contains(pylonReceiver);
     }
 
     private static void broadcastPylonUpdate(World world) {
@@ -77,7 +77,7 @@ public class IPylonRegistry {
 
         int dimID = world.provider.dimensionId;
         confirmUser(dimID);
-        for (CoordSet pylonReceiver : userMap.get(dimID))
+        for (CoordSet pylonReceiver : userMap.get(Integer.valueOf(dimID)))
             if (pylonReceiver.isPylonReciever(world))
                 ((IPylonReceiver) pylonReceiver.getTileEntity(world)).notifyPylonUpdate();
     }
@@ -92,12 +92,12 @@ public class IPylonRegistry {
         int dimID = world.provider.dimensionId;
         confirmPylon(dimID);
 
-        if (pylonMap.get(dimID).isEmpty())
+        if (pylonMap.get(Integer.valueOf(dimID)).isEmpty())
             return null;
 
         IPylon highest = null;
 
-        for (CoordSet pylonSet : pylonMap.get(dimID))
+        for (CoordSet pylonSet : pylonMap.get(Integer.valueOf(dimID)))
             if (pylonSet.isPylon(world)) {
                 IPylon pylon = (IPylon) pylonSet.getTileEntity(world);
                 if (pylon.isPowering(coordSet))
@@ -109,12 +109,12 @@ public class IPylonRegistry {
     }
 
     private static void confirmPylon(int dimID) {
-        if (!pylonMap.containsKey(dimID))
-            pylonMap.put(dimID, new HashSet<CoordSet>());
+        if (!pylonMap.containsKey(Integer.valueOf(dimID)))
+            pylonMap.put(Integer.valueOf(dimID), new HashSet<CoordSet>());
     }
 
     private static void confirmUser(int dimID) {
-        if (!userMap.containsKey(dimID))
-            userMap.put(dimID, new HashSet<CoordSet>());
+        if (!userMap.containsKey(Integer.valueOf(dimID)))
+            userMap.put(Integer.valueOf(dimID), new HashSet<CoordSet>());
     }
 }

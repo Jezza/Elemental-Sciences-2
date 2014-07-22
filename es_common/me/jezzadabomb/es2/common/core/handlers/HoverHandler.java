@@ -208,5 +208,10 @@ public class HoverHandler {
         public boolean equals(String username) {
             return getUsername().equals(username);
         }
+
+        @Override
+        public int hashCode() {
+            return getUsername().hashCode();
+        }
     }
 }

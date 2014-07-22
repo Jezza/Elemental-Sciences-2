@@ -1,5 +1,6 @@
 package me.jezzadabomb.es2.common;
 
+import me.jezzadabomb.es2.client.lib.GuiIDs;
 import me.jezzadabomb.es2.common.items.ItemWoodenBucket;
 import me.jezzadabomb.es2.common.items.armour.ItemGlasses;
 import me.jezzadabomb.es2.common.items.armour.ItemHoverBoots;
@@ -14,6 +15,7 @@ import me.jezzadabomb.es2.common.items.framework.ItemArmourES.ArmourSlotIndex;
 import me.jezzadabomb.es2.common.items.relics.ItemAtomicCatalyst;
 import me.jezzadabomb.es2.common.items.relics.ItemCoin;
 import me.jezzadabomb.es2.common.items.relics.ItemQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.items.research.ItemResearchTool;
 import me.jezzadabomb.es2.common.lib.Reference;
 import me.jezzadabomb.es2.common.lib.Strings;
 import me.jezzadabomb.es2.common.lib.TextureMaps;
@@ -60,6 +62,11 @@ public class ModItems {
     public static Item atomicCatalyst;
     public static Item quantumStateDisrupter;
 
+    // Research Tools
+    public static Item quill;
+    public static Item quillAndPapyrus;
+    public static Item pencilAndPaper;
+
     public static void init() {
         // Crafting
         atomicFrame = new ItemCrafting(Strings.ATOMIC_FRAME);
@@ -90,6 +97,11 @@ public class ModItems {
         lifeCoin = new ItemCoin(Strings.LIFE_COIN).setLore("You got it for getting", "a perfect pacman game.");
         deadCoin = new ItemCoin(Strings.DEAD_COIN).setLore("Just an ordinary coin.");
         quantumStateDisrupter = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTER);
+
+        // Research Tools
+        quill = new ItemCrafting(Strings.QUILL);
+        quillAndPapyrus = new ItemResearchTool(Strings.QUILL_AND_PAPYRUS, GuiIDs.QUILL_AND_PAPYRUS);
+        pencilAndPaper = new ItemResearchTool(Strings.PENCIL_AND_PAPER, GuiIDs.PENCIL_AND_PAPER);
 
         if (Reference.isDebugMode)
             initDebug();

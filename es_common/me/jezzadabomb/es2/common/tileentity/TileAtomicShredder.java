@@ -10,5 +10,4 @@ public class TileAtomicShredder extends TilePylonUser {
 
         // Calculations of the actual shredding.
     }
-
 }

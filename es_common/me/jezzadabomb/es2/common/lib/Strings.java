@@ -52,6 +52,11 @@ public class Strings {
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
     public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
 
+    // Research Tools
+    public static final String QUILL = "quill";
+    public static final String QUILL_AND_PAPYRUS = "quillAndPapyrus";
+    public static final String PENCIL_AND_PAPER = "pencilAndPaper";
+
     // Timing Constants
     public static final String TICK_TIMING = "Glasses tick timing constant";
     public static final String PACKET_TIMING = "Glasses idle packet time";

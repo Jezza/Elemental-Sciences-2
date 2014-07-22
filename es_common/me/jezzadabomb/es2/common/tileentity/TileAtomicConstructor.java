@@ -120,6 +120,7 @@ public class TileAtomicConstructor extends TileES implements IMasterable {
         }
     }
 
+    @SuppressWarnings("boxing")
     public boolean[] constructRenderMatrix() {
         Boolean[] localArray = new Boolean[26];
         int index = 0;

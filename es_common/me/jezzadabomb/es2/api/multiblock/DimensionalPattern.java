@@ -10,6 +10,8 @@ import net.minecraft.world.World;
 /**
  * Welcome to the Shad MultiCore.
  * 
+ * The rows are from negZ to posZ, and are stacked negX to posX in a layer. The layers are built from negY to posY.
+ * 
  * @author Jeremy
  * 
  */
@@ -136,16 +138,16 @@ public class DimensionalPattern {
                     if (blockState == null)
                         return false;
 
-                    if (flag.isIgnoring()) {
-                        world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3);
-                        continue;
-                    }
-
-                    if (flag.isAir()) {
-                        if (world.isAirBlock(x + rowPos, y + layerPos, z + depth)) {
+                    switch (flag) {
+                        case AIR:
+                            if (world.isAirBlock(x + rowPos, y + layerPos, z + depth))
+                                world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3);
+                            break;
+                        case IGNORE:
                             world.setBlock(x + rowPos, y + layerPos, z + depth, blockState.block, blockState.meta, 3);
-                            continue;
-                        }
+                            break;
+                        default:
+                            break;
                     }
                 }
                 rowPos++;
@@ -189,7 +191,7 @@ public class DimensionalPattern {
      */
     public static class Layer implements IPatternComponent {
 
-        Row[] rows;
+        private Row[] rows;
 
         private Layer(Row... rows) {
             this.rows = rows;
@@ -197,6 +199,14 @@ public class DimensionalPattern {
 
         public Row[] getRows() {
             return rows;
+        }
+
+        public int[] getLengthOfRows() {
+            int[] size = new int[rows.length];
+            int index = 0;
+            for (Row row : rows)
+                size[index++] = row.sections.length();
+            return size;
         }
     }
 

@@ -2,9 +2,8 @@ package me.jezzadabomb.es2.common.lib;
 
 import java.util.ArrayList;
 
-import net.minecraft.block.Block;
-
 import me.jezzadabomb.es2.common.core.ESLogger;
+import net.minecraft.block.Block;
 
 public class BlackList {
     public static ArrayList<Integer> blackList = new ArrayList<Integer>(0);

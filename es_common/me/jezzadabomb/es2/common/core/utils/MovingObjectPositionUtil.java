@@ -5,8 +5,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class MovingObjectPositionUtil {
-    
-    
+
     public static MovingObjectPosition getCurrentMovingObjectPosition(EntityPlayer player) {
 
         double distance = player.capabilities.isCreativeMode ? 5.0F : 4.5F;

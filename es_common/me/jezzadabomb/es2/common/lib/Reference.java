@@ -3,7 +3,7 @@ package me.jezzadabomb.es2.common.lib;
 public class Reference {
 
     // Naming Constants
-    public static final String MOD_ID = "elementalsciences2";
+    public static final String MOD_ID = "ElementalSciences2";
     public static final String MOD_NAME = "Elemental Sciences 2";
     public static final String VERSION = "@VERSION@";
     public static final String CHANNEL_NAME = "ES2";

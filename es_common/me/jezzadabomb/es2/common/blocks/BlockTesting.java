@@ -7,7 +7,7 @@ import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
 
 public class BlockTesting extends BlockESMeta {
 
-    private static final ArrayList<String> names = new ArrayList<String>() {
+    public static final ArrayList<String> names = new ArrayList<String>() {
         {
             add("steamPunk");
             add("steamPunk2");
@@ -21,6 +21,9 @@ public class BlockTesting extends BlockESMeta {
             add("fireRock");
             add("plasticBlock");
             add("console");
+            add("crystalBlock2");
+            add("sapphire");
+            add("lapisBrick");
         }
     };
 

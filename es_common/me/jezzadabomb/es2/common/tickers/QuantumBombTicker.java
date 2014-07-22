@@ -178,5 +178,10 @@ public class QuantumBombTicker {
                 return false;
             return coordSet.equals(((QuantumBombState) obj).coordSet);
         }
+
+        @Override
+        public int hashCode() {
+            return coordSet.hashCode();
+        }
     }
 }

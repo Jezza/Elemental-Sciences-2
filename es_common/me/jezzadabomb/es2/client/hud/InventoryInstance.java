@@ -49,6 +49,11 @@ public class InventoryInstance {
     }
 
     @Override
+    public int hashCode() {
+        return new CoordSet(x, y, z).hashCode();
+    }
+
+    @Override
     public String toString() {
         return "Name: " + name + new CoordSet(x, y, z);
     }

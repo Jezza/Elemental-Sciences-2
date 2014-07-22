@@ -11,8 +11,8 @@ public abstract class GuiContainerES extends GuiContainer {
 
     private int nextId = 0;
 
-    public GuiContainerES(Container par1Container) {
-        super(par1Container);
+    public GuiContainerES(Container container) {
+        super(container);
     }
 
     protected void drawTextureAt(ResourceLocation texture, int x, int y) {

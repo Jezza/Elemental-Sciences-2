@@ -1,18 +1,7 @@
 package me.jezzadabomb.es2.client.renderers.tile;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.*;
+
 import me.jezzadabomb.es2.client.models.ModelPylonCrystal;
 import me.jezzadabomb.es2.client.utils.RenderUtils;
 import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
@@ -47,6 +36,18 @@ public class TilePylonRenderer extends TileEntitySpecialRenderer {
 
         glBindTexture(GL_TEXTURE_2D, 0);
         modelPylonCrystal.renderAll();
+        scale = 1.025F;
+        for (int i = 1; i <= 5; i++) {
+            glScalef(scale, scale, scale);
+            glColor4f(0.357F, 0.91F, 0.961F, 0.6F / i);
+            modelPylonCrystal.renderAll();
+        }
+
+        glDisable(GL_DEPTH_TEST);
+        glColor4f(1.0F, 1.0F, 1.0F, 0.1F);
+        glScalef(scale, scale, scale);
+        modelPylonCrystal.renderAll();
+        glEnable(GL_DEPTH_TEST);
 
         glEnable(GL_BLEND);
         glPopMatrix();
