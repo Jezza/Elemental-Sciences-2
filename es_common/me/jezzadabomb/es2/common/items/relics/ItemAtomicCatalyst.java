@@ -1,13 +1,13 @@
 package me.jezzadabomb.es2.common.items.relics;
 
-import java.util.List;
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.client.sound.Sounds;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.core.utils.AtomicCatalystAttribute;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
+import me.jezzadabomb.es2.common.core.utils.MovingObjectPositionUtil;
 import me.jezzadabomb.es2.common.core.utils.UtilMethods;
 import me.jezzadabomb.es2.common.items.framework.ItemES;
 import me.jezzadabomb.es2.common.lib.BlackList;
@@ -22,9 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
+import java.util.Random;
 
 public class ItemAtomicCatalyst extends ItemES {
     public ItemAtomicCatalyst(String name) {
@@ -47,55 +49,52 @@ public class ItemAtomicCatalyst extends ItemES {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-        if (player.isSneaking() && player.capabilities.isCreativeMode) {
+    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, MovingObjectPosition mop) {
+        if (player.isSneaking()) {
             player.openGui(ElementalSciences2.instance, 32, world, 0, 0, 0);
             return itemStack;
         }
-        return super.onItemRightClick(itemStack, world, player);
+        startChain(player, itemStack, mop, false);
+        player.swingItem();
+        return itemStack;
     }
 
     @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int sideHit, float hitVecX, float hitVecY, float hitVecZ) {
-        if (player.isSneaking()) {
-            Block block = world.getBlock(x, y, z);
-            boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));
-            if (!world.isRemote && notOnList) {
-                AtomicCatalystAttribute atomic = AtomicCatalystAttribute.readFromNBT(itemStack.getTagCompound());
+    public boolean onEntitySwing(EntityLivingBase entity, ItemStack itemStack) {
+        return entity instanceof EntityPlayer && startChain((EntityPlayer) entity, itemStack, MovingObjectPositionUtil.getCurrentMovingObjectPosition(entity), true);
+    }
 
-                int strength = 0;
-                int fortune = atomic.getFortune();
-                int speed = atomic.getSpeed();
-                int meta = world.getBlockMetadata(x, y, z);
+    private boolean startChain(EntityPlayer player, ItemStack itemStack, MovingObjectPosition mop, boolean overrideStrength) {
+        World world = player.getEntityWorld();
+        if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
+            return false;
 
-                CatalystTicker.addBreaker(world, x, y, z, block, meta, strength, player, fortune, speed);
-                Sounds.CATALYST_PULSE.play(player, 1.0F, 0.8F);
-                itemStack.damageItem(1, player);
-            }
-            return true;
-        }
-
+        int x = mop.blockX;
+        int y = mop.blockY;
+        int z = mop.blockZ;
         Block block = world.getBlock(x, y, z);
         boolean notOnList = !BlackList.OnBlackList(block, world.getBlockMetadata(x, y, z));
         if (!world.isRemote && notOnList) {
             AtomicCatalystAttribute atomic = AtomicCatalystAttribute.readFromNBT(itemStack.getTagCompound());
 
-            int strength = atomic.getStrength();
+            int strength = overrideStrength ? 0 : atomic.getStrength();
             int fortune = atomic.getFortune();
             int speed = atomic.getSpeed();
             int meta = world.getBlockMetadata(x, y, z);
 
-            CatalystTicker.addBreaker(world, x, y, z, block, meta, strength, player, fortune, speed);
+            CatalystTicker.addBreaker(world, x, y, z, block, meta, strength, (EntityPlayer) player, fortune, speed);
             Sounds.CATALYST_PULSE.play(player, 1.0F, 0.8F);
             itemStack.damageItem(1, player);
+            return true;
         }
-        return notOnList;
+        return false;
     }
 
     @Override
     protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
         if (!stack.hasTagCompound()) {
             information.addToBothLists(EnumChatFormatting.RED + "Errr, this is awkward...");
+            information.addToBothLists(EnumChatFormatting.RED + "You shouldn't have this...");
             return;
         }
 

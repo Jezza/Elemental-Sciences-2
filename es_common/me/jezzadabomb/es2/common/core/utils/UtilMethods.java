@@ -7,11 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.IBlockAccess;
-
 import org.lwjgl.input.Keyboard;
 
 public class UtilMethods {
-
     public static void damageEntityWith(EntityLivingBase target, DamageSource damageSource, int amount, String damageString) {
         String name = damageSource.damageType;
         damageSource.damageType = damageString;

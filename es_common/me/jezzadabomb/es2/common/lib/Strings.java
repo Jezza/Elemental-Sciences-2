@@ -49,12 +49,15 @@ public class Strings {
     // Relics
     public static final String DEAD_COIN = "deadCoin";
     public static final String LIFE_COIN = "lifeCoin";
+    public static final String GAMBLERS_COIN = "gamblersCoin";
     public static final String ATOMIC_CATALYST = "atomicCatalyst";
-    public static final String ITEM_QUANTUM_STATE_DISRUPTER = "quantumStateDisrupterCatalyst";
+    public static final String ITEM_QUANTUM_STATE_DISRUPTOR = "quantumStateDisruptorCatalyst";
 
     // Research Tools
     public static final String QUILL = "quill";
+    public static final String PAPYRUS = "papyrus";
     public static final String QUILL_AND_PAPYRUS = "quillAndPapyrus";
+    public static final String PENCIL = "pencil";
     public static final String PENCIL_AND_PAPER = "pencilAndPaper";
 
     // Timing Constants

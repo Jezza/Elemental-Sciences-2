@@ -1,5 +1,9 @@
 package me.jezzadabomb.es2.common.blocks.framework;
 
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockInteract;
 import me.jezzadabomb.es2.common.core.interfaces.IBlockNotifier;
@@ -17,10 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockES extends Block {
 
@@ -90,7 +90,7 @@ public abstract class BlockES extends Block {
 
     @Override
     public boolean hasTileEntity(int metadata) {
-        return getTileEntity(metadata) == null ? false : true;
+        return getTileEntity(metadata) != null;
     }
 
     protected boolean canSendUpdatePacket() {
@@ -99,7 +99,7 @@ public abstract class BlockES extends Block {
 
     public TileEntity getTileEntity(int metadata) {
         return null;
-    };
+    }
 
     // ----------------------------- Update methods -------------------------------
 
@@ -115,7 +115,7 @@ public abstract class BlockES extends Block {
     public boolean onBlockEventReceived(World world, int x, int y, int z, int ID, int param) {
         super.onBlockEventReceived(world, x, y, z, ID, param);
         TileEntity tileentity = world.getTileEntity(x, y, z);
-        return tileentity != null ? tileentity.receiveClientEvent(ID, param) : false;
+        return tileentity != null && tileentity.receiveClientEvent(ID, param);
     }
 
     // ----------------------------- BlockType start -------------------------------

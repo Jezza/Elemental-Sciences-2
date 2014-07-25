@@ -92,10 +92,10 @@ public abstract class SteppingObject {
     }
 
     public void preTick() {
-    };
+    }
 
     public void postTick() {
-    };
+    }
 
     public abstract String getIdentifier();
 }

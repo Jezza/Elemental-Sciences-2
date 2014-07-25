@@ -47,7 +47,7 @@ public class TileConsole extends TileES implements IRotatable {
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        return AxisAlignedBB.getAABBPool().getAABB(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 2.0F, zCoord + 1.0F);
+        return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1.0F, yCoord + 2.0F, zCoord + 1.0F);
     }
 
     @Override

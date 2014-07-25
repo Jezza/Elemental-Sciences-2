@@ -1,2 +1,8 @@
-*.tcn
-*.pdn
+*.properties
+lib/
+build/
+*.jar
+.settings
+.classpath
+*.class
+target/

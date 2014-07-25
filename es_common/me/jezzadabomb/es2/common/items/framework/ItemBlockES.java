@@ -1,33 +1,33 @@
 package me.jezzadabomb.es2.common.items.framework;
 
-import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
-import me.jezzadabomb.es2.common.core.utils.helpers.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class ItemBlockES extends ItemBlock {
+import java.util.List;
 
-    private Block block;
+public class ItemBlockES extends ItemBlock {
 
     public ItemBlockES(Block block) {
         super(block);
-        this.block = block;
         setMaxDamage(0);
         setHasSubtypes(true);
+    }
+
+    public Block getBlock(){
+        return field_150939_a;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage) {
-        return block.getIcon(2, damage);
+        return getBlock().getIcon(2, damage);
     }
 
     @Override
@@ -37,10 +37,10 @@ public class ItemBlockES extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        if (!(block instanceof BlockESMeta))
-            super.getUnlocalizedName(itemStack);
-        String[] names = ((BlockESMeta) block).getNames().toArray(new String[0]);
-        return "item." + names[MathHelper.clipInt(itemStack.getItemDamage(), names.length - 1)];
+        if (!(getBlock() instanceof BlockESMeta))
+            return super.getUnlocalizedName(itemStack);
+        String[] names = ((BlockESMeta) getBlock()).getNames().toArray(new String[0]);
+        return "item." + names[itemStack.getItemDamage() & names.length];
     }
 
     @Override
@@ -52,6 +52,5 @@ public class ItemBlockES extends ItemBlock {
     }
 
     protected void addInformation(ItemStack stack, EntityPlayer player, ItemInformation information) {
-    };
-
+    }
 }

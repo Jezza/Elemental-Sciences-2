@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.blocks;
+package me.jezzadabomb.es2.common.blocks.relics;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.blocks.framework.BlockType;

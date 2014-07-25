@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.blocks;
+package me.jezzadabomb.es2.common.blocks.research;
 
 import me.jezzadabomb.es2.ElementalSciences2;
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;

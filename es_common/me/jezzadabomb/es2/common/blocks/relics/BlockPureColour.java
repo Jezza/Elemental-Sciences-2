@@ -1,6 +1,4 @@
-package me.jezzadabomb.es2.common.blocks;
-
-import java.util.ArrayList;
+package me.jezzadabomb.es2.common.blocks.relics;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockESMeta;
 import me.jezzadabomb.es2.common.core.utils.ItemInformation;
@@ -11,6 +9,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
 
 public class BlockPureColour extends BlockESMeta {
 
@@ -37,6 +37,7 @@ public class BlockPureColour extends BlockESMeta {
 
     public BlockPureColour(Material material, String name) {
         super(material, name);
+        setStepSound(Block.soundTypeCloth);
     }
 
     @Override

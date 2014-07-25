@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.blocks;
+package me.jezzadabomb.es2.common.blocks.relics;
 
 import java.util.ArrayList;
 

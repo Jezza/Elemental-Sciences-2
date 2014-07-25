@@ -23,7 +23,7 @@ public class BlockTesting extends BlockESMeta {
             add("console");
             add("crystalBlock2");
             add("sapphire");
-            add("lapisBrick");
+            add("test");
         }
     };
 

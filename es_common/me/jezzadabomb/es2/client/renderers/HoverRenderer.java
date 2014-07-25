@@ -32,9 +32,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HoverRenderer {
 
-    static HoverRenderer INSTANCE = new HoverRenderer();
+    private static HoverRenderer INSTANCE = new HoverRenderer();
 
-    public HoverRenderer() {
+    private HoverRenderer() {
     }
 
     public static HoverRenderer getInstance() {

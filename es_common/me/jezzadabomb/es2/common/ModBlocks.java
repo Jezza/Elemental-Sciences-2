@@ -1,16 +1,16 @@
 package me.jezzadabomb.es2.common;
 
 import me.jezzadabomb.es2.api.HUDBlackLists;
-import me.jezzadabomb.es2.common.blocks.BlockAtomicConstructor;
-import me.jezzadabomb.es2.common.blocks.BlockAtomicShredder;
-import me.jezzadabomb.es2.common.blocks.BlockConsole;
-import me.jezzadabomb.es2.common.blocks.BlockDroneBay;
-import me.jezzadabomb.es2.common.blocks.BlockInventoryScanner;
-import me.jezzadabomb.es2.common.blocks.BlockObelisk;
-import me.jezzadabomb.es2.common.blocks.BlockPureColour;
-import me.jezzadabomb.es2.common.blocks.BlockPylon;
-import me.jezzadabomb.es2.common.blocks.BlockQuantumStateDisruptor;
-import me.jezzadabomb.es2.common.blocks.BlockResourceBlock;
+import me.jezzadabomb.es2.common.blocks.construction.BlockAtomicConstructor;
+import me.jezzadabomb.es2.common.blocks.construction.BlockAtomicShredder;
+import me.jezzadabomb.es2.common.blocks.research.BlockConsole;
+import me.jezzadabomb.es2.common.blocks.construction.BlockDroneBay;
+import me.jezzadabomb.es2.common.blocks.relics.BlockInventoryScanner;
+import me.jezzadabomb.es2.common.blocks.power.BlockObelisk;
+import me.jezzadabomb.es2.common.blocks.relics.BlockPureColour;
+import me.jezzadabomb.es2.common.blocks.power.BlockPylon;
+import me.jezzadabomb.es2.common.blocks.relics.BlockQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.blocks.relics.BlockResourceBlock;
 import me.jezzadabomb.es2.common.blocks.BlockTesting;
 import me.jezzadabomb.es2.common.lib.Strings;
 import net.minecraft.block.Block;

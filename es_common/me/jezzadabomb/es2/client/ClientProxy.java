@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
 
         // initEventHandlers
         registerEventHandler(hudRenderer);
-        registerEventHandler(new HoverRenderer());
+        registerEventHandler(HoverRenderer.getInstance());
     }
 
     private void initRenderers() {

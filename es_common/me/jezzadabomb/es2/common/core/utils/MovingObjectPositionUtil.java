@@ -1,24 +1,27 @@
 package me.jezzadabomb.es2.common.core.utils;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class MovingObjectPositionUtil {
 
-    public static MovingObjectPosition getCurrentMovingObjectPosition(EntityPlayer player) {
+    public static MovingObjectPosition getCurrentMovingObjectPosition(EntityLivingBase entity) {
 
-        double distance = player.capabilities.isCreativeMode ? 5.0F : 4.5F;
-        Vec3 posVec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
-        Vec3 lookVec = player.getLook(1);
-        posVec.yCoord += player.getEyeHeight();
+        double distance = 4.5F;
+        if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)
+            distance += 0.5F;
+        Vec3 posVec = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+        Vec3 lookVec = entity.getLook(1);
+        posVec.yCoord += entity.getEyeHeight();
         lookVec = posVec.addVector(lookVec.xCoord * distance, lookVec.yCoord * distance, lookVec.zCoord * distance);
-        return player.worldObj.rayTraceBlocks(posVec, lookVec);
+        return entity.worldObj.rayTraceBlocks(posVec, lookVec);
     }
 
-    public static int getCurrentMousedOverSide(EntityPlayer player) {
+    public static int getCurrentMousedOverSide(EntityLivingBase entity) {
 
-        MovingObjectPosition mouseOver = getCurrentMovingObjectPosition(player);
+        MovingObjectPosition mouseOver = getCurrentMovingObjectPosition(entity);
         return mouseOver == null ? 0 : mouseOver.sideHit;
     }
 }

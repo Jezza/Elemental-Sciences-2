@@ -1,11 +1,11 @@
-package me.jezzadabomb.es2.common.items;
+package me.jezzadabomb.es2.common.items.equipment;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.common.ModItems;
+import me.jezzadabomb.es2.common.core.utils.FluidHelper;
 import me.jezzadabomb.es2.common.items.framework.ItemESMeta;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,13 +19,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 
-public class ItemWoodenBucket extends ItemESMeta {
+import java.util.ArrayList;
+import java.util.List;
 
-    private Fluid fluid = null;
+public class ItemWoodenBucket extends ItemESMeta implements IFluidContainerItem {
 
     private static final ArrayList<String> names = new ArrayList<String>() {
         {
@@ -75,22 +75,20 @@ public class ItemWoodenBucket extends ItemESMeta {
             if (flag) {
                 if (!player.canPlayerEdit(x, y, z, mop.sideHit, itemStack))
                     return itemStack;
-
-                Block block = world.getBlock(x, y, z);
-                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+                Fluid fluid = FluidRegistry.lookupFluidForBlock(world.getBlock(x, y, z));
 
                 if (fluid == null)
                     return itemStack;
 
-                this.fluid = fluid;
-                if (fluid.getTemperature() > 295) {
+                if (!canStore(itemStack, fluid)) {
                     spawnBurnEffects(world, x, y, z);
-                    itemStack.stackSize = 0;
+                    if (!player.capabilities.isCreativeMode)
+                        itemStack.stackSize = 0;
                     return itemStack;
                 }
 
                 world.setBlockToAir(x, y, z);
-                return getFilledBucket();
+                return getFilledBucket(new FluidStack(fluid, 1000));
             }
 
             ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
@@ -102,26 +100,26 @@ public class ItemWoodenBucket extends ItemESMeta {
             if (!player.canPlayerEdit(x, y, z, mop.sideHit, itemStack))
                 return itemStack;
 
-            if (tryPlaceContainedLiquid(world, x, y, z) && !player.capabilities.isCreativeMode)
+            if (tryPlaceContainedLiquid(itemStack, world, x, y, z) && !player.capabilities.isCreativeMode)
                 return getEmptyBucket();
         }
 
         return itemStack;
     }
 
-    public boolean tryPlaceContainedLiquid(World world, int x, int y, int z) {
-        if (fluid == null)
-            return false;
-
+    public boolean tryPlaceContainedLiquid(ItemStack itemStack, World world, int x, int y, int z) {
         Material material = world.getBlock(x, y, z).getMaterial();
         boolean flag = !material.isSolid();
 
         if (!flag && !world.isAirBlock(x, y, z))
             return false;
 
-        int lavaTemp = FluidRegistry.LAVA.getTemperature();
+        FluidStack fluidStack = FluidHelper.getStoredFluid(itemStack);
+        if (fluidStack == null)
+            return false;
+        Fluid fluid = fluidStack.getFluid();
 
-        if (world.provider.isHellWorld && fluid.getTemperature() < lavaTemp) {
+        if (world.provider.isHellWorld && fluid.getTemperature() <= FluidRegistry.WATER.getTemperature()) {
             spawnBurnEffects(world, x, y, z);
         } else {
             if (!world.isRemote && flag && !material.isLiquid())
@@ -145,19 +143,62 @@ public class ItemWoodenBucket extends ItemESMeta {
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         list.add(getEmptyBucket());
-        list.add(getFilledBucket());
+        list.add(getWaterBucket());
     }
 
     public static ItemStack getEmptyBucket() {
-        return new ItemStack(ModItems.woodenBucket, 1, 0);
+        ItemStack itemStack = new ItemStack(ModItems.woodenBucket, 1, 0);
+        return itemStack;
     }
 
-    public static ItemStack getFilledBucket() {
-        return new ItemStack(ModItems.woodenBucket, 1, 1);
+    public static ItemStack getWaterBucket() {
+        ItemStack itemStack = new ItemStack(ModItems.woodenBucket, 1, 1);
+        FluidHelper.storeFluid(itemStack, new FluidStack(FluidRegistry.WATER, 1000));
+        return itemStack;
+    }
+
+    public static ItemStack getFilledBucket(FluidStack fluidStack) {
+        ItemStack itemStack = new ItemStack(ModItems.woodenBucket, 1, 1);
+        FluidHelper.storeFluid(itemStack, fluidStack);
+        return itemStack;
+    }
+
+    private boolean canStore(ItemStack itemStack, Fluid fluid) {
+        return fluid != null && fluid.getTemperature() < 372 && FluidHelper.getStoredFluid(itemStack) == null;
     }
 
     @Override
     public List<String> getNames() {
         return names;
+    }
+
+    @Override
+    public FluidStack getFluid(ItemStack itemStack) {
+        return FluidHelper.getStoredFluid(itemStack);
+    }
+
+    @Override
+    public int getCapacity(ItemStack itemStack) {
+        return FluidHelper.getStoredFluid(itemStack) == null ? 1000 : 0;
+    }
+
+    @Override
+    public int fill(ItemStack itemStack, FluidStack resource, boolean doFill) {
+        if (!canStore(itemStack, resource.getFluid()))
+            return 0;
+        if (doFill)
+            FluidHelper.storeFluid(itemStack, resource);
+        return 1000;
+    }
+
+    @Override
+    public FluidStack drain(ItemStack itemStack, int maxDrain, boolean doDrain) {
+        if (getCapacity(itemStack) == 0)
+            return null;
+        FluidStack fluidStack = FluidHelper.getStoredFluid(itemStack);
+        if (doDrain) {
+            FluidHelper.removeFluid(itemStack);
+        }
+        return fluidStack;
     }
 }

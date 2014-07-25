@@ -16,7 +16,7 @@ public class HUDUtils {
                     glTranslated(-2.0D, 0.0D, 0.0D);
                     break;
                 default:
-                    return;
+                    break;
             }
 
             switch (rowNum) {
@@ -29,7 +29,7 @@ public class HUDUtils {
                 case 2:
                     break;
                 default:
-                    return;
+                    break;
             }
         } else {
             switch (columnNum) {
@@ -41,7 +41,7 @@ public class HUDUtils {
                 case 2:
                     break;
                 default:
-                    return;
+                    break;
             }
 
             switch (rowNum) {
@@ -52,7 +52,7 @@ public class HUDUtils {
                 case 2:
                     break;
                 default:
-                    return;
+                    break;
             }
         }
     }

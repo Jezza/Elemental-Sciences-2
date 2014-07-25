@@ -73,10 +73,10 @@ public abstract class ItemArmourES extends ItemArmor {
     }
 
     public enum ArmourSlotIndex {
-        HEAD, CHESTPLATE, LEGGINGS, BOOTS;
+        HEAD, CHESTPLATE, LEGGINGS, BOOTS
     }
 
     public enum ArmourRenderIndex {
-        CLOTH, CHAIN, IRON, DIAMOND, GOLD;
+        CLOTH, CHAIN, IRON, DIAMOND, GOLD
     }
 }

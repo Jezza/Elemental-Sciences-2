@@ -15,7 +15,7 @@ public class ItemAtomicConstructorRenderer extends ItemRendererAbstract {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
             case ENTITY:
-                renderItem(0.0F, -0.1F, 0.0F, 0.25F);
+                renderItem(0.0F, -0.1F, 0.0F, 0.5F);
                 break;
             case EQUIPPED_FIRST_PERSON:
                 renderItem(0.2F, 0.25F, 0.5F, 0.43F);
@@ -27,7 +27,7 @@ public class ItemAtomicConstructorRenderer extends ItemRendererAbstract {
                 renderItem(0.35F, 0.0F, 0.35F, 0.4F);
                 break;
             default:
-                return;
+                break;
         }
     }
 }

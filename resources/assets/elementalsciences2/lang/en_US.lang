@@ -6,6 +6,7 @@ item.debugTool.name=Debug Tool
 item.hoverBoots.name=Hover Boots
 item.lifeCoin.name=Inconspicuous Coin
 item.deadCoin.name=Inconspicuous Coin
+item.gamblersCoin.name=Gambler's Coin
 item.constructorDrone.name=Constructor Drone
 item.quantumStateDisrupterCatalyst.name=Quantum State Disrupter
 item.wrenchThing.name=[TEMP] Wrench
@@ -29,6 +30,7 @@ tile.console.name=Console
 tile.droneBay.name=Drone Bay
 tile.plasticBlock.name=Block of Plastic
 
+death.attack.gamblersCoin=%1$s balanced the odds and failed.
 death.attack.atomicWave0=%1$s had their atomic structure shifted.
 death.attack.atomicWave1=%1$s had their molecular bonds vapourized.
 death.attack.atomicWave2=%1$s's body resonated with foreign particles.

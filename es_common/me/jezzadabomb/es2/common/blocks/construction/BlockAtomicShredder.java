@@ -1,4 +1,4 @@
-package me.jezzadabomb.es2.common.blocks;
+package me.jezzadabomb.es2.common.blocks.construction;
 
 import me.jezzadabomb.es2.common.blocks.framework.BlockES;
 import me.jezzadabomb.es2.common.tileentity.TileAtomicShredder;
