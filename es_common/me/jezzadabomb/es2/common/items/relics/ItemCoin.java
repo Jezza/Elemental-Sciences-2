@@ -55,8 +55,10 @@ public class ItemCoin extends ItemES {
         incrementUses(itemStack);
 
         if (!world.isRemote) {
-            damageEntity(player, 4);
-            destroyItem(itemStack);
+            if (!player.capabilities.isCreativeMode) {
+                damageEntity(player, 4);
+                destroyItem(itemStack);
+            }
         }
 
         return itemStack;
@@ -86,12 +88,12 @@ public class ItemCoin extends ItemES {
         if (uses < 16)
             return;
         double chance = (Math.exp(uses / 10) / 10) / (new Random().nextFloat() / 0.5F);
-        if (chance > 1.25F && chance < 1.75F)
+        if (chance > 20.0F || (chance > 1.25F && chance < 1.75F))
             itemStack.stackSize = 0;
     }
 
     private void damageEntity(EntityLivingBase entity, int damage) {
-        if (damage > 0)
+        if (damage > 0 && !(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode))
             UtilMethods.damageEntityWith(entity, DamageSource.outOfWorld, damage, "gamblersCoin");
     }
 }

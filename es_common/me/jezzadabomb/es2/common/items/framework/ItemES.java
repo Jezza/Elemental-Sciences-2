@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -60,6 +61,19 @@ public abstract class ItemES extends Item {
 
     public ItemES setDonatorItem(String donator) {
         this.donator = donator;
+        return this;
+    }
+
+    public ItemES setShapelessRecipe(Object... items) {
+        return setShapelessRecipe(1, items);
+    }
+
+    public ItemES setShapelessRecipe(int resultSize, Object... items) {
+        return setShapelessRecipe(resultSize, 0, items);
+    }
+
+    public ItemES setShapelessRecipe(int resultSize, int meta, Object... items) {
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(this, resultSize, meta), items);
         return this;
     }
 

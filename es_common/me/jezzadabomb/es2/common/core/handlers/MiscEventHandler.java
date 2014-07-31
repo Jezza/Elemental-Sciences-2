@@ -8,7 +8,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class MiscEventHandler {
     @SubscribeEvent
     public void onItemDrop(ItemTossEvent event) {
-        if (event.entityItem.getEntityItem().getItem().equals(ModItems.quantumStateDisrupter))
+        if (event.entityItem.getEntityItem().getItem().equals(ModItems.quantumStateDisruptor))
             QuantumBombTicker.addItemEntityToList(event.entityItem);
     }
 }

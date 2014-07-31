@@ -1,5 +1,9 @@
 package me.jezzadabomb.es2.client;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import me.jezzadabomb.es2.CommonProxy;
 import me.jezzadabomb.es2.client.gui.GuiAtomicCatalystDebug;
 import me.jezzadabomb.es2.client.models.drones.ModelConstructorDrone;
@@ -14,25 +18,13 @@ import me.jezzadabomb.es2.client.renderers.itemblock.ItemAtomicConstructorRender
 import me.jezzadabomb.es2.client.renderers.itemblock.ItemConsoleRenderer;
 import me.jezzadabomb.es2.client.renderers.itemblock.ItemDroneBayRenderer;
 import me.jezzadabomb.es2.client.renderers.itemblock.ItemInventoryScannerRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileAtomicConstructorRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileConsoleRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileDroneBayRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileInventoryScannerRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileObeliskRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TilePylonRenderer;
-import me.jezzadabomb.es2.client.renderers.tile.TileQuantumStateDisruptorRenderer;
+import me.jezzadabomb.es2.client.renderers.tile.*;
 import me.jezzadabomb.es2.client.tickers.PlayerTicker;
 import me.jezzadabomb.es2.common.ModBlocks;
 import me.jezzadabomb.es2.common.ModItems;
 import me.jezzadabomb.es2.common.entities.EntityCombatDrone;
 import me.jezzadabomb.es2.common.entities.EntityConstructorDrone;
-import me.jezzadabomb.es2.common.tileentity.TileAtomicConstructor;
-import me.jezzadabomb.es2.common.tileentity.TileConsole;
-import me.jezzadabomb.es2.common.tileentity.TileDroneBay;
-import me.jezzadabomb.es2.common.tileentity.TileInventoryScanner;
-import me.jezzadabomb.es2.common.tileentity.TileObelisk;
-import me.jezzadabomb.es2.common.tileentity.TilePylonCrystal;
-import me.jezzadabomb.es2.common.tileentity.TileQuantumStateDisruptor;
+import me.jezzadabomb.es2.common.tileentity.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,10 +34,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {

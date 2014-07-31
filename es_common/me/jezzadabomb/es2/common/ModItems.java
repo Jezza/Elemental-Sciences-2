@@ -96,18 +96,20 @@ public class ModItems {
         selectiveEMPTrigger = new ItemSelectiveEMPTrigger(Strings.SELECTIVE_EMP_TRIGGER);
 
         // Relics
+        quantumStateDisruptor = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTOR);
         atomicCatalyst = new ItemAtomicCatalyst(Strings.ATOMIC_CATALYST).setClickableRight();
+
+        // Redone section
+        
+        // Relics
         lifeCoin = new ItemCoin(Strings.LIFE_COIN).setLore("You got it for getting", "a perfect pacman game.");
         deadCoin = new ItemCoin(Strings.DEAD_COIN).setLore("Just an ordinary coin.");
         gamblersCoin = new ItemCoin(Strings.GAMBLERS_COIN).setLore("Is luck on your side?").setClickableRight().setDonatorItem("SoulessRaven").setMaxStackSize(1);
-        quantumStateDisruptor = new ItemQuantumStateDisruptor(Strings.ITEM_QUANTUM_STATE_DISRUPTOR);
 
         // Research Tools
-        quill = new ItemCrafting(Strings.QUILL);
-        papyrus = new ItemCrafting(Strings.PAPYRUS);
-        quillAndPapyrus = new ItemResearchTool(Strings.QUILL_AND_PAPYRUS, GuiIDs.QUILL_AND_PAPYRUS);
-        pencil = new ItemCrafting(Strings.PENCIL);
-        pencilAndPaper = new ItemResearchTool(Strings.PENCIL_AND_PAPER, GuiIDs.PENCIL_AND_PAPER);
+        quill = new ItemCrafting(Strings.QUILL).setShapelessRecipe(Items.feather, Items.quartz);
+        papyrus = new ItemCrafting(Strings.PAPYRUS).setShapelessRecipe(Items.leather, Items.reeds, Items.reeds);
+        quillAndPapyrus = new ItemResearchTool(Strings.QUILL_AND_PAPYRUS, GuiIDs.QUILL_AND_PAPYRUS).setShapelessRecipe(quill, papyrus);
 
         if (Reference.isDebugMode)
             initDebug();
